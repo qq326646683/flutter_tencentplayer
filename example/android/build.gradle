@@ -1,0 +1,35 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.1'
+    }
+}
+def localProperties = new Properties()
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        flatDir {
+//            dirs "$flutterRoot/.pub-cache/hosted/pub.flutter-io.cn/video_player-0.10.1+5/android/libs"
+            dirs "/Users/apple/nell_pro/flutter/flutter_tencentplayer/android/libs"
+        }
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

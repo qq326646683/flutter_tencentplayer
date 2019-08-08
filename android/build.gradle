@@ -1,0 +1,45 @@
+group 'com.jinxian.flutter_tencentplayer'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.1'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 16
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+
+}
+
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation(name: 'LiteAVSDK_Player_6.6.7458', ext: 'aar')
+    implementation(name: 'lib_tcsuperplayer', ext: 'aar')
+// 超级播放器弹幕集成的第三方库
+    implementation 'com.github.ctiao:DanmakuFlameMaster:0.5.3'
+
+}
