@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-final MethodChannel _channel =
-const MethodChannel('flutter_tencentplayer')
+final MethodChannel _channel = const MethodChannel('flutter_tencentplayer')
   ..invokeMethod<void>('init');
 
 class TencentPlayerValue {
@@ -19,7 +18,9 @@ class TencentPlayerValue {
   final double rate;
 
   bool get initialized => duration != null;
+
   bool get hasError => errorDescription != null;
+
   double get aspectRatio => size != null ? size.width / size.height : 1.0;
 
   TencentPlayerValue({
@@ -44,7 +45,7 @@ class TencentPlayerValue {
     bool isLoading,
     int netSpeed,
     double rate,
-  }){
+  }) {
     return TencentPlayerValue(
       duration: duration ?? this.duration,
       position: position ?? this.position,
@@ -61,31 +62,53 @@ class TencentPlayerValue {
   @override
   String toString() {
     return '$runtimeType('
-      'duration: $duration, '
-      'position: $position, '
-      'playable: $playable, '
-      'isPlaying: $isPlaying, '
-      'errorDescription: $errorDescription),'
-      'isLoading: $isLoading),'
-      'netSpeed: $netSpeed),'
-      'rate: $rate),'
-      'size: $size)';
+        'duration: $duration, '
+        'position: $position, '
+        'playable: $playable, '
+        'isPlaying: $isPlaying, '
+        'errorDescription: $errorDescription),'
+        'isLoading: $isLoading),'
+        'netSpeed: $netSpeed),'
+        'rate: $rate),'
+        'size: $size)';
   }
-
-
 }
 
 enum DataSourceType { asset, network, file }
 
+class PlayerConfig {
+  final bool autoPlay;
+  final bool loop;
+  final Map<String, String> headers;
+  final String cachePath;
+  final int progressInterval;
+
+  const PlayerConfig(
+      {this.autoPlay = false,
+      this.loop = false,
+      this.headers,
+      this.cachePath,
+      this.progressInterval = 300});
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'autoPlay': this.autoPlay,
+        'loop': this.loop,
+        'headers': this.headers,
+        'cachePath': this.cachePath,
+        'progressInterval': this.progressInterval,
+      };
+}
 
 class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
   int _textureId;
   final String dataSource;
   final DataSourceType dataSourceType;
+  final PlayerConfig playerConfig;
 
-  TencentPlayerController.network(this.dataSource)
-    : dataSourceType = DataSourceType.network,
-    super(TencentPlayerValue());
+  TencentPlayerController.network(this.dataSource,
+      {this.playerConfig = const PlayerConfig()})
+      : dataSourceType = DataSourceType.network,
+        super(TencentPlayerValue());
 
   bool _isDisposed = false;
   Completer<void> _creatingCompleter;
@@ -109,25 +132,28 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
       case DataSourceType.file:
         break;
     }
+    value = value.copyWith(isPlaying: playerConfig.autoPlay);
+    dataSourceDescription.addAll(playerConfig.toJson());
     final Map<String, dynamic> response =
-       await _channel.invokeMapMethod<String, dynamic>(
-        'create',
-         dataSourceDescription,
-       );
+        await _channel.invokeMapMethod<String, dynamic>(
+      'create',
+      dataSourceDescription,
+    );
     _textureId = response['textureId'];
     _creatingCompleter.complete(null);
     final Completer<void> initializingCompleter = Completer<void>();
 
     void eventListener(dynamic event) {
-      if(_isDisposed) {
+      if (_isDisposed) {
         return;
       }
       final Map<dynamic, dynamic> map = event;
-      switch(map['event']) {
+      switch (map['event']) {
         case 'initialized':
           value = value.copyWith(
             duration: Duration(milliseconds: map['duration']),
-            size: Size(map['width']?.toDouble() ?? 0.0, map['height']?.toDouble() ?? 0.0),
+            size: Size(map['width']?.toDouble() ?? 0.0,
+                map['height']?.toDouble() ?? 0.0),
           );
           initializingCompleter.complete(null);
           break;
@@ -171,10 +197,11 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
     if (_creatingCompleter != null) {
       await _creatingCompleter.future;
       if (!_isDisposed) {
-          _isDisposed = true;
-          await _eventSubscription?.cancel();
-          await _channel.invokeListMethod('dispose', <String, dynamic>{'textureId': _textureId});
-          _lifeCycleObserver.dispose();
+        _isDisposed = true;
+        await _eventSubscription?.cancel();
+        await _channel.invokeListMethod(
+            'dispose', <String, dynamic>{'textureId': _textureId});
+        _lifeCycleObserver.dispose();
       }
     }
     _isDisposed = true;
@@ -196,9 +223,11 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
       return;
     }
     if (value.isPlaying) {
-      await _channel.invokeMethod('play', <String, dynamic>{'textureId': _textureId});
+      await _channel
+          .invokeMethod('play', <String, dynamic>{'textureId': _textureId});
     } else {
-      await _channel.invokeMethod('pause', <String, dynamic>{'textureId': _textureId});
+      await _channel
+          .invokeMethod('pause', <String, dynamic>{'textureId': _textureId});
     }
   }
 
@@ -208,16 +237,15 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
     }
     if (moment > value.duration) {
       moment = value.duration;
-    } else if(moment < const Duration()) {
+    } else if (moment < const Duration()) {
       moment = const Duration();
     }
-    await _channel.invokeMethod('seekTo', <String, dynamic> {
+    await _channel.invokeMethod('seekTo', <String, dynamic>{
       'textureId': _textureId,
       'location': moment.inSeconds,
     });
     value = value.copyWith(position: moment);
   }
-
 
   Future<void> setRate(double rate) async {
     if (_isDisposed) {
@@ -225,24 +253,22 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
     }
     if (rate > 2.0) {
       rate = 2.0;
-    } else if(rate < 1.0) {
+    } else if (rate < 1.0) {
       rate = 1.0;
     }
-    await _channel.invokeMethod('setRate', <String, dynamic> {
+    await _channel.invokeMethod('setRate', <String, dynamic>{
       'textureId': _textureId,
       'rate': rate,
     });
     value = value.copyWith(rate: rate);
   }
-
 }
-
 
 class _VideoAppLifeCycleObserver with WidgetsBindingObserver {
   bool _wasPlayingBeforePause = false;
   final TencentPlayerController _controller;
-  _VideoAppLifeCycleObserver(this._controller);
 
+  _VideoAppLifeCycleObserver(this._controller);
 
   void initialize() {
     WidgetsBinding.instance.addObserver(this);
@@ -267,14 +293,10 @@ class _VideoAppLifeCycleObserver with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
   }
-
 }
-
-
 
 class TencentPlayer extends StatefulWidget {
   final TencentPlayerController controller;
-
 
   TencentPlayer(this.controller);
 
@@ -294,9 +316,8 @@ class _TencentPlayerState extends State<TencentPlayer> {
           _textureId = newTextureId;
         });
       }
-    } ;
+    };
   }
-
 
   @override
   void initState() {
@@ -307,13 +328,13 @@ class _TencentPlayerState extends State<TencentPlayer> {
 
   @override
   void didUpdateWidget(TencentPlayer oldWidget) {
-      super.didUpdateWidget(oldWidget);
-      if (oldWidget.controller.dataSource != widget.controller.dataSource) {
-        oldWidget.controller.dispose();
-      }
-      oldWidget.controller.removeListener(_listener);
-      _textureId = widget.controller._textureId;
-      widget.controller.addListener(_listener);
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller.dataSource != widget.controller.dataSource) {
+      oldWidget.controller.dispose();
+    }
+    oldWidget.controller.removeListener(_listener);
+    _textureId = widget.controller._textureId;
+    widget.controller.addListener(_listener);
   }
 
   @override
