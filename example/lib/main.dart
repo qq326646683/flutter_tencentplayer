@@ -39,17 +39,28 @@ class _MyAppState extends State<MyApp> {
   String videoUrlAAA = 'http://file.jinxianyun.com/2018-06-12_16_58_22.mp4';
   String videoUrlBBB = 'http://file.jinxianyun.com/testhaha.mp4';
 
+
+  String mu = 'http://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear2/prog_index.m3u8';
+
+  String spe1 = 'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f10.mp4';
+  String spe2 = 'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f20.mp4';
+  String spe3 = 'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f30.mp4';
+
   Future<void> initPlatformState() async {
     _controller = TencentPlayerController.network(
 //  'http://img.ksbbs.com/asset/Mon_1703/05cacb4e02f9d9e.mp4')
 //  'https://www.sample-videos.com/video123/mp4/720/big_buck_bunny_720p_20mb.mp4')
-//  'http://file.jinxianyun.com/test.mp4')
+//  'http://file.jinxianyun.com/test.mp4',
 //  'http://file.jinxianyun.com/2018-06-12_16_58_22.mp4')
-        videoUrlAAA,
-        playerConfig:
-            PlayerConfig(autoPlay: true, loop: true, cachePath: 'mnt/sdcard/'))
+//    '/storage/emulated/0/nellcache/txvodcache/fbe87034ba67b082c5b7ac2509cc9be7.mp4',
+//              mu,
+              spe3,
+//    'static/tencent1.mp4',
+    playerConfig:
+            PlayerConfig(loop: true, /*auth: {"appId": 1252463788, "fileId": '4564972819220421305'}*/))
 //  'http://live.jinxianyun.com/live/test.flv?txSecret=43c9d5081bddf36b9879342daddadac4&txTime=5D3BB33F')
 //  'rtmp://mobliestream.c3tv.com:554/live/goodtv.sdp')
+    //http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f30.mp4
       ..initialize().then((_) {
         setState(() {});
       });
@@ -68,7 +79,9 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Video Demo',
       home: Scaffold(
-        body: Center(
+        body: Container(
+          padding: EdgeInsets.only(top: 30),
+          height: 1000,
           child: Stack(
             children: <Widget>[
               _controller.value.initialized
@@ -80,7 +93,7 @@ class _MyAppState extends State<MyApp> {
               Positioned(
                 top: 100,
                 child: Text(
-                  "速度：" + _controller.value.netSpeed.toString(),
+                  "播放网速：" + _controller.value.netSpeed.toString(),
                   style: TextStyle(color: Colors.pink),
                 ),
               ),
@@ -170,20 +183,20 @@ class _MyAppState extends State<MyApp> {
                 ),
               ),
               Positioned(
-                top: 0,
-                right: 0,
-                child: Column(
+                top: 170,
+                child: Row(
                   children: <Widget>[
                     FlatButton(
                         onPressed: () {
                           _controller =
-                              TencentPlayerController.network(videoUrlAAA);
+                              TencentPlayerController.network(mu);
                           _controller.initialize().then((_) {
                             setState(() {});
                           });
+                          _controller.addListener(listener);
                         },
                         child: Text(
-                          '视频1',
+                          'm3u8点播',
                           style: TextStyle(
                               color: _controller.dataSource == videoUrlAAA
                                   ? Colors.red
@@ -192,28 +205,66 @@ class _MyAppState extends State<MyApp> {
                     FlatButton(
                         onPressed: () {
                           _controller =
-                              TencentPlayerController.network(videoUrlBBB);
+                              TencentPlayerController.network(spe1);
                           _controller.initialize().then((_) {
                             setState(() {});
                           });
+                          _controller.addListener(listener);
                         },
                         child: Text(
-                          '视频2',
+                          '普通点播',
                           style: TextStyle(
                               color: _controller.dataSource == videoUrlBBB
                                   ? Colors.red
                                   : Colors.blue),
-                        )),
+                        ),
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: 200,
+                child: Row(
+                  children: <Widget>[
+                    Text('m3u8点播 : ', style: TextStyle(color: Colors.orange),),
+                    FlatButton(
+                      child: Text('标', style: TextStyle(color: _controller.value.bitrateIndex == 0 ? Colors.yellow : Colors.green),),
+                      onPressed: () {
+                        _controller.setBitrateIndex(0);
+                      },
+                    ),
+                    FlatButton(
+                      child: Text('高', style: TextStyle(color: _controller.value.bitrateIndex == 1 ? Colors.yellow : Colors.green),),
+                      onPressed: () {
+                        _controller.setBitrateIndex(1);
+                      },
+                    ),
+                    FlatButton(
+                      child: Text('超', style: TextStyle(color: _controller.value.bitrateIndex == 2 ? Colors.yellow : Colors.green),),
+                      onPressed: () {
+                        _controller.setBitrateIndex(2);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: 230,
+                child: Row(
+                  children: <Widget>[
+                    Text('普通点播 : ', style: TextStyle(color: Colors.orange),),
                     FlatButton(
                         onPressed: () {
                           _controller =
-                              TencentPlayerController.network(videoUrlB);
+                              TencentPlayerController.network(spe1, playerConfig: PlayerConfig(startTime: _controller.value.position.inSeconds));
                           _controller.initialize().then((_) {
                             setState(() {});
                           });
+                          _controller.addListener(listener);
+
                         },
                         child: Text(
-                          '标清',
+                          '标',
                           style: TextStyle(
                               color: _controller.dataSource == videoUrlB
                                   ? Colors.red
@@ -222,36 +273,59 @@ class _MyAppState extends State<MyApp> {
                     FlatButton(
                         onPressed: () {
                           _controller =
-                              TencentPlayerController.network(videoUrlG);
+                              TencentPlayerController.network(spe2, playerConfig: PlayerConfig(startTime: _controller.value.position.inSeconds));
                           _controller.initialize().then((_) {
                             setState(() {});
                           });
+                          _controller.addListener(listener);
+
                         },
                         child: Text(
-                          '高清',
+                          '高',
                           style: TextStyle(
                               color: _controller.dataSource == videoUrlG
                                   ? Colors.red
                                   : Colors.blue),
                         )),
                     FlatButton(
-                        onPressed: () {
-                          _controller =
-                              TencentPlayerController.network(videoUrl);
-                          _controller.initialize().then((_) {
-                            setState(() {});
-                          });
-                        },
-                        child: Text(
-                          '超清',
-                          style: TextStyle(
-                              color: _controller.dataSource == videoUrl
-                                  ? Colors.red
-                                  : Colors.blue),
-                        )),
+                      onPressed: () {
+                        _controller =
+                            TencentPlayerController.network(spe3, playerConfig: PlayerConfig(startTime: _controller.value.position.inSeconds));
+                        _controller.initialize().then((_) {
+                          setState(() {});
+                        });
+                        _controller.addListener(listener);
+
+                      },
+                      child: Text(
+                        '超',
+                        style: TextStyle(
+                            color: _controller.dataSource == videoUrl
+                                ? Colors.red
+                                : Colors.blue),
+                      ),
+                    ),
                   ],
                 ),
               ),
+
+              Positioned(
+                top: 260,
+                child: Column(
+                  children: <Widget>[
+                    FlatButton(
+                        onPressed: () {
+                          DownloadController downloadController = DownloadController('/storage/emulated/0/tencentdownload', sourceUrl: 'http://file.jinxianyun.com/test.mp4');
+                          downloadController.dowload();
+                        },
+                        child: Text(
+                          'download',
+                          style: TextStyle(
+                              color: Colors.blue),
+                        )),
+                  ],
+                ),
+              )
             ],
           ),
         ),

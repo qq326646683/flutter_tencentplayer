@@ -17,7 +17,8 @@ allprojects {
         jcenter()
         flatDir {
 //            dirs "$flutterRoot/.pub-cache/hosted/pub.flutter-io.cn/video_player-0.10.1+5/android/libs"
-            dirs "/Users/apple/nell_pro/flutter/flutter_tencentplayer/android/libs"
+//            dirs "/Users/apple/nell_pro/flutter/flutter_tencentplayer/android/libs"
+            dirs "/Users/dashuaifu/nell_pro/flutter/plugin/flutter_tencentplayer/android/libs"
         }
     }
 }

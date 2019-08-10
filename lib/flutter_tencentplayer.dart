@@ -16,6 +16,7 @@ class TencentPlayerValue {
   final bool isLoading;
   final int netSpeed;
   final double rate;
+  final int bitrateIndex;
 
   bool get initialized => duration != null;
 
@@ -33,6 +34,7 @@ class TencentPlayerValue {
     this.isLoading = false,
     this.netSpeed,
     this.rate = 1.0,
+    this.bitrateIndex = 0, //TODO 默认清晰度
   });
 
   TencentPlayerValue copyWith({
@@ -45,6 +47,7 @@ class TencentPlayerValue {
     bool isLoading,
     int netSpeed,
     double rate,
+    int bitrateIndex,
   }) {
     return TencentPlayerValue(
       duration: duration ?? this.duration,
@@ -56,6 +59,7 @@ class TencentPlayerValue {
       isLoading: isLoading ?? this.isLoading,
       netSpeed: netSpeed ?? this.netSpeed,
       rate: rate ?? this.rate,
+        bitrateIndex: bitrateIndex ?? this.bitrateIndex,
     );
   }
 
@@ -70,6 +74,7 @@ class TencentPlayerValue {
         'isLoading: $isLoading),'
         'netSpeed: $netSpeed),'
         'rate: $rate),'
+        'bitrateIndex: $bitrateIndex),'
         'size: $size)';
   }
 }
@@ -82,13 +87,20 @@ class PlayerConfig {
   final Map<String, String> headers;
   final String cachePath;
   final int progressInterval;
+  // 单位:秒
+  final int startTime;
+  final Map<String, dynamic> auth;
+
 
   const PlayerConfig(
-      {this.autoPlay = false,
+      {this.autoPlay = true,
       this.loop = false,
       this.headers,
       this.cachePath,
-      this.progressInterval = 300});
+      this.progressInterval = 300,
+      this.startTime,
+      this.auth,
+      });
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'autoPlay': this.autoPlay,
@@ -96,6 +108,8 @@ class PlayerConfig {
         'headers': this.headers,
         'cachePath': this.cachePath,
         'progressInterval': this.progressInterval,
+        'startTime': this.startTime,
+        'auth': this.auth,
       };
 }
 
@@ -105,9 +119,20 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
   final DataSourceType dataSourceType;
   final PlayerConfig playerConfig;
 
+  TencentPlayerController.asset(this.dataSource,
+      {this.playerConfig = const PlayerConfig()})
+      : dataSourceType = DataSourceType.asset,
+        super(TencentPlayerValue());
+
   TencentPlayerController.network(this.dataSource,
       {this.playerConfig = const PlayerConfig()})
       : dataSourceType = DataSourceType.network,
+        super(TencentPlayerValue());
+
+  TencentPlayerController.file(String filePath,
+      {this.playerConfig = const PlayerConfig()})
+      : dataSource = 'file://$filePath',
+        dataSourceType = DataSourceType.file,
         super(TencentPlayerValue());
 
   bool _isDisposed = false;
@@ -124,12 +149,12 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
     _creatingCompleter = Completer<void>();
     Map<dynamic, dynamic> dataSourceDescription;
     switch (dataSourceType) {
-      case DataSourceType.network:
-        dataSourceDescription = <String, dynamic>{'uri': dataSource};
-        break;
       case DataSourceType.asset:
+        dataSourceDescription = <String, dynamic>{'asset': dataSource};
         break;
+      case DataSourceType.network:
       case DataSourceType.file:
+        dataSourceDescription = <String, dynamic>{'uri': dataSource};
         break;
     }
     value = value.copyWith(isPlaying: playerConfig.autoPlay);
@@ -247,6 +272,19 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
     value = value.copyWith(position: moment);
   }
 
+  //点播为m3u8子流，会自动无缝seek
+  Future<void> setBitrateIndex(int index) async {
+    if (_isDisposed) {
+      return;
+    }
+    await _channel.invokeMethod('setBitrateIndex', <String, dynamic>{
+      'textureId': _textureId,
+      'index': index,
+    });
+    print('hahaha');
+    value = value.copyWith(bitrateIndex: index);
+  }
+
   Future<void> setRate(double rate) async {
     if (_isDisposed) {
       return;
@@ -347,4 +385,148 @@ class _TencentPlayerState extends State<TencentPlayer> {
   Widget build(BuildContext context) {
     return _textureId == null ? Container() : Texture(textureId: _textureId);
   }
+}
+
+
+//////////////////////////// 离线下载相关///////////////////////////////////////
+enum DownloadStatus{
+  start,
+  progress,
+  stop,
+  complete,
+  error
+}
+
+enum Quanlity {
+  QUALITY_OD,
+  QUALITY_FLU,
+  QUALITY_SD,
+  QUALITY_HD,
+  QUALITY_FHD,
+  QUALITY_2K,
+  QUALITY_4K
+}
+
+const Map<Quanlity, int> qunanlityMap= {
+  Quanlity.QUALITY_OD: 0,
+  Quanlity.QUALITY_FLU: 1,
+  Quanlity.QUALITY_SD: 2,
+  Quanlity.QUALITY_HD: 3,
+  Quanlity.QUALITY_FHD: 4,
+  Quanlity.QUALITY_2K: 5,
+  Quanlity.QUALITY_4K: 6,
+};
+
+class DownloadValue {
+  final DownloadStatus downloadStatus;
+  final Quanlity quanlity;
+  final int duration;
+  final int size;
+  final int downloadSize;
+  final double progress;
+  final String playPath;
+  final bool isStop;
+  final String sourceUrl;
+
+  DownloadValue({
+    this.downloadStatus,
+    this.quanlity,
+    this.duration,
+    this.size,
+    this.downloadSize,
+    this.progress,
+    this.playPath,
+    this.isStop,
+    this.sourceUrl,
+  });
+
+  DownloadValue copyWith({
+    DownloadStatus downloadStatus,
+    Quanlity quanlity,
+    int duration,
+    int size,
+    int downloadSize,
+    double progress,
+    String playPath,
+    bool isStop,
+    String sourceUrl,
+  }) {
+    return DownloadValue(
+      downloadStatus: downloadStatus ?? this.downloadStatus,
+      quanlity: quanlity ?? this.quanlity,
+      duration: duration ?? this.duration,
+      size: size ?? this.size,
+      downloadSize: downloadSize ?? this.downloadSize,
+      progress: progress ?? this.progress,
+      playPath: playPath ?? this.playPath,
+      isStop: isStop ?? this.isStop,
+      sourceUrl: sourceUrl ?? this.sourceUrl,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'DownloadValue{downloadStatus: $downloadStatus, quanlity: $quanlity, duration: $duration, size: $size, downloadSize: $downloadSize, progress: $progress, playPath: $playPath, isStop: $isStop, sourceUrl: $sourceUrl}';
+  }
+
+}
+
+class DownloadController extends ValueNotifier<DownloadValue> {
+  final String sourceUrl;
+  final String savePath;
+  StreamSubscription<dynamic> _eventSubscription;
+
+
+  DownloadController(this.savePath, {this.sourceUrl})
+      : super(DownloadValue(sourceUrl: sourceUrl));
+
+  void dowload() async {
+    Map<dynamic, dynamic> downloadInfoMap = {
+      "savePath": savePath,
+      "sourceUrl": sourceUrl,
+    };
+
+    await _channel.invokeMethod(
+      'download',
+      downloadInfoMap,
+    );
+
+    void eventListener(dynamic event) {
+      final Map<dynamic, dynamic> map = event;
+
+      switch (map['downloadEvent']) {
+        case 'start':
+          print('download66:start');
+          print(map['mediaInfo']);
+          break;
+        case 'progress':
+          print('download66:progress');
+          print(map['mediaInfo']);
+          break;
+        case 'progress':
+          print('download66:stop');
+          print(map['mediaInfo']);
+          break;
+        case 'progress':
+          print('download66:complete');
+          print(map['mediaInfo']);
+          break;
+        case 'error':
+          print('download66:error');
+          print(map['mediaInfo']);
+          break;
+      }
+    }
+
+    _eventSubscription = _eventChannelFor(sourceUrl)
+        .receiveBroadcastStream()
+        .listen(eventListener);
+  }
+
+  EventChannel _eventChannelFor(String sourceUrl) {
+    return EventChannel('flutter_tencentplayer/downloadEvents$sourceUrl');
+  }
+
+
+
 }
