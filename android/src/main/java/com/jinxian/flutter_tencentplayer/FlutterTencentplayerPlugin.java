@@ -172,7 +172,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
                         inputStream.close();
                         fileOutputStream.close();
 
-                        mVodPlayer.startPlay("file://" + file.getPath());
+                        mVodPlayer.startPlay(file.getPath());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -303,13 +303,13 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
             TXVodDownloadManager downloader = TXVodDownloadManager.getInstance();
             downloader.setListener(this);
             downloader.setDownloadPath(call.argument("savePath").toString());
-//            downloader.startDownloadUrl(call.argument("sourceUrl").toString());
+            downloader.startDownloadUrl(call.argument("sourceUrl").toString());
 //            downloader.startDownloadUrl("http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4bdff799031868222924043041/playlist.m3u8");
-            TXPlayerAuthBuilder auth = new TXPlayerAuthBuilder();
-            auth.setAppId(1252463788);
-            auth.setFileId("4564972819220421305");
-            TXVodDownloadDataSource source = new TXVodDownloadDataSource(auth, QUALITY_OD);
-            downloader.startDownload(source);
+//            TXPlayerAuthBuilder auth = new TXPlayerAuthBuilder();
+//            auth.setAppId(1252463788);
+//            auth.setFileId("4564972819220421305");
+//            TXVodDownloadDataSource source = new TXVodDownloadDataSource(auth, QUALITY_OD);
+//            downloader.startDownload(source);
             Toast.makeText(mRegistrar.context(), call.argument("savePath").toString() + "===" + call.argument("sourceUrl"), Toast.LENGTH_LONG).show();
 
             eventChannel.setStreamHandler(
@@ -332,7 +332,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
         public void onDownloadStart(TXVodDownloadMediaInfo txVodDownloadMediaInfo) {
             Map<String, Object> mediaInfoMap = new HashMap<>();
             mediaInfoMap.put("downloadEvent", "start");
-            mediaInfoMap.put("mediaInfo", txVodDownloadMediaInfo);
+            mediaInfoMap.put("mediaInfo", Util.convertToMap(txVodDownloadMediaInfo));
             eventSink.success(mediaInfoMap);
         }
 
@@ -340,7 +340,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
         public void onDownloadProgress(TXVodDownloadMediaInfo txVodDownloadMediaInfo) {
             Map<String, Object> mediaInfoMap = new HashMap<>();
             mediaInfoMap.put("downloadEvent", "progress");
-            mediaInfoMap.put("mediaInfo", txVodDownloadMediaInfo);
+            mediaInfoMap.put("mediaInfo", Util.convertToMap(txVodDownloadMediaInfo));
             eventSink.success(mediaInfoMap);
         }
 
@@ -348,7 +348,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
         public void onDownloadStop(TXVodDownloadMediaInfo txVodDownloadMediaInfo) {
             Map<String, Object> mediaInfoMap = new HashMap<>();
             mediaInfoMap.put("downloadEvent", "stop");
-            mediaInfoMap.put("mediaInfo", txVodDownloadMediaInfo);
+            mediaInfoMap.put("mediaInfo", Util.convertToMap(txVodDownloadMediaInfo));
             eventSink.success(mediaInfoMap);
         }
 
@@ -356,7 +356,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
         public void onDownloadFinish(TXVodDownloadMediaInfo txVodDownloadMediaInfo) {
             Map<String, Object> mediaInfoMap = new HashMap<>();
             mediaInfoMap.put("downloadEvent", "complete");
-            mediaInfoMap.put("mediaInfo", txVodDownloadMediaInfo);
+            mediaInfoMap.put("mediaInfo", Util.convertToMap(txVodDownloadMediaInfo));
             eventSink.success(mediaInfoMap);
         }
 
@@ -364,7 +364,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
         public void onDownloadError(TXVodDownloadMediaInfo txVodDownloadMediaInfo, int i, String s) {
             Map<String, Object> mediaInfoMap = new HashMap<>();
             mediaInfoMap.put("downloadEvent", "error");
-            mediaInfoMap.put("mediaInfo", txVodDownloadMediaInfo);
+            mediaInfoMap.put("mediaInfo", "code:" + i + "  msg:" +  s);
             eventSink.success(mediaInfoMap);
         }
 

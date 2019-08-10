@@ -15,8 +15,18 @@ class _MyAppState extends State<MyApp> {
   TencentPlayerController _controller;
   VoidCallback listener;
 
+  DownloadController _downloadController;
+  VoidCallback downloadListener;
+
+
   _MyAppState() {
     listener = () {
+      if (!mounted) {
+        return;
+      }
+      setState(() {});
+    };
+    downloadListener = () {
       if (!mounted) {
         return;
       }
@@ -46,18 +56,23 @@ class _MyAppState extends State<MyApp> {
   String spe2 = 'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f20.mp4';
   String spe3 = 'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f30.mp4';
 
+  String testDownload = 'http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4bdff799031868222924043041/playlist.m3u8';
+  String downloadRes = '/storage/emulated/0/tencentdownload/txdownload/2c58873a5b9916f9fef5103c74f0ce5e.m3u8.sqlite';
+  String downloadRes2 = '/storage/emulated/0/tencentdownload/txdownload/cf3e281653e562303c8c2b14729ba7f5.m3u8.sqlite';
+
   Future<void> initPlatformState() async {
-    _controller = TencentPlayerController.network(
+    _controller = TencentPlayerController.file(
 //  'http://img.ksbbs.com/asset/Mon_1703/05cacb4e02f9d9e.mp4')
 //  'https://www.sample-videos.com/video123/mp4/720/big_buck_bunny_720p_20mb.mp4')
 //  'http://file.jinxianyun.com/test.mp4',
 //  'http://file.jinxianyun.com/2018-06-12_16_58_22.mp4')
 //    '/storage/emulated/0/nellcache/txvodcache/fbe87034ba67b082c5b7ac2509cc9be7.mp4',
 //              mu,
-              spe3,
+//              spe3,
+        downloadRes2,
 //    'static/tencent1.mp4',
     playerConfig:
-            PlayerConfig(loop: true, /*auth: {"appId": 1252463788, "fileId": '4564972819220421305'}*/))
+            PlayerConfig(/*auth: {"appId": 1252463788, "fileId": '4564972819220421305'}*/))
 //  'http://live.jinxianyun.com/live/test.flv?txSecret=43c9d5081bddf36b9879342daddadac4&txTime=5D3BB33F')
 //  'rtmp://mobliestream.c3tv.com:554/live/goodtv.sdp')
     //http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f30.mp4
@@ -66,12 +81,17 @@ class _MyAppState extends State<MyApp> {
       });
 
     _controller.addListener(listener);
+
+
+    _downloadController = DownloadController('/storage/emulated/0/tencentdownload');
+    _downloadController.addListener(downloadListener);
   }
 
   @override
   void dispose() {
     super.dispose();
     _controller.removeListener(listener);
+    _downloadController.removeListener(downloadListener);
   }
 
   @override
@@ -310,20 +330,36 @@ class _MyAppState extends State<MyApp> {
               ),
 
               Positioned(
-                top: 260,
-                child: Column(
-                  children: <Widget>[
-                    FlatButton(
+                top: 270,
+                child: Container(
+                  width: 370,
+                  child: Column(
+                    children: <Widget>[
+                      FlatButton(
+                          onPressed: () {
+
+                            _downloadController.dowload(mu);
+                          },
+                          child: Text(
+                            'download1',
+                            style: TextStyle(
+                                color: Colors.blue),
+                          ),
+                      ),
+                      FlatButton(
                         onPressed: () {
-                          DownloadController downloadController = DownloadController('/storage/emulated/0/tencentdownload', sourceUrl: 'http://file.jinxianyun.com/test.mp4');
-                          downloadController.dowload();
+                          _downloadController.dowload(testDownload);
                         },
                         child: Text(
-                          'download',
+                          'download2',
                           style: TextStyle(
                               color: Colors.blue),
-                        )),
-                  ],
+                        ),
+                      ),
+                      Text('download info:'),
+                      Text(_downloadController.value != null ? _downloadController.value.toString() : '')
+                    ],
+                  ),
                 ),
               )
             ],

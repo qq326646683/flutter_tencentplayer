@@ -131,7 +131,7 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
 
   TencentPlayerController.file(String filePath,
       {this.playerConfig = const PlayerConfig()})
-      : dataSource = 'file://$filePath',
+      : dataSource = filePath,
         dataSourceType = DataSourceType.file,
         super(TencentPlayerValue());
 
@@ -426,7 +426,8 @@ class DownloadValue {
   final double progress;
   final String playPath;
   final bool isStop;
-  final String sourceUrl;
+  final String url;
+  final String error;
 
   DownloadValue({
     this.downloadStatus,
@@ -437,7 +438,8 @@ class DownloadValue {
     this.progress,
     this.playPath,
     this.isStop,
-    this.sourceUrl,
+    this.url,
+    this.error,
   });
 
   DownloadValue copyWith({
@@ -449,7 +451,8 @@ class DownloadValue {
     double progress,
     String playPath,
     bool isStop,
-    String sourceUrl,
+    String url,
+    String error,
   }) {
     return DownloadValue(
       downloadStatus: downloadStatus ?? this.downloadStatus,
@@ -460,27 +463,45 @@ class DownloadValue {
       progress: progress ?? this.progress,
       playPath: playPath ?? this.playPath,
       isStop: isStop ?? this.isStop,
-      sourceUrl: sourceUrl ?? this.sourceUrl,
+      url: url ?? this.url,
+      error: error ?? this.error,
     );
   }
 
   @override
   String toString() {
-    return 'DownloadValue{downloadStatus: $downloadStatus, quanlity: $quanlity, duration: $duration, size: $size, downloadSize: $downloadSize, progress: $progress, playPath: $playPath, isStop: $isStop, sourceUrl: $sourceUrl}';
+    return 'downloadStatus: $downloadStatus ,size: $size, downloaded: $downloadSize';
+  }
+
+  String showDetailLog() {
+    return 'DownloadValue{downloadStatus: $downloadStatus, quanlity: $quanlity,\n duration: $duration, size: $size, downloadSize: $downloadSize,\n progress: $progress,\n playPath: $playPath,\n isStop: $isStop,\n url: $url,\n error: $error}';
+  }
+
+  static DownloadValue fromJson(Map<dynamic, dynamic> json) {
+    return DownloadValue(
+      downloadStatus: json['downloadStatus'],
+      duration: int.parse(json['duration']),
+      size: int.parse(json['size']),
+      downloadSize: int.parse(json['downloadSize']),
+      progress: double.parse(json['downloadSize']),
+      playPath: json['playPath'] as String,
+      isStop: json['isStop'] == "true",
+      url: json['url'] as String,
+    );
+
   }
 
 }
 
-class DownloadController extends ValueNotifier<DownloadValue> {
-  final String sourceUrl;
+class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
   final String savePath;
   StreamSubscription<dynamic> _eventSubscription;
 
 
-  DownloadController(this.savePath, {this.sourceUrl})
-      : super(DownloadValue(sourceUrl: sourceUrl));
+  DownloadController(this.savePath)
+      : super(Map<String, DownloadValue>());
 
-  void dowload() async {
+  void dowload(String sourceUrl) async {
     Map<dynamic, dynamic> downloadInfoMap = {
       "savePath": savePath,
       "sourceUrl": sourceUrl,
@@ -498,22 +519,36 @@ class DownloadController extends ValueNotifier<DownloadValue> {
         case 'start':
           print('download66:start');
           print(map['mediaInfo']);
+          map['mediaInfo']["downloadStatus"] = DownloadStatus.start;
+          DownloadValue downloadValue = DownloadValue.fromJson(map['mediaInfo']);
+          value[downloadValue.url] = downloadValue;
           break;
         case 'progress':
           print('download66:progress');
           print(map['mediaInfo']);
+          map['mediaInfo']["downloadStatus"] = DownloadStatus.progress;
+          DownloadValue downloadValue = DownloadValue.fromJson(map['mediaInfo']);
+          value[downloadValue.url] = downloadValue;
           break;
-        case 'progress':
+        case 'stop':
           print('download66:stop');
           print(map['mediaInfo']);
+          map['mediaInfo']["downloadStatus"] = DownloadStatus.stop;
+          DownloadValue downloadValue = DownloadValue.fromJson(map['mediaInfo']);
+          value[downloadValue.url] = downloadValue;
           break;
-        case 'progress':
+        case 'complete':
           print('download66:complete');
           print(map['mediaInfo']);
+          map['mediaInfo']["downloadStatus"] = DownloadStatus.complete;
+          DownloadValue downloadValue = DownloadValue.fromJson(map['mediaInfo']);
+          value[downloadValue.url] = downloadValue;
           break;
         case 'error':
           print('download66:error');
           print(map['mediaInfo']);
+          DownloadValue downloadValue = DownloadValue.fromJson(map['mediaInfo']);
+          value[downloadValue.url] = downloadValue;
           break;
       }
     }
