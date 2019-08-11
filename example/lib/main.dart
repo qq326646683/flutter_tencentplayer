@@ -275,8 +275,7 @@ class _MyAppState extends State<MyApp> {
                     Text('普通点播 : ', style: TextStyle(color: Colors.orange),),
                     FlatButton(
                         onPressed: () {
-                          _controller =
-                              TencentPlayerController.network(spe1, playerConfig: PlayerConfig(startTime: _controller.value.position.inSeconds));
+                          _controller = TencentPlayerController.network(spe1, playerConfig: PlayerConfig(startTime: _controller.value.position.inSeconds));
                           _controller.initialize().then((_) {
                             setState(() {});
                           });

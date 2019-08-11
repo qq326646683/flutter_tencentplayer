@@ -8,17 +8,20 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.2.1'
     }
 }
-def localProperties = new Properties()
-def flutterRoot = localProperties.getProperty('flutter.sdk')
+
+def flutterProjectRoot = rootProject.projectDir.parentFile.toPath()
+def plugins = new Properties()
+def pluginsFile = new File(flutterProjectRoot.toFile(), '.flutter-plugins')
+if (pluginsFile.exists()) {
+    pluginsFile.withReader('UTF-8') { reader -> plugins.load(reader) }
+}
 
 allprojects {
     repositories {
         google()
         jcenter()
         flatDir {
-//            dirs "$flutterRoot/.pub-cache/hosted/pub.flutter-io.cn/video_player-0.10.1+5/android/libs"
-//            dirs "/Users/apple/nell_pro/flutter/flutter_tencentplayer/android/libs"
-            dirs "/Users/dashuaifu/nell_pro/flutter/plugin/flutter_tencentplayer/android/libs"
+            dirs "${plugins.get("flutter_tencentplayer")}android/libs"
         }
     }
 }

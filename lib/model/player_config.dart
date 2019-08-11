@@ -14,7 +14,7 @@ class PlayerConfig {
         this.loop = false,
         this.headers,
         this.cachePath,
-        this.progressInterval = 300,
+        this.progressInterval = 200,
         this.startTime,
         this.auth,
       });
