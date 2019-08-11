@@ -61,15 +61,15 @@ class _MyAppState extends State<MyApp> {
   String downloadRes2 = '/storage/emulated/0/tencentdownload/txdownload/cf3e281653e562303c8c2b14729ba7f5.m3u8.sqlite';
 
   Future<void> initPlatformState() async {
-    _controller = TencentPlayerController.file(
+    _controller = TencentPlayerController.network(
 //  'http://img.ksbbs.com/asset/Mon_1703/05cacb4e02f9d9e.mp4')
 //  'https://www.sample-videos.com/video123/mp4/720/big_buck_bunny_720p_20mb.mp4')
 //  'http://file.jinxianyun.com/test.mp4',
 //  'http://file.jinxianyun.com/2018-06-12_16_58_22.mp4')
 //    '/storage/emulated/0/nellcache/txvodcache/fbe87034ba67b082c5b7ac2509cc9be7.mp4',
 //              mu,
-//              spe3,
-        downloadRes2,
+              spe3,
+//        downloadRes2,
 //    'static/tencent1.mp4',
     playerConfig:
             PlayerConfig(/*auth: {"appId": 1252463788, "fileId": '4564972819220421305'}*/))
@@ -83,7 +83,7 @@ class _MyAppState extends State<MyApp> {
     _controller.addListener(listener);
 
 
-    _downloadController = DownloadController('/storage/emulated/0/tencentdownload');
+    _downloadController = DownloadController('/storage/emulated/0/tencentdownload', appId: 1252463788);
     _downloadController.addListener(downloadListener);
   }
 
@@ -337,8 +337,7 @@ class _MyAppState extends State<MyApp> {
                     children: <Widget>[
                       FlatButton(
                           onPressed: () {
-
-                            _downloadController.dowload(mu);
+                            _downloadController.dowload("4564972819220421305", quanlity: 2);
                           },
                           child: Text(
                             'download1',
@@ -348,10 +347,30 @@ class _MyAppState extends State<MyApp> {
                       ),
                       FlatButton(
                         onPressed: () {
+                          _downloadController.stopDownload("4564972819220421305");
+                        },
+                        child: Text(
+                          'download1 - stop',
+                          style: TextStyle(
+                              color: Colors.blue),
+                        ),
+                      ),
+                      FlatButton(
+                        onPressed: () {
                           _downloadController.dowload(testDownload);
                         },
                         child: Text(
                           'download2',
+                          style: TextStyle(
+                              color: Colors.blue),
+                        ),
+                      ),
+                      FlatButton(
+                        onPressed: () {
+                          _downloadController.stopDownload(testDownload);
+                        },
+                        child: Text(
+                          'download2 - stop',
                           style: TextStyle(
                               color: Colors.blue),
                         ),

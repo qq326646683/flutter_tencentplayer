@@ -290,6 +290,19 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
 
         private final Registrar mRegistrar;
 
+        private String fileId;
+
+        private TXVodDownloadManager downloader;
+
+        private TXVodDownloadMediaInfo txVodDownloadMediaInfo;
+
+
+        void stopDownload() {
+            if (downloader != null && txVodDownloadMediaInfo != null) {
+                downloader.stopDownload(txVodDownloadMediaInfo);
+            }
+        }
+
 
         TencentDownload(
                 Registrar mRegistrar,
@@ -300,17 +313,20 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
             this.mRegistrar = mRegistrar;
 
 
-            TXVodDownloadManager downloader = TXVodDownloadManager.getInstance();
+            downloader = TXVodDownloadManager.getInstance();
             downloader.setListener(this);
             downloader.setDownloadPath(call.argument("savePath").toString());
-            downloader.startDownloadUrl(call.argument("sourceUrl").toString());
-//            downloader.startDownloadUrl("http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4bdff799031868222924043041/playlist.m3u8");
-//            TXPlayerAuthBuilder auth = new TXPlayerAuthBuilder();
-//            auth.setAppId(1252463788);
-//            auth.setFileId("4564972819220421305");
-//            TXVodDownloadDataSource source = new TXVodDownloadDataSource(auth, QUALITY_OD);
-//            downloader.startDownload(source);
-            Toast.makeText(mRegistrar.context(), call.argument("savePath").toString() + "===" + call.argument("sourceUrl"), Toast.LENGTH_LONG).show();
+            String urlOrFileId = call.argument("urlOrFileId").toString();
+
+            if (urlOrFileId.startsWith("http")) {
+                txVodDownloadMediaInfo = downloader.startDownloadUrl(urlOrFileId);
+            } else {
+                TXPlayerAuthBuilder auth = new TXPlayerAuthBuilder();
+                auth.setAppId(((Number)call.argument("appId")).intValue());
+                auth.setFileId(urlOrFileId);
+                TXVodDownloadDataSource source = new TXVodDownloadDataSource(auth, ((Number)call.argument("quanlity")).intValue());
+                txVodDownloadMediaInfo = downloader.startDownload(source);
+            }
 
             eventChannel.setStreamHandler(
                     new EventChannel.StreamHandler() {
@@ -330,48 +346,54 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
 
         @Override
         public void onDownloadStart(TXVodDownloadMediaInfo txVodDownloadMediaInfo) {
-            Map<String, Object> mediaInfoMap = new HashMap<>();
-            mediaInfoMap.put("downloadEvent", "start");
-            mediaInfoMap.put("mediaInfo", Util.convertToMap(txVodDownloadMediaInfo));
-            eventSink.success(mediaInfoMap);
+            dealCallToFlutterData("start", txVodDownloadMediaInfo);
+
         }
 
         @Override
         public void onDownloadProgress(TXVodDownloadMediaInfo txVodDownloadMediaInfo) {
-            Map<String, Object> mediaInfoMap = new HashMap<>();
-            mediaInfoMap.put("downloadEvent", "progress");
-            mediaInfoMap.put("mediaInfo", Util.convertToMap(txVodDownloadMediaInfo));
-            eventSink.success(mediaInfoMap);
+            dealCallToFlutterData("progress", txVodDownloadMediaInfo);
+
         }
 
         @Override
         public void onDownloadStop(TXVodDownloadMediaInfo txVodDownloadMediaInfo) {
-            Map<String, Object> mediaInfoMap = new HashMap<>();
-            mediaInfoMap.put("downloadEvent", "stop");
-            mediaInfoMap.put("mediaInfo", Util.convertToMap(txVodDownloadMediaInfo));
-            eventSink.success(mediaInfoMap);
+            dealCallToFlutterData("stop", txVodDownloadMediaInfo);
         }
 
         @Override
         public void onDownloadFinish(TXVodDownloadMediaInfo txVodDownloadMediaInfo) {
-            Map<String, Object> mediaInfoMap = new HashMap<>();
-            mediaInfoMap.put("downloadEvent", "complete");
-            mediaInfoMap.put("mediaInfo", Util.convertToMap(txVodDownloadMediaInfo));
-            eventSink.success(mediaInfoMap);
+            dealCallToFlutterData("complete", txVodDownloadMediaInfo);
         }
 
         @Override
         public void onDownloadError(TXVodDownloadMediaInfo txVodDownloadMediaInfo, int i, String s) {
-            Map<String, Object> mediaInfoMap = new HashMap<>();
-            mediaInfoMap.put("downloadEvent", "error");
-            mediaInfoMap.put("mediaInfo", "code:" + i + "  msg:" +  s);
-            eventSink.success(mediaInfoMap);
+            HashMap<String, Object> targetMap = Util.convertToMap(txVodDownloadMediaInfo);
+            targetMap.put("downloadStatus", "error");
+            targetMap.put("error", "code:" + i + "  msg:" +  s);
+            if (txVodDownloadMediaInfo.getDataSource() != null) {
+                targetMap.put("quanlity", txVodDownloadMediaInfo.getDataSource().getQuality());
+                targetMap.putAll(Util.convertToMap(txVodDownloadMediaInfo.getDataSource().getAuthBuilder()));
+            }
+            eventSink.success(targetMap);
         }
 
         @Override
         public int hlsKeyVerify(TXVodDownloadMediaInfo txVodDownloadMediaInfo, String s, byte[] bytes) {
             return 0;
         }
+
+        private void dealCallToFlutterData(String type, TXVodDownloadMediaInfo txVodDownloadMediaInfo) {
+            HashMap<String, Object> targetMap = Util.convertToMap(txVodDownloadMediaInfo);
+            targetMap.put("downloadStatus", type);
+            if (txVodDownloadMediaInfo.getDataSource() != null) {
+                targetMap.put("quanlity", txVodDownloadMediaInfo.getDataSource().getQuality());
+                targetMap.putAll(Util.convertToMap(txVodDownloadMediaInfo.getDataSource().getAuthBuilder()));
+            }
+            eventSink.success(targetMap);
+        }
+
+
     }
     ////////////////////  TencentDownload 结束/////////////////
     private final Registrar registrar;
@@ -429,11 +451,15 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
                 videoPlayers.put(handle.id(), player);
                 break;
             case "download":
-                String sourceUrl = call.argument("sourceUrl").toString();
-                EventChannel downloadEventChannel = new EventChannel(registrar.messenger(), "flutter_tencentplayer/downloadEvents" + sourceUrl);
+                String urlOrFileId = call.argument("urlOrFileId").toString();
+                EventChannel downloadEventChannel = new EventChannel(registrar.messenger(), "flutter_tencentplayer/downloadEvents" + urlOrFileId);
                 TencentDownload tencentDownload = new TencentDownload(registrar, downloadEventChannel, call, result);
 
-                downloadManagerMap.put(sourceUrl, tencentDownload);
+                downloadManagerMap.put(urlOrFileId, tencentDownload);
+                break;
+            case "stopDownload":
+                downloadManagerMap.get(call.argument("urlOrFileId").toString()).stopDownload();
+                result.success(null);
                 break;
             default:
                 long textureId = ((Number) call.argument("textureId")).longValue();
