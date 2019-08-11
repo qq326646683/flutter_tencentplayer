@@ -200,6 +200,11 @@ error | String | 下载的错误信息
 
 
 
+# 4.[Example](https://github.com/qq326646683/flutter_tencentplayer/blob/master/example/lib/main.dart)
+
+
+
+
 
 
 
