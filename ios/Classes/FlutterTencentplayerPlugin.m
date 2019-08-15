@@ -39,7 +39,17 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
 
    
 }
-    
+
+//        {
+//            auth = "<null>";
+//            autoPlay = 1;
+//            cachePath = "<null>";
+//            headers = "<null>";
+//            loop = 0;
+//            progressInterval = 200;
+//            startTime = "<null>";
+//            uri = "http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f30.mp4";
+//        }
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     if ([@"init" isEqualToString:call.method]) {
         NSLog(@"init");
@@ -47,16 +57,7 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
         result(nil);
     }else if([@"create" isEqualToString:call.method]){
         NSLog(@"create");
-        //        {
-        //            auth = "<null>";
-        //            autoPlay = 1;
-        //            cachePath = "<null>";
-        //            headers = "<null>";
-        //            loop = 0;
-        //            progressInterval = 200;
-        //            startTime = "<null>";
-        //            uri = "http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f30.mp4";
-        //        }
+        
         NSDictionary* argsMap = call.arguments;
         NSLog(@"%@",argsMap);
         FLTFrameUpdater* frameUpdater = [[FLTFrameUpdater alloc] initWithRegistry:_registry];
@@ -71,9 +72,9 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
 //        float progressInterval = [playConfigArg[@"progressInterval"] floatValue];
 //
         TXVodPlayConfig* playConfig = [[TXVodPlayConfig alloc]init];
-        playConfig.connectRetryCount=  1 ;
+        playConfig.connectRetryCount=  3 ;
         playConfig.connectRetryInterval = 3;
-        playConfig.timeout = 200 ;//[argsMap[@"progressInterval"] intValue] ;
+        playConfig.timeout = 10 ;//[argsMap[@"progressInterval"] intValue] ;
         
         id cacheFolderPath = argsMap[@"cachePath"];
         if (cacheFolderPath!=nil&&cacheFolderPath!=NULL&&![@"" isEqualToString:cacheFolderPath]&&cacheFolderPath!=[NSNull null]) {
@@ -81,7 +82,7 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
         }
       
         playConfig.maxCacheItems = 1;
-        playConfig.progressInterval = 200;
+        playConfig.progressInterval = 0.5;
         BOOL autoPlayArg = [argsMap[@"autoPlay"] boolValue];
     
         int startPosition = 0;//[argsMap[@"startPosition"] intValue];
@@ -108,18 +109,42 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
 }
 
 -(void) onMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result{
+    
+    NSDictionary* argsMap = call.arguments;
+    int64_t textureId = ((NSNumber*)argsMap[@"textureId"]).unsignedIntegerValue;
+    FLTVideoPlayer* player = _players[@(textureId)];
+    
+    
     if([@"play" isEqualToString:call.method]){
-        
+        [player resume];
+        result(nil);
     }else if([@"pause" isEqualToString:call.method]){
-        
+        [player pause];
+        result(nil);
     }else if([@"seekTo" isEqualToString:call.method]){
-        
-    }else if([@"setRate" isEqualToString:call.method]){
+        NSLog(@"跳转到指定位置");
+        [player seekTo:[[argsMap objectForKey:@"position"] intValue]];
+        result(nil);
+    }else if([@"setRate" isEqualToString:call.method]){ //播放速率
+        NSLog(@"修改播放速率");
+        float rate = [[argsMap objectForKey:@"rate"] floatValue];
+        if (rate<0||rate>2) {
+            result(nil);
+            return;
+        }
+        [player setRate:rate];
+        result(nil);
         
     }else if([@"setBitrateIndex" isEqualToString:call.method]){
         
+        NSLog(@"修改播放清晰度");
+        int  index = [[argsMap objectForKey:@"index"] intValue];
+        [player setBitrateIndex:index];
     }else if([@"dispose" isEqualToString:call.method]){
-        
+        [_registry unregisterTexture:textureId];
+        [_players removeObjectForKey:@(textureId)];
+        [player dispose];
+        result(nil);
     }else{
         result(FlutterMethodNotImplemented);
     }
@@ -132,27 +157,16 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
     
     int64_t textureId = [_registry registerTexture:player];
     frameUpdater.textureId = textureId;
-    
-    
-//    NSString * eventStr=@"flutter_tencentplayer/videoEvents";
-//    NSString *  textureIdStr =  [NSString stringWithFormat:@"%lld",textureId];
-//
-//    NSString *eventName = [NSString stringWithFormat:@"%@%@", eventStr, textureIdStr];
 
-//    FlutterEventChannel* eventChannel = [FlutterEventChannel
-//                                         eventChannelWithName:@"flutter_tencentplayer/videoEvents"
-//                                         binaryMessenger:_messenger];
-    
     FlutterEventChannel* eventChannel = [FlutterEventChannel
                                          eventChannelWithName:[NSString stringWithFormat:@"flutter_tencentplayer/videoEvents%lld",
                                                                textureId]
                                          binaryMessenger:_messenger];
     
-    
     [eventChannel setStreamHandler:player];
-    NSLog(@"发送  视频数据  ");
+  
     player.eventChannel = eventChannel;
-    
+
     _players[@(textureId)] = player;
     result(@{@"textureId" : @(textureId)});
     

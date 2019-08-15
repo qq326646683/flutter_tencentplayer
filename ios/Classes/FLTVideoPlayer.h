@@ -86,6 +86,8 @@ NS_ASSUME_NONNULL_BEGIN
  * @param rate 正常速度为1.0；小于为慢速；大于为快速。最大建议不超过2.0
  */
 - (void)setRate:(float)rate;
+// 设置播放清晰度
+- (void)setBitrateIndex:(int)index;
 /**
  * 设置画面镜像
  */

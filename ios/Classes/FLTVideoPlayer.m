@@ -74,22 +74,52 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         if(EvtID==PLAY_EVT_VOD_PLAY_PREPARED){
-            
-            self->_eventSink(@{
-                               @"event":@"initialized",
-                               @"duration":@([player duration]),
-                                @"width":@([player width]),
-                               @"height":@([player height])
-                               });
+            if ([player isPlaying]) {
+                
+                int64_t duration = [player duration];
+                 NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
+                 NSInteger  durationInt = [durationStr intValue];
+                self->_eventSink(@{
+                                   @"event":@"initialized",
+                                   @"duration":@(durationInt),
+                                   @"width":@([player width]),
+                                   @"height":@([player height])
+                                   });
+            }
+           
         }else if(EvtID==PLAY_EVT_PLAY_PROGRESS){
-            int64_t progress = [player currentPlaybackTime];
-            int64_t duration = [player duration];
-            self->_eventSink(@{
-                               @"event":@"progress",
-                                @"progress":@([player currentPlaybackTime]),
-                               @"duration":@([player duration]),
-                               @"playable":@([player playableDuration])
-                               });
+            if ([player isPlaying]) {
+                int64_t progress = [player currentPlaybackTime];
+                int64_t duration = [player duration];
+                int64_t playableDuration  = [player playableDuration];
+            
+               
+                NSString *progressStr = [NSString stringWithFormat: @"%ld", (long)progress];
+                NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
+                NSString *playableDurationStr = [NSString stringWithFormat: @"%ld", (long)playableDuration];
+                NSInteger  progressInt = [progressStr intValue];
+                NSInteger  durationint = [durationStr intValue];
+                NSInteger  playableDurationInt = [playableDurationStr intValue];
+//                NSLog(@"单精度浮点数： %d",progressInt);
+//                NSLog(@"单精度浮点数： %d",durationint);
+                            self->_eventSink(@{
+                                               @"event":@"progress",
+                                                @"progress":@(progressInt),
+                                               @"duration":@(durationint),
+                                               @"playable":@(playableDurationInt)
+                                               });
+                
+//                self->_eventSink(@{
+//                                   @"event":@"progress",
+//                                   @"progress":@0,
+//                                   @"duration":@0,
+//                                   @"playable":@0,
+//                                   });
+            }
+               
+      
+            
+            
             
         }else if(EvtID==PLAY_EVT_PLAY_LOADING){
             self->_eventSink(@{
@@ -245,9 +275,18 @@
     [_txPlayer setMute:bEnable];
 }
 
+
+
+
 - (void)setRate:(float)rate{
     [_txPlayer setRate:rate];
 }
+
+- (void)setBitrateIndex:(int)index{
+      [_txPlayer setBitrateIndex:index];
+}
+
+
 
 - (void)setMirror:(BOOL)isMirror{
     [_txPlayer setMirror:isMirror];
