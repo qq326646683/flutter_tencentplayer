@@ -1,39 +1,9 @@
 PODS:
-  - AFNetworking (3.2.1):
-    - AFNetworking/NSURLSession (= 3.2.1)
-    - AFNetworking/Reachability (= 3.2.1)
-    - AFNetworking/Security (= 3.2.1)
-    - AFNetworking/Serialization (= 3.2.1)
-    - AFNetworking/UIKit (= 3.2.1)
-  - AFNetworking/NSURLSession (3.2.1):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/Reachability (3.2.1)
-  - AFNetworking/Security (3.2.1)
-  - AFNetworking/Serialization (3.2.1)
-  - AFNetworking/UIKit (3.2.1):
-    - AFNetworking/NSURLSession
   - Flutter (1.0.0)
   - flutter_tencentplayer (0.0.1):
     - Flutter
-    - SuperPlayer
-  - Masonry (1.1.0)
-  - MMLayout (0.2.0)
-  - SDWebImage (5.1.0):
-    - SDWebImage/Core (= 5.1.0)
-  - SDWebImage/Core (5.1.0)
-  - SuperPlayer (3.1.1):
-    - AFNetworking
-    - Masonry
-    - MMLayout
-    - SDWebImage
-    - SuperPlayer/Player (= 3.1.1)
-  - SuperPlayer/Player (3.1.1):
-    - AFNetworking
-    - Masonry
-    - MMLayout
-    - SDWebImage
+    - TXLiteAVSDK_Player
+  - TXLiteAVSDK_Player (6.6.7460)
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
@@ -41,11 +11,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
-    - AFNetworking
-    - Masonry
-    - MMLayout
-    - SDWebImage
-    - SuperPlayer
+    - TXLiteAVSDK_Player
 
 EXTERNAL SOURCES:
   Flutter:
@@ -54,13 +20,9 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_tencentplayer/ios"
 
 SPEC CHECKSUMS:
-  AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
-  flutter_tencentplayer: 71180611b6aa4b8d6ab56b706ac992e03d7a93c3
-  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
-  MMLayout: 3fb59d58eeb8656c64e61d550fb0088e10666c11
-  SDWebImage: fb387001955223213dde14bc08c8b73f371f8d8f
-  SuperPlayer: de9540ac79b1db43875d82e514620989c9bc2bde
+  flutter_tencentplayer: 7fe3de00727b08ad732b3ac7fa01fb7664691610
+  TXLiteAVSDK_Player: 7f55053b2e03e0f58f366122693f88dfbb97e3cd
 
 PODFILE CHECKSUM: 7fb83752f59ead6285236625b82473f90b1cb932
 

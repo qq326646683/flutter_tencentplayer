@@ -1,14 +1,10 @@
 package com.jinxian.flutter_tencentplayer;
 
-import android.content.Context;
 import android.content.res.AssetManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Base64;
 import android.util.LongSparseArray;
 import android.view.Surface;
-import android.widget.Toast;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -20,9 +16,7 @@ import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.view.FlutterNativeView;
 import io.flutter.view.TextureRegistry;
 
-import com.tencent.liteav.demo.play.SuperPlayerGlobalConfig;
-import com.tencent.liteav.demo.play.SuperPlayerModel;
-import com.tencent.liteav.demo.play.SuperPlayerView;
+
 import com.tencent.rtmp.ITXVodPlayListener;
 import com.tencent.rtmp.TXLiveConstants;
 import com.tencent.rtmp.TXPlayerAuthBuilder;
@@ -33,17 +27,13 @@ import com.tencent.rtmp.downloader.TXVodDownloadDataSource;
 import com.tencent.rtmp.downloader.TXVodDownloadManager;
 import com.tencent.rtmp.downloader.TXVodDownloadMediaInfo;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import static android.widget.Toast.LENGTH_SHORT;
-import static com.tencent.rtmp.downloader.TXVodDownloadDataSource.QUALITY_OD;
 
 /**
  * FlutterTencentplayerPlugin
@@ -187,6 +177,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
         @Override
         public void onPlayEvent(TXVodPlayer player, int event, Bundle param) {
             switch (event) {
+                //准备阶段
                 case TXLiveConstants.PLAY_EVT_VOD_PLAY_PREPARED:
                     Map<String, Object> preparedMap = new HashMap<>();
                     preparedMap.put("event", "initialized");

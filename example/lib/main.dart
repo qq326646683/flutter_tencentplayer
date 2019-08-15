@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
-import 'package:flutter/services.dart';
 import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
 
 void main() => runApp(MyApp());
@@ -17,6 +15,20 @@ class _MyAppState extends State<MyApp> {
 
   DownloadController _downloadController;
   VoidCallback downloadListener;
+
+  String videoUrl = 'http://5815.liveplay.myqcloud.com/live/5815_89aad37e06ff11e892905cb9018cf0d4.flv';
+  String videoUrlB = 'http://5815.liveplay.myqcloud.com/live/5815_89aad37e06ff11e892905cb9018cf0d4_550.flv';
+  String videoUrlG = 'http://5815.liveplay.myqcloud.com/live/5815_89aad37e06ff11e892905cb9018cf0d4_900.flv';
+  String videoUrlAAA = 'http://file.jinxianyun.com/2018-06-12_16_58_22.mp4';
+  String videoUrlBBB = 'http://file.jinxianyun.com/testhaha.mp4';
+  String mu = 'http://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear2/prog_index.m3u8';
+  String spe1 = 'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f10.mp4';
+  String spe2 = 'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f20.mp4';
+  String spe3 = 'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f30.mp4';
+
+  String testDownload = 'http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4bdff799031868222924043041/playlist.m3u8';
+  String downloadRes = '/storage/emulated/0/tencentdownload/txdownload/2c58873a5b9916f9fef5103c74f0ce5e.m3u8.sqlite';
+  String downloadRes2 = '/storage/emulated/0/tencentdownload/txdownload/cf3e281653e562303c8c2b14729ba7f5.m3u8.sqlite';
 
 
   _MyAppState() {
@@ -40,49 +52,13 @@ class _MyAppState extends State<MyApp> {
     initPlatformState();
   }
 
-  String videoUrl =
-      'http://5815.liveplay.myqcloud.com/live/5815_89aad37e06ff11e892905cb9018cf0d4.flv';
-  String videoUrlB =
-      'http://5815.liveplay.myqcloud.com/live/5815_89aad37e06ff11e892905cb9018cf0d4_550.flv';
-  String videoUrlG =
-      'http://5815.liveplay.myqcloud.com/live/5815_89aad37e06ff11e892905cb9018cf0d4_900.flv';
-  String videoUrlAAA = 'http://file.jinxianyun.com/2018-06-12_16_58_22.mp4';
-  String videoUrlBBB = 'http://file.jinxianyun.com/testhaha.mp4';
-
-
-  String mu = 'http://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear2/prog_index.m3u8';
-
-  String spe1 = 'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f10.mp4';
-  String spe2 = 'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f20.mp4';
-  String spe3 = 'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f30.mp4';
-
-  String testDownload = 'http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4bdff799031868222924043041/playlist.m3u8';
-  String downloadRes = '/storage/emulated/0/tencentdownload/txdownload/2c58873a5b9916f9fef5103c74f0ce5e.m3u8.sqlite';
-  String downloadRes2 = '/storage/emulated/0/tencentdownload/txdownload/cf3e281653e562303c8c2b14729ba7f5.m3u8.sqlite';
-
   Future<void> initPlatformState() async {
-    _controller = TencentPlayerController.network(
-//  'http://img.ksbbs.com/asset/Mon_1703/05cacb4e02f9d9e.mp4')
-//  'https://www.sample-videos.com/video123/mp4/720/big_buck_bunny_720p_20mb.mp4')
-//  'http://file.jinxianyun.com/test.mp4',
-//  'http://file.jinxianyun.com/2018-06-12_16_58_22.mp4')
-//    '/storage/emulated/0/nellcache/txvodcache/fbe87034ba67b082c5b7ac2509cc9be7.mp4',
-//              mu,
-              spe3,
-//        downloadRes2,
-//    'static/tencent1.mp4',
-    playerConfig:
-            PlayerConfig(/*auth: {"appId": 1252463788, "fileId": '4564972819220421305'}*/))
-//  'http://live.jinxianyun.com/live/test.flv?txSecret=43c9d5081bddf36b9879342daddadac4&txTime=5D3BB33F')
-//  'rtmp://mobliestream.c3tv.com:554/live/goodtv.sdp')
-    //http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f30.mp4
+    _controller = TencentPlayerController.network(spe3, playerConfig: PlayerConfig())
       ..initialize().then((_) {
         setState(() {});
       });
 
     _controller.addListener(listener);
-
-
     _downloadController = DownloadController('/storage/emulated/0/tencentdownload', appId: 1252463788);
     _downloadController.addListener(downloadListener);
   }

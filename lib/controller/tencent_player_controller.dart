@@ -18,9 +18,7 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
       : dataSourceType = DataSourceType.asset,
         super(TencentPlayerValue());
 
-  TencentPlayerController.network(this.dataSource,
-      {this.playerConfig = const PlayerConfig()})
-      : dataSourceType = DataSourceType.network,
+  TencentPlayerController.network(this.dataSource, {this.playerConfig = const PlayerConfig()}): dataSourceType = DataSourceType.network,
         super(TencentPlayerValue());
 
   TencentPlayerController.file(String filePath,
