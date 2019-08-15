@@ -286,8 +286,6 @@
       [_txPlayer setBitrateIndex:index];
 }
 
-
-
 - (void)setMirror:(BOOL)isMirror{
     [_txPlayer setMirror:isMirror];
 }
@@ -295,7 +293,5 @@
 -(void)snapshot:(void (^)(UIImage * _Nonnull))snapshotCompletionBlock{
     
 }
-
-
 
 @end
