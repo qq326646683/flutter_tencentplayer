@@ -88,8 +88,6 @@ class _MyAppState extends State<MyApp> {
       title: 'Video Demo',
       home: Scaffold(
         body: Container(
-          padding: EdgeInsets.only(top: 30),
-          height: 1000,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -212,9 +210,12 @@ class _MyAppState extends State<MyApp> {
               ),
               Row(
                 children: <Widget>[
-                  Text(
-                    'm3u8点播 : ',
-                    style: TextStyle(color: Colors.orange),
+                  Container(
+                    margin: EdgeInsets.only(left: 15),
+                    child: Text(
+                      'm3u8点播 : ',
+                      style: TextStyle(color: Colors.orange),
+                    ),
                   ),
                   FlatButton(
                     child: Text(
@@ -256,9 +257,12 @@ class _MyAppState extends State<MyApp> {
               ),
               Row(
                 children: <Widget>[
-                  Text(
-                    '普通点播 : ',
-                    style: TextStyle(color: Colors.orange),
+                  Container(
+                    margin: EdgeInsets.only(left: 15),
+                    child: Text(
+                      '普通点播 : ',
+                      style: TextStyle(color: Colors.orange),
+                    ),
                   ),
                   FlatButton(
                       onPressed: () {
@@ -316,54 +320,53 @@ class _MyAppState extends State<MyApp> {
                   ),
                 ],
               ),
-              Container(
-                width: 370,
-                child: Column(
-                  children: <Widget>[
-                    FlatButton(
-                      onPressed: () {
-                        _downloadController.dowload("4564972819220421305",
-                            quanlity: 2);
-                      },
-                      child: Text(
-                        'download1',
-                        style: TextStyle(color: Colors.blue),
-                      ),
+              Row(
+                children: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      _downloadController.dowload("4564972819220421305",
+                          quanlity: 2);
+                    },
+                    child: Text(
+                      'download1',
+                      style: TextStyle(color: Colors.blue),
                     ),
-                    FlatButton(
-                      onPressed: () {
-                        _downloadController.stopDownload("4564972819220421305");
-                      },
-                      child: Text(
-                        'download1 - stop',
-                        style: TextStyle(color: Colors.blue),
-                      ),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      _downloadController.stopDownload("4564972819220421305");
+                    },
+                    child: Text(
+                      'download1 - stop',
+                      style: TextStyle(color: Colors.blue),
                     ),
-                    FlatButton(
-                      onPressed: () {
-                        _downloadController.dowload(testDownload);
-                      },
-                      child: Text(
-                        'download2',
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                    ),
-                    FlatButton(
-                      onPressed: () {
-                        _downloadController.stopDownload(testDownload);
-                      },
-                      child: Text(
-                        'download2 - stop',
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                    ),
-                    Text('download info:'),
-                    Text(_downloadController.value != null
-                        ? _downloadController.value.toString()
-                        : '')
-                  ],
-                ),
+                  ),
+                ],
               ),
+              Row(children: <Widget>[
+                FlatButton(
+                  onPressed: () {
+                    _downloadController.dowload(testDownload);
+                  },
+                  child: Text(
+                    'download2',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    _downloadController.stopDownload(testDownload);
+                  },
+                  child: Text(
+                    'download2 - stop',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
+                Text('download info:'),
+                Text(_downloadController.value != null
+                    ? _downloadController.value.toString()
+                    : '')
+              ],),
             ],
           ),
         ),
