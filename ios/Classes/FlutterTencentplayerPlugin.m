@@ -2,7 +2,7 @@
 
 #import "FLTVideoPlayer.h"
 #import "FLTFrameUpdater.h"
-
+#import "FLTDownLoadManager.h"
 
 @interface FlutterTencentplayerPlugin ()
 
@@ -61,16 +61,7 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
         NSDictionary* argsMap = call.arguments;
         NSLog(@"%@",argsMap);
         FLTFrameUpdater* frameUpdater = [[FLTFrameUpdater alloc] initWithRegistry:_registry];
-    
         NSString* pathArg = argsMap[@"uri"];
-//        NSDictionary* playConfigArg = argsMap[@"playerConfig"];
-//        int connectRetryCount = [playConfigArg[@"connectRetryCount"] intValue];
-//        int connectRetryInterval = [playConfigArg[@"connectRetryInterval"] intValue];
-//        int timeout = [playConfigArg[@"timeout"] intValue];
-//        id cacheFolderPath = playConfigArg[@"cacheFolderPath"];
-//        int maxCacheItems = [playConfigArg[@"maxCacheItems"] intValue];
-//        float progressInterval = [playConfigArg[@"progressInterval"] floatValue];
-//
         TXVodPlayConfig* playConfig = [[TXVodPlayConfig alloc]init];
         playConfig.connectRetryCount=  3 ;
         playConfig.connectRetryInterval = 3;
@@ -98,6 +89,21 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
         }
     }else if([@"download" isEqualToString:call.method]){
          NSLog(@"download");
+         NSDictionary* argsMap = call.arguments;
+         NSString* urlOrFileId = argsMap[@"urlOrFileId"];
+        
+        FlutterEventChannel* eventChannel = [FlutterEventChannel
+                    eventChannelWithName:[NSString stringWithFormat:@"flutter_tencentplayer/downloadEvents",urlOrFileId]
+                     binaryMessenger:_messenger];
+        
+    
+        FLTDownLoadManager* downLoadManager = [[FLTDownLoadManager alloc] initWithMethodCall:call result:result];
+       
+        [eventChannel setStreamHandler:downLoadManager];
+        downLoadManager.eventChannel =eventChannel;
+        [downLoadManager downLoad];
+        
+        
     }else if([@"stopDownload" isEqualToString:call.method]){
          NSLog(@"stopDownload");
     }else {
