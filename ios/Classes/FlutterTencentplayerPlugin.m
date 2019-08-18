@@ -93,15 +93,23 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
          NSString* urlOrFileId = argsMap[@"urlOrFileId"];
         
         FlutterEventChannel* eventChannel = [FlutterEventChannel
-                    eventChannelWithName:[NSString stringWithFormat:@"flutter_tencentplayer/downloadEvents",urlOrFileId]
-                     binaryMessenger:_messenger];
+                                             eventChannelWithName:[NSString stringWithFormat:@"flutter_tencentplayer/downloadEvents%@",
+                                                                   urlOrFileId]
+                                             binaryMessenger:_messenger];
         
-    
-        FLTDownLoadManager* downLoadManager = [[FLTDownLoadManager alloc] initWithMethodCall:call result:result];
-       
-        [eventChannel setStreamHandler:downLoadManager];
-        downLoadManager.eventChannel =eventChannel;
-        [downLoadManager downLoad];
+        
+//        FlutterEventChannel* eventChannel = [FlutterEventChannel
+//                    eventChannelWithName:[NSString stringWithFormat:@"flutter_tencentplayer/downloadEvents%@",urlOrFileId]
+//                     binaryMessenger:_messenger];
+        
+      [eventChannel setStreamHandler:self];
+//        FLTDownLoadManager* downLoadManager = [[FLTDownLoadManager alloc] initWithMethodCall:call result:result];
+//
+//
+//        [eventChannel setStreamHandler:self];
+//         downLoadManager.eventChannel =eventChannel;
+//
+//        [downLoadManager downLoad];
         
         
     }else if([@"stopDownload" isEqualToString:call.method]){
@@ -192,5 +200,25 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
     }
     [_players removeAllObjects];
 }
+
+
+
+
+// ---------------通信相关
+- (FlutterError * _Nullable)onCancelWithArguments:(id _Nullable)arguments {
+//    _eventSink = nil;
     
+    NSLog(@"停止通信");
+    return nil;
+}
+
+- (FlutterError * _Nullable)onListenWithArguments:(id _Nullable)arguments eventSink:(nonnull FlutterEventSink)events {
+//    _eventSink = events;
+    NSLog(@"设置全局通信");
+    return nil;
+}
+
+
+
+
 @end

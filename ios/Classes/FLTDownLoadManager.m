@@ -14,17 +14,18 @@
     _call = call;
     _result = result;
  
-    [_eventChannel setStreamHandler:self];
+//    [_eventChannel setStreamHandler:self];
     NSDictionary* argsMap = _call.arguments;
     _path = argsMap[@"savePath"];
     _urlOrFileId = argsMap[@"urlOrFileId"];
-    //初始化下载对象
-    _tXVodDownloadManager =[TXVodDownloadManager shareInstance];
-    
-    
     if (_tXVodDownloadManager == nil) {
         _tXVodDownloadManager = [TXVodDownloadManager shareInstance];
-        [_tXVodDownloadManager setDownloadPath: [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingString:@"/downloader"]];
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,  NSUserDomainMask, YES);
+        NSString *docPath = [paths lastObject];
+        NSString *downloadPath = [docPath stringByAppendingString:@"/downloader" ];
+        NSLog(downloadPath);
+        [_tXVodDownloadManager setDownloadPath:downloadPath];
+//        [_tXVodDownloadManager setDownloadPath: [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingString:@"/downloader"]];
     }
     _tXVodDownloadManager.delegate = self;
     return  self;
@@ -52,7 +53,25 @@
     //设置下载对象
     
     NSLog(@"开始下载");
-    [_tXVodDownloadManager startDownloadUrl:_urlOrFileId];
+ 
+    
+    if([_urlOrFileId hasPrefix: @"http"]){
+        [_tXVodDownloadManager startDownloadUrl:_urlOrFileId];
+        
+    }else{
+        
+        NSDictionary* argsMap = _call.arguments;
+        int appId = [argsMap[@"appId"] intValue];
+        int quanlity = [argsMap[@"quanlity"] intValue];
+        _urlOrFileId = argsMap[@"urlOrFileId"];
+        TXPlayerAuthParams *auth = [TXPlayerAuthParams new];
+        auth.appId =appId;
+        auth.fileId = _urlOrFileId;
+        TXVodDownloadDataSource *dataSource = [TXVodDownloadDataSource new];
+        dataSource.auth = auth;
+        dataSource.quality = quanlity;
+        [_tXVodDownloadManager startDownload:dataSource];
+    }
     
 }
 
@@ -106,10 +125,10 @@
      NSLog(@"onDownloadError");
      NSLog(msg);
      NSLog(_path);
-//    self->_eventSink(@{
-//                       @"downloadStatus":@"error",
-//                       @"error":@(code),
-//                       });
+    self->_eventSink(@{
+                       @"downloadStatus":@"error",
+                       @"error":@(code),
+                       });
 }
 
 - (int)hlsKeyVerify:(TXVodDownloadMediaInfo *)mediaInfo url:(NSString *)url data:(NSData *)data {
@@ -122,11 +141,12 @@
 - (void)dealCallToFlutterData:(NSString*)type mediaInfo:(TXVodDownloadMediaInfo *)mediaInfo {
     NSLog(@"下载类型");
     NSLog(type);
+    NSLog(@"%d", mediaInfo.downloadSize);
     if (mediaInfo.dataSource!=nil) {
         //        [mediaInfo.dataSource auth];
         self->_eventSink(@{
                            @"downloadStatus":type,
-                           @"quanlity":@([mediaInfo.dataSource quality]),
+                           @"quanlity":@0,
                            });
     }
     

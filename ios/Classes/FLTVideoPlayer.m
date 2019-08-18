@@ -116,10 +116,6 @@
 //                                   @"playable":@0,
 //                                   });
             }
-               
-      
-            
-            
             
         }else if(EvtID==PLAY_EVT_PLAY_LOADING){
             self->_eventSink(@{
@@ -142,50 +138,16 @@
             
             
         }else {
-            self->_eventSink(@{
-                               @"event":@"error",
-                               @"errorInfo":@"EVT_MSG",
-                               });
+            
+            if(self->_eventSink!=nil){
+                self->_eventSink(@{
+                                   @"event":@"error",
+                                   @"errorInfo":@"EVT_MSG",
+                                   });
+            }
+           
         }
-        
-        
-//        if (EvtID==PLAY_EVT_RCV_FIRST_I_FRAME) {//渲染首个视频数据包(IDR)
-//            self->_eventSink(@{
-//                               @"event":@"PLAY_EVT_RCV_FIRST_I_FRAME",@"rawEvent":@(EvtID),}
-//                             );
-//        }
-//        if (EvtID == PLAY_EVT_VOD_LOADING_END || EvtID == PLAY_EVT_VOD_PLAY_PREPARED) {//loading结束（点播）,视频加载完毕（点播）
-//            self->_eventSink(@{@"event":@"PLAY_EVT_VOD_LOADING_END",@"rawEvent":@(EvtID),});
-//        }
-//        if (EvtID == PLAY_EVT_PLAY_BEGIN) {//视频播放开始
-//            int64_t progress = [player currentPlaybackTime];
-//            int64_t duration = [player duration];
-//            self->_eventSink(@{@"event":@"PLAY_EVT_PLAY_BEGIN",
-//                               @"rawEvent":@(EvtID),
-//                               @"position":@(progress),
-//                               @"duration":@(duration)
-//                               });
-//        }else if(EvtID == PLAY_EVT_PLAY_PROGRESS){//视频播放进度
-//            if ([player isPlaying]) {
-//                int64_t progress = [player currentPlaybackTime];
-//                int64_t duration = [player duration];
-//                self->_eventSink(@{@"event":@"PLAY_EVT_PLAY_PROGRESS",
-//                                   @"rawEvent":@(EvtID),
-//                                   @"position":@(progress),
-//                                   @"duration":@(duration)
-//                                   });
-//            }
-//        }else if (EvtID == PLAY_ERR_NET_DISCONNECT || EvtID == PLAY_EVT_PLAY_END || EvtID == PLAY_ERR_FILE_NOT_FOUND || EvtID == PLAY_ERR_HLS_KEY || EvtID == PLAY_ERR_GET_PLAYINFO_FAIL) {//网络断连,且经多次重连抢救无效,可以放弃治疗,更多重试请自行重启播放;视频播放结束;播放文件不存在;HLS解码key获取失败;获取点播文件信息失败
-//            self->_eventSink(@{@"event":@"PLAY_EVT_PLAY_END",@"rawEvent":@(EvtID),});
-//        }
-//        else if (EvtID == PLAY_EVT_PLAY_LOADING){//视频播放loading
-//            self->_eventSink(@{@"event":@"PLAY_EVT_PLAY_LOADING",@"rawEvent":@(EvtID),});
-//        }
-//        else if (EvtID == PLAY_EVT_CONNECT_SUCC) {//已经连接服务器
-//            self->_eventSink(@{@"event":@"PLAY_EVT_CONNECT_SUCC",@"rawEvent":@(EvtID),});
-//        }
-//
-        
+
     });
 }
 

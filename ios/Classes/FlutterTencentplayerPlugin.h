@@ -1,4 +1,4 @@
 #import <Flutter/Flutter.h>
 
-@interface FlutterTencentplayerPlugin : NSObject<FlutterPlugin>
+@interface FlutterTencentplayerPlugin : NSObject<FlutterPlugin,FlutterStreamHandler>
 @end
