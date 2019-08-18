@@ -54,6 +54,8 @@ class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
   }
 
   EventChannel _eventChannelFor(String urlOrFileId) {
+//    flutter_tencentplayer/downloadEventshttp://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4bdff799031868222924043041/playlist.m3u8
+
     return EventChannel('flutter_tencentplayer/downloadEvents$urlOrFileId');
   }
 
