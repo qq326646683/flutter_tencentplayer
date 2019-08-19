@@ -52,12 +52,11 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
 //        }
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     if ([@"init" isEqualToString:call.method]) {
-        NSLog(@"init");
         [self disposeAllPlayers];
         result(nil);
     }else if([@"create" isEqualToString:call.method]){
-        NSLog(@"create");
-        
+        NSLog(@"create---------------");
+
         NSDictionary* argsMap = call.arguments;
         NSLog(@"%@",argsMap);
         FLTFrameUpdater* frameUpdater = [[FLTFrameUpdater alloc] initWithRegistry:_registry];
@@ -66,29 +65,33 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
         playConfig.connectRetryCount=  3 ;
         playConfig.connectRetryInterval = 3;
         playConfig.timeout = 10 ;//[argsMap[@"progressInterval"] intValue] ;
-        
+
         id cacheFolderPath = argsMap[@"cachePath"];
         if (cacheFolderPath!=nil&&cacheFolderPath!=NULL&&![@"" isEqualToString:cacheFolderPath]&&cacheFolderPath!=[NSNull null]) {
             playConfig.cacheFolderPath = cacheFolderPath;
         }
-      
+
         playConfig.maxCacheItems = 1;
         playConfig.progressInterval = 0.5;
         BOOL autoPlayArg = [argsMap[@"autoPlay"] boolValue];
-    
+
         int startPosition = 0;//[argsMap[@"startPosition"] intValue];
         FLTVideoPlayer* player;
+       
         if (pathArg) {
+             NSLog(@"pathArg---------------");
             player = [[FLTVideoPlayer alloc] initWithPath:pathArg autoPlay:autoPlayArg startPosition:startPosition playConfig:playConfig frameUpdater:frameUpdater];
             if (player) {
                 [self onPlayerSetup:player frameUpdater:frameUpdater result:result];
             }
             result(nil);
         } else {
+             NSLog(@"pathArg---------------");
             result(FlutterMethodNotImplemented);
         }
-    }else if([@"download" isEqualToString:call.method]){
-         NSLog(@"download");
+    }
+    else if([@"download" isEqualToString:call.method]){
+        
          NSDictionary* argsMap = call.arguments;
          NSString* urlOrFileId = argsMap[@"urlOrFileId"];
         
@@ -101,11 +104,12 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
        FLTDownLoadManager* downLoadManager = [[FLTDownLoadManager alloc] initWithMethodCall:call result:result];
        [eventChannel setStreamHandler:downLoadManager];
        downLoadManager.eventChannel =eventChannel;
-//        [downLoadManager downLoad];
+       [downLoadManager downLoad];
         
-        
+        result(nil);
     }else if([@"stopDownload" isEqualToString:call.method]){
-         NSLog(@"stopDownload");
+         NSLog(@"stopDownload---------------");
+         result(nil);
     }else {
        //TODO 获取对应的播放器进行操作
         [self onMethodCall:call result:result];
@@ -128,11 +132,11 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
         [player pause];
         result(nil);
     }else if([@"seekTo" isEqualToString:call.method]){
-        NSLog(@"跳转到指定位置");
+        NSLog(@"跳转到指定位置----------");
         [player seekTo:[[argsMap objectForKey:@"position"] intValue]];
         result(nil);
     }else if([@"setRate" isEqualToString:call.method]){ //播放速率
-        NSLog(@"修改播放速率");
+        NSLog(@"修改播放速率----------");
         float rate = [[argsMap objectForKey:@"rate"] floatValue];
         if (rate<0||rate>2) {
             result(nil);
@@ -142,10 +146,10 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
         result(nil);
         
     }else if([@"setBitrateIndex" isEqualToString:call.method]){
-        
-        NSLog(@"修改播放清晰度");
+        NSLog(@"修改播放清晰度----------");
         int  index = [[argsMap objectForKey:@"index"] intValue];
         [player setBitrateIndex:index];
+        result(nil);
     }else if([@"dispose" isEqualToString:call.method]){
         [_registry unregisterTexture:textureId];
         [_players removeObjectForKey:@(textureId)];
@@ -182,7 +186,7 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
 
 
 -(void) disposeAllPlayers{
-      NSLog(@"初始化状态");
+      NSLog(@"初始化状态----------");
     // Allow audio playback when the Ring/Silent switch is set to silent
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     

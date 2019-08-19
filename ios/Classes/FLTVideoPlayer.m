@@ -165,12 +165,16 @@
 #pragma FlutterStreamHandler
 - (FlutterError* _Nullable)onCancelWithArguments:(id _Nullable)arguments {
     _eventSink = nil;
+    
+   NSLog(@"FLTVideo停止通信");
     return nil;
 }
 
 - (FlutterError* _Nullable)onListenWithArguments:(id _Nullable)arguments
                                        eventSink:(nonnull FlutterEventSink)events {
     _eventSink = events;
+    
+     NSLog(@"FLTVideo开启通信");
     //[self sendInitialized];
     return nil;
 }
