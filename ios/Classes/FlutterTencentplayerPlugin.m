@@ -55,42 +55,14 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
         [self disposeAllPlayers];
         result(nil);
     }else if([@"create" isEqualToString:call.method]){
-        NSLog(@"create---------------");
-
-        NSDictionary* argsMap = call.arguments;
-        NSLog(@"%@",argsMap);
         FLTFrameUpdater* frameUpdater = [[FLTFrameUpdater alloc] initWithRegistry:_registry];
-        NSString* pathArg = argsMap[@"uri"];
-        TXVodPlayConfig* playConfig = [[TXVodPlayConfig alloc]init];
-        playConfig.connectRetryCount=  3 ;
-        playConfig.connectRetryInterval = 3;
-        playConfig.timeout = 10 ;//[argsMap[@"progressInterval"] intValue] ;
-
-        id cacheFolderPath = argsMap[@"cachePath"];
-        if (cacheFolderPath!=nil&&cacheFolderPath!=NULL&&![@"" isEqualToString:cacheFolderPath]&&cacheFolderPath!=[NSNull null]) {
-            playConfig.cacheFolderPath = cacheFolderPath;
-        }
-
-        playConfig.maxCacheItems = 1;
-        playConfig.progressInterval = 0.5;
-        BOOL autoPlayArg = [argsMap[@"autoPlay"] boolValue];
-
-        int startPosition = 0;//[argsMap[@"startPosition"] intValue];
         FLTVideoPlayer* player;
-       
-        if (pathArg) {
-             NSLog(@"pathArg---------------");
-            player = [[FLTVideoPlayer alloc] initWithPath:pathArg autoPlay:autoPlayArg startPosition:startPosition playConfig:playConfig frameUpdater:frameUpdater];
-            if (player) {
-                [self onPlayerSetup:player frameUpdater:frameUpdater result:result];
-            }
-            result(nil);
-        } else {
-             NSLog(@"pathArg---------------");
-            result(FlutterMethodNotImplemented);
+        player = [[FLTVideoPlayer alloc] initWithCall:call frameUpdater:frameUpdater];
+        if (player) {
+            [self onPlayerSetup:player frameUpdater:frameUpdater result:result];
         }
-    }
-    else if([@"download" isEqualToString:call.method]){
+        result(nil);
+    }else if([@"download" isEqualToString:call.method]){
         
          NSDictionary* argsMap = call.arguments;
          NSString* urlOrFileId = argsMap[@"urlOrFileId"];

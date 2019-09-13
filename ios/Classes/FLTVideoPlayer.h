@@ -29,6 +29,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic)FLTFrameUpdater* frameUpdater;
 
 - (instancetype)initWithPath:(NSString*)path autoPlay:(bool)autoPlay startPosition:(int)position playConfig:(TXVodPlayConfig*)playConfig frameUpdater:(FLTFrameUpdater*)frameUpdater;
+
+- (instancetype)initWithCall:(FlutterMethodCall*)call frameUpdater:(FLTFrameUpdater*)frameUpdater;
 - (void)dispose;
 -(void)resume;
 -(void)pause;

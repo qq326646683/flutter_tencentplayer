@@ -10,6 +10,76 @@
 
 @implementation FLTVideoPlayer
 
+
+
+// 初始化播放器方式2
+- (instancetype)initWithCall:(FlutterMethodCall *)call frameUpdater:(FLTFrameUpdater *)frameUpdater{
+    self = [super init];
+    NSLog(@"create---------------");
+    NSDictionary* argsMap = call.arguments;
+    NSLog(@"%@",argsMap);
+   
+    TXVodPlayConfig* playConfig = [[TXVodPlayConfig alloc]init];
+    playConfig.connectRetryCount=  3 ;
+    playConfig.connectRetryInterval = 3;
+    playConfig.timeout = 10 ;
+    
+//     mVodPlayer.setLoop((boolean) call.argument("loop"));
+    
+
+    id headers = argsMap[@"headers"];
+    if (headers!=nil&&headers!=NULL&&![@"" isEqualToString:headers]&&headers!=[NSNull null]) {
+        playConfig.headers = headers;
+    }
+   
+    id cacheFolderPath = argsMap[@"cachePath"];
+    if (cacheFolderPath!=nil&&cacheFolderPath!=NULL&&![@"" isEqualToString:cacheFolderPath]&&cacheFolderPath!=[NSNull null]) {
+        playConfig.cacheFolderPath = cacheFolderPath;
+    }
+    
+    playConfig.maxCacheItems = 1;
+    playConfig.progressInterval =[argsMap[@"progressInterval"] intValue] ;
+    BOOL autoPlayArg = [argsMap[@"autoPlay"] boolValue];
+    float startPosition=0;
+    
+    id startTime = argsMap[@"startTime"];
+    if(startTime!=nil&&startTime!=NULL&&![@"" isEqualToString:startTime]&&startTime!=[NSNull null]){
+         startPosition =[argsMap[@"startTime"] floatValue];
+    }
+   
+    _frameUpdater = frameUpdater;
+    
+    _txPlayer = [[TXVodPlayer alloc]init];
+    [playConfig setPlayerPixelFormatType:kCVPixelFormatType_32BGRA];
+    [_txPlayer setConfig:playConfig];
+    [_txPlayer setIsAutoPlay:autoPlayArg];
+    _txPlayer.enableHWAcceleration = YES;
+    [_txPlayer setVodDelegate:self];
+    [_txPlayer setVideoProcessDelegate:self];
+    [_txPlayer setStartTime:startPosition];
+ 
+    id  pathArg = argsMap[@"uri"];
+    if(pathArg!=nil&&pathArg!=NULL&&![@"" isEqualToString:pathArg]&&pathArg!=[NSNull null]){
+        NSLog(@"播放器启动  play");
+        [_txPlayer startPlay:pathArg];
+    }else{
+        NSLog(@"播放器启动  fileid");
+        id auth = argsMap[@"auth"];
+        if(auth!=nil&&auth!=NULL&&![@"" isEqualToString:auth]&&auth!=[NSNull null]){
+            NSDictionary* authMap =  argsMap[@"auth"];
+            int  appId= [authMap[@"appId"] intValue];
+            NSString  *fileId= authMap[@"fileId"];
+            TXPlayerAuthParams *p = [TXPlayerAuthParams new];
+            p.appId = appId;
+            p.fileId = fileId;
+            [_txPlayer startPlayWithParams:p];
+        }
+    }
+    NSLog(@"播放器初始化结束");
+    return self;
+}
+
+//初始化播放器方式1
 - (instancetype)initWithPath:(NSString*)path autoPlay:(bool)autoPlay startPosition:(int)position playConfig:(TXVodPlayConfig*)playConfig frameUpdater:(FLTFrameUpdater*)frameUpdater {
     self = [super init];
     NSLog(@"初始化播放器");
@@ -30,6 +100,8 @@
     NSLog(@"播放器初始化结束");
     return self;
 }
+
+
 
 #pragma FlutterTexture
 - (CVPixelBufferRef)copyPixelBuffer {
@@ -77,8 +149,8 @@
             if ([player isPlaying]) {
                 
                 int64_t duration = [player duration];
-                 NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
-                 NSInteger  durationInt = [durationStr intValue];
+                NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
+                NSInteger  durationInt = [durationStr intValue];
                 self->_eventSink(@{
                                    @"event":@"initialized",
                                    @"duration":@(durationInt),
@@ -86,35 +158,35 @@
                                    @"height":@([player height])
                                    });
             }
-           
+            
         }else if(EvtID==PLAY_EVT_PLAY_PROGRESS){
             if ([player isPlaying]) {
                 int64_t progress = [player currentPlaybackTime];
                 int64_t duration = [player duration];
                 int64_t playableDuration  = [player playableDuration];
-            
-               
+                
+                
                 NSString *progressStr = [NSString stringWithFormat: @"%ld", (long)progress];
                 NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
                 NSString *playableDurationStr = [NSString stringWithFormat: @"%ld", (long)playableDuration];
                 NSInteger  progressInt = [progressStr intValue];
                 NSInteger  durationint = [durationStr intValue];
                 NSInteger  playableDurationInt = [playableDurationStr intValue];
-//                NSLog(@"单精度浮点数： %d",progressInt);
-//                NSLog(@"单精度浮点数： %d",durationint);
-                            self->_eventSink(@{
-                                               @"event":@"progress",
-                                                @"progress":@(progressInt),
-                                               @"duration":@(durationint),
-                                               @"playable":@(playableDurationInt)
-                                               });
+                //                NSLog(@"单精度浮点数： %d",progressInt);
+                //                NSLog(@"单精度浮点数： %d",durationint);
+                self->_eventSink(@{
+                                   @"event":@"progress",
+                                   @"progress":@(progressInt),
+                                   @"duration":@(durationint),
+                                   @"playable":@(playableDurationInt)
+                                   });
                 
-//                self->_eventSink(@{
-//                                   @"event":@"progress",
-//                                   @"progress":@0,
-//                                   @"duration":@0,
-//                                   @"playable":@0,
-//                                   });
+                //                self->_eventSink(@{
+                //                                   @"event":@"progress",
+                //                                   @"progress":@0,
+                //                                   @"duration":@0,
+                //                                   @"playable":@0,
+                //                                   });
             }
             
         }else if(EvtID==PLAY_EVT_PLAY_LOADING){
@@ -131,7 +203,7 @@
                                });
         }else if(EvtID==PLAY_ERR_NET_DISCONNECT){
             //TODO 停止播放操作
-          
+            
             self->_eventSink(@{
                                @"event":@"disconnect",
                                });
@@ -145,18 +217,18 @@
                                    @"errorInfo":@"EVT_MSG",
                                    });
             }
-           
+            
         }
-
+        
     });
 }
 
 - (void)onNetStatus:(TXVodPlayer *)player withParam:(NSDictionary *)param {
-  
+    
     self->_eventSink(@{
                        @"event":@"netStatus",
                        @"netSpeed": param[NET_STATUS_NET_SPEED],
-                         @"cacheSize": param[NET_STATUS_V_SUM_CACHE_SIZE],
+                       @"cacheSize": param[NET_STATUS_V_SUM_CACHE_SIZE],
                        });
     
     
@@ -166,7 +238,7 @@
 - (FlutterError* _Nullable)onCancelWithArguments:(id _Nullable)arguments {
     _eventSink = nil;
     
-   NSLog(@"FLTVideo停止通信");
+    NSLog(@"FLTVideo停止通信");
     return nil;
 }
 
@@ -174,7 +246,7 @@
                                        eventSink:(nonnull FlutterEventSink)events {
     _eventSink = events;
     
-     NSLog(@"FLTVideo开启通信");
+    NSLog(@"FLTVideo开启通信");
     //[self sendInitialized];
     return nil;
 }
@@ -249,7 +321,7 @@
 }
 
 - (void)setBitrateIndex:(int)index{
-      [_txPlayer setBitrateIndex:index];
+    [_txPlayer setBitrateIndex:index];
 }
 
 - (void)setMirror:(BOOL)isMirror{

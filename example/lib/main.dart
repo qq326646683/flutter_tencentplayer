@@ -62,8 +62,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> initPlatformState() async {
-    _controller =
-        TencentPlayerController.network(spe3, playerConfig: PlayerConfig())
+    _controller = TencentPlayerController.network(spe3, playerConfig: PlayerConfig())
+    //TODO 播放资源文件   播放数据指定目录文件
+
+//        _controller = TencentPlayerController.asset('static/tencent1.mp4')
+//        _controller = TencentPlayerController.file('/storage/emulated/0/test.mp4')
           ..initialize().then((_) {
             setState(() {});
           });
