@@ -105,7 +105,7 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
         result(nil);
     }else if([@"seekTo" isEqualToString:call.method]){
         NSLog(@"跳转到指定位置----------");
-        [player seekTo:[[argsMap objectForKey:@"position"] intValue]];
+        [player seekTo:[[argsMap objectForKey:@"location"] intValue]];
         result(nil);
     }else if([@"setRate" isEqualToString:call.method]){ //播放速率
         NSLog(@"修改播放速率----------");
