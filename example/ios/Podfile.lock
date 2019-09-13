@@ -20,7 +20,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_tencentplayer/ios"
 
 SPEC CHECKSUMS:
-  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_tencentplayer: 7fe3de00727b08ad732b3ac7fa01fb7664691610
   TXLiteAVSDK_Player: 7f55053b2e03e0f58f366122693f88dfbb97e3cd
 

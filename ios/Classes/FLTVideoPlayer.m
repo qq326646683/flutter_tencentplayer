@@ -20,15 +20,16 @@
     NSLog(@"%@",argsMap);
    
     TXVodPlayConfig* playConfig = [[TXVodPlayConfig alloc]init];
-    playConfig.connectRetryCount=  3 ;
+    playConfig.connectRetryCount=  5 ;
     playConfig.connectRetryInterval = 3;
-    playConfig.timeout = 10 ;
+    playConfig.timeout = 1000 ;
     
 //     mVodPlayer.setLoop((boolean) call.argument("loop"));
     
 
     id headers = argsMap[@"headers"];
     if (headers!=nil&&headers!=NULL&&![@"" isEqualToString:headers]&&headers!=[NSNull null]) {
+         NSDictionary* headers =  argsMap[@"headers"];
         playConfig.headers = headers;
     }
    
@@ -38,7 +39,7 @@
     }
     
     playConfig.maxCacheItems = 1;
-    playConfig.progressInterval =[argsMap[@"progressInterval"] intValue] ;
+    playConfig.progressInterval =  0.5; //[argsMap[@"progressInterval"] intValue] ;
     BOOL autoPlayArg = [argsMap[@"autoPlay"] boolValue];
     float startPosition=0;
     
@@ -143,7 +144,7 @@
  * @see TXVodPlayer
  */
 -(void)onPlayEvent:(TXVodPlayer *)player event:(int)EvtID withParam:(NSDictionary *)param{
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
         if(EvtID==PLAY_EVT_VOD_PLAY_PREPARED){
             if ([player isPlaying]) {
@@ -151,6 +152,7 @@
                 int64_t duration = [player duration];
                 NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
                 NSInteger  durationInt = [durationStr intValue];
+               
                 self->_eventSink(@{
                                    @"event":@"initialized",
                                    @"duration":@(durationInt),
@@ -164,14 +166,14 @@
                 int64_t progress = [player currentPlaybackTime];
                 int64_t duration = [player duration];
                 int64_t playableDuration  = [player playableDuration];
-                
-                
+             
+            
                 NSString *progressStr = [NSString stringWithFormat: @"%ld", (long)progress];
                 NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
                 NSString *playableDurationStr = [NSString stringWithFormat: @"%ld", (long)playableDuration];
-                NSInteger  progressInt = [progressStr intValue];
-                NSInteger  durationint = [durationStr intValue];
-                NSInteger  playableDurationInt = [playableDurationStr intValue];
+                NSInteger  progressInt = [progressStr intValue]*1000;
+                NSInteger  durationint = [durationStr intValue]*1000;
+                NSInteger  playableDurationInt = [playableDurationStr intValue]*1000;
                 //                NSLog(@"单精度浮点数： %d",progressInt);
                 //                NSLog(@"单精度浮点数： %d",durationint);
                 self->_eventSink(@{
@@ -203,20 +205,21 @@
                                });
         }else if(EvtID==PLAY_ERR_NET_DISCONNECT){
             //TODO 停止播放操作
-            
             self->_eventSink(@{
                                @"event":@"disconnect",
                                });
             
-            
         }else {
-            
-            if(self->_eventSink!=nil){
-                self->_eventSink(@{
-                                   @"event":@"error",
-                                   @"errorInfo":@"EVT_MSG",
-                                   });
+            NSLog(@"PLAY_EVT_PLAY：@%d",EvtID);
+            if(EvtID<0){
+                if(self->_eventSink!=nil){
+                    self->_eventSink(@{
+                                       @"event":@"error",
+                                       @"errorInfo":param[@"EVT_MSG"],
+                                       });
+                }
             }
+            
             
         }
         
