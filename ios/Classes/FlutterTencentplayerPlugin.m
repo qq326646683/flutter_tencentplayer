@@ -47,7 +47,7 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
     }else if([@"create" isEqualToString:call.method]){
         FLTFrameUpdater* frameUpdater = [[FLTFrameUpdater alloc] initWithRegistry:_registry];
         FLTVideoPlayer* player;
-        player = [[FLTVideoPlayer alloc] initWithCall:call frameUpdater:frameUpdater];
+        player = [[FLTVideoPlayer alloc] initWithCall:call frameUpdater:frameUpdater registry:_registry messenger:_messenger];
         if (player) {
             [self onPlayerSetup:player frameUpdater:frameUpdater result:result];
         }
@@ -126,29 +126,13 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
 - (void)onPlayerSetup:(FLTVideoPlayer*)player
          frameUpdater:(FLTFrameUpdater*)frameUpdater
                result:(FlutterResult)result {
-    
-    int64_t textureId = [_registry registerTexture:player];
-    frameUpdater.textureId = textureId;
-
-    FlutterEventChannel* eventChannel = [FlutterEventChannel
-                                         eventChannelWithName:[NSString stringWithFormat:@"flutter_tencentplayer/videoEvents%lld",
-                                                               textureId]
-                                         binaryMessenger:_messenger];
-    
-    [eventChannel setStreamHandler:player];
-  
-    player.eventChannel = eventChannel;
-
-    _players[@(textureId)] = player;
-    result(@{@"textureId" : @(textureId)});
+    _players[@(player.textureId)] = player;
+    result(@{@"textureId" : @(player.textureId)});
     
 }
 
-
-
-
 -(void) disposeAllPlayers{
-      NSLog(@"初始化状态----------");
+     NSLog(@" 初始化播放器状态----------");
     // Allow audio playback when the Ring/Silent switch is set to silent
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     

@@ -10,7 +10,7 @@
 #import <GLKit/GLKit.h>
 #import "FLTFrameUpdater.h"
 #import "TXLiteAVSDK.h"
-
+#import <Flutter/Flutter.h>
 NS_ASSUME_NONNULL_BEGIN
 
 @interface FLTVideoPlayer : NSObject<FlutterTexture, FlutterStreamHandler,TXVideoCustomProcessDelegate,TXVodPlayListener>
@@ -22,13 +22,18 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) CVPixelBufferRef newPixelBuffer;
 @property(nonatomic, assign) CVPixelBufferRef lastestPixelBuffer;
 @property(nonatomic, readonly) bool disposed;
+@property(nonatomic, readonly) int64_t textureId;
+
 /**
  * 是否循环播放
  */
 @property (nonatomic, assign) BOOL loop;
 @property(nonatomic)FLTFrameUpdater* frameUpdater;
 
-- (instancetype)initWithCall:(FlutterMethodCall*)call frameUpdater:(FLTFrameUpdater*)frameUpdater;
+- (instancetype)initWithCall:(FlutterMethodCall*)call
+                frameUpdater:(FLTFrameUpdater*)frameUpdater
+                registry:(NSObject<FlutterTextureRegistry>*)registry
+                messenger:(NSObject<FlutterBinaryMessenger>*)messenger;
 - (void)dispose;
 -(void)resume;
 -(void)pause;

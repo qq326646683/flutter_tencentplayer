@@ -10,46 +10,50 @@
 
 @implementation FLTVideoPlayer
 
-
-
-// 初始化播放器
-- (instancetype)initWithCall:(FlutterMethodCall *)call frameUpdater:(FLTFrameUpdater *)frameUpdater{
+- (instancetype)initWithCall:(FlutterMethodCall *)call frameUpdater:(FLTFrameUpdater *)frameUpdater registry:(NSObject<FlutterTextureRegistry> *)registry messenger:(NSObject<FlutterBinaryMessenger>*)messenger{
     self = [super init];
-  //  NSLog(@"create---------------");
+    
+    _textureId = [registry registerTexture:self];
+    FlutterEventChannel* eventChannel = [FlutterEventChannel
+                eventChannelWithName:[NSString stringWithFormat:@"flutter_tencentplayer/videoEvents%lld",_textureId]
+                                         binaryMessenger:messenger];
+    
+    [eventChannel setStreamHandler:self];
+    
+    _eventChannel = eventChannel;
+    
     NSDictionary* argsMap = call.arguments;
-   // NSLog(@"%@",argsMap);
-   
     TXVodPlayConfig* playConfig = [[TXVodPlayConfig alloc]init];
     playConfig.connectRetryCount=  3 ;
     playConfig.connectRetryInterval = 3;
     playConfig.timeout = 10 ;
-    
-//     mVodPlayer.setLoop((boolean) call.argument("loop"));
-    
+
+    //     mVodPlayer.setLoop((boolean) call.argument("loop"));
+
 
     id headers = argsMap[@"headers"];
     if (headers!=nil&&headers!=NULL&&![@"" isEqualToString:headers]&&headers!=[NSNull null]) {
-         NSDictionary* headers =  argsMap[@"headers"];
+        NSDictionary* headers =  argsMap[@"headers"];
         playConfig.headers = headers;
     }
-   
+
     id cacheFolderPath = argsMap[@"cachePath"];
     if (cacheFolderPath!=nil&&cacheFolderPath!=NULL&&![@"" isEqualToString:cacheFolderPath]&&cacheFolderPath!=[NSNull null]) {
         playConfig.cacheFolderPath = cacheFolderPath;
     }
-    
+
     playConfig.maxCacheItems = 1;
     playConfig.progressInterval =  0.5; //[argsMap[@"progressInterval"] intValue] ;
     BOOL autoPlayArg = [argsMap[@"autoPlay"] boolValue];
     float startPosition=0;
-    
+
     id startTime = argsMap[@"startTime"];
     if(startTime!=nil&&startTime!=NULL&&![@"" isEqualToString:startTime]&&startTime!=[NSNull null]){
-         startPosition =[argsMap[@"startTime"] floatValue];
+        startPosition =[argsMap[@"startTime"] floatValue];
     }
-   
+
     _frameUpdater = frameUpdater;
-    
+
     _txPlayer = [[TXVodPlayer alloc]init];
     [playConfig setPlayerPixelFormatType:kCVPixelFormatType_32BGRA];
     [_txPlayer setConfig:playConfig];
@@ -58,7 +62,7 @@
     [_txPlayer setVodDelegate:self];
     [_txPlayer setVideoProcessDelegate:self];
     [_txPlayer setStartTime:startPosition];
- 
+
     id  pathArg = argsMap[@"uri"];
     if(pathArg!=nil&&pathArg!=NULL&&![@"" isEqualToString:pathArg]&&pathArg!=[NSNull null]){
         NSLog(@"播放器启动方式1  play");
@@ -77,8 +81,17 @@
         }
     }
     NSLog(@"播放器初始化结束");
-    return self;
+    
+    return  self;
+    
 }
+//// 初始化播放器
+//- (instancetype)initWithCall:(FlutterMethodCall *)call frameUpdater:(FLTFrameUpdater *)frameUpdater{
+//    self = [super init];
+//    
+//  
+//    return self;
+//}
 
 
 
@@ -193,8 +206,8 @@
                                });
             
         }else {
-          //  NSLog(@"FLTVideo通信2222222222");
-           // NSLog(@"PLAY_EVT_PLAY：@%d",EvtID);
+            NSLog(@"FLTVideo通信2222222222");
+            NSLog(@"PLAY_EVT_PLAY：@%d",EvtID);
             if(EvtID<0){
                 if(self->_eventSink!=nil){
                     self->_eventSink(@{
