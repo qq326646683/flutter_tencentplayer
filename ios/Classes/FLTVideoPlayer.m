@@ -20,9 +20,9 @@
     NSLog(@"%@",argsMap);
    
     TXVodPlayConfig* playConfig = [[TXVodPlayConfig alloc]init];
-    playConfig.connectRetryCount=  5 ;
+    playConfig.connectRetryCount=  3 ;
     playConfig.connectRetryInterval = 3;
-    playConfig.timeout = 1000 ;
+    playConfig.timeout = 10 ;
     
 //     mVodPlayer.setLoop((boolean) call.argument("loop"));
     
@@ -80,27 +80,6 @@
     return self;
 }
 
-//初始化播放器方式1
-- (instancetype)initWithPath:(NSString*)path autoPlay:(bool)autoPlay startPosition:(int)position playConfig:(TXVodPlayConfig*)playConfig frameUpdater:(FLTFrameUpdater*)frameUpdater {
-    self = [super init];
-    NSLog(@"初始化播放器");
-    _frameUpdater = frameUpdater;
-    _txPlayer = [[TXVodPlayer alloc]init];
-    [playConfig setPlayerPixelFormatType:kCVPixelFormatType_32BGRA];
-    [_txPlayer setConfig:playConfig];
-    [_txPlayer setIsAutoPlay:autoPlay];
-    _txPlayer.enableHWAcceleration = YES;
-    [_txPlayer setVodDelegate:self];
-    [_txPlayer setVideoProcessDelegate:self];
-    [_txPlayer setStartTime:position];
-    int result = [_txPlayer startPlay:path];
-    if (result!=0) {
-        NSLog(@"播放器启动失败");
-        return nil;
-    }
-    NSLog(@"播放器初始化结束");
-    return self;
-}
 
 
 
@@ -146,6 +125,10 @@
 -(void)onPlayEvent:(TXVodPlayer *)player event:(int)EvtID withParam:(NSDictionary *)param{
 
     dispatch_async(dispatch_get_main_queue(), ^{
+        
+         // NSLog(@"FLTVideo通信11111");
+       // NSLog(@"%d", EvtID);
+        // NSLog(@"FLTVideo通信11111");
         if(EvtID==PLAY_EVT_VOD_PLAY_PREPARED){
             if ([player isPlaying]) {
                 
@@ -210,7 +193,8 @@
                                });
             
         }else {
-            NSLog(@"PLAY_EVT_PLAY：@%d",EvtID);
+          //  NSLog(@"FLTVideo通信2222222222");
+           // NSLog(@"PLAY_EVT_PLAY：@%d",EvtID);
             if(EvtID<0){
                 if(self->_eventSink!=nil){
                     self->_eventSink(@{
@@ -260,7 +244,7 @@
     [_eventChannel setStreamHandler:nil];
 }
 
--(void)setLoop:(bool)loop{
+-(void)setLoop:(BOOL)loop{
     [_txPlayer setLoop:loop];
     _loop = loop;
 }

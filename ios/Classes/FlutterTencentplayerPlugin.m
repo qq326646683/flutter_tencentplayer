@@ -40,16 +40,6 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
    
 }
 
-//        {
-//            auth = "<null>";
-//            autoPlay = 1;
-//            cachePath = "<null>";
-//            headers = "<null>";
-//            loop = 0;
-//            progressInterval = 200;
-//            startTime = "<null>";
-//            uri = "http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f30.mp4";
-//        }
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     if ([@"init" isEqualToString:call.method]) {
         [self disposeAllPlayers];
