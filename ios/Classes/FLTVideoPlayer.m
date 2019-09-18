@@ -12,12 +12,12 @@
 
 
 
-// 初始化播放器方式2
+// 初始化播放器
 - (instancetype)initWithCall:(FlutterMethodCall *)call frameUpdater:(FLTFrameUpdater *)frameUpdater{
     self = [super init];
-    NSLog(@"create---------------");
+  //  NSLog(@"create---------------");
     NSDictionary* argsMap = call.arguments;
-    NSLog(@"%@",argsMap);
+   // NSLog(@"%@",argsMap);
    
     TXVodPlayConfig* playConfig = [[TXVodPlayConfig alloc]init];
     playConfig.connectRetryCount=  3 ;
@@ -61,10 +61,10 @@
  
     id  pathArg = argsMap[@"uri"];
     if(pathArg!=nil&&pathArg!=NULL&&![@"" isEqualToString:pathArg]&&pathArg!=[NSNull null]){
-        NSLog(@"播放器启动  play");
+        NSLog(@"播放器启动方式1  play");
         [_txPlayer startPlay:pathArg];
     }else{
-        NSLog(@"播放器启动  fileid");
+        NSLog(@"播放器启动方式2  fileid");
         id auth = argsMap[@"auth"];
         if(auth!=nil&&auth!=NULL&&![@"" isEqualToString:auth]&&auth!=[NSNull null]){
             NSDictionary* authMap =  argsMap[@"auth"];
