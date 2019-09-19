@@ -12,11 +12,11 @@ class TencentPlayerValue {
   final double rate;
   final int bitrateIndex;
 
-  bool get initialized => duration != null;
+  bool get initialized => duration.inMilliseconds != 0;
 
   bool get hasError => errorDescription != null;
 
-  double get aspectRatio => size != null ? size.width / size.height : 1.0;
+  double get aspectRatio => size != null ? size.width / size.height > 0.0 ? size.width / size.height : 1.0 : 1.0;
 
   TencentPlayerValue({
     this.duration = const Duration(),
