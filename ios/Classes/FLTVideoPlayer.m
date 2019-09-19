@@ -85,15 +85,6 @@
     return  self;
     
 }
-//// 初始化播放器
-//- (instancetype)initWithCall:(FlutterMethodCall *)call frameUpdater:(FLTFrameUpdater *)frameUpdater{
-//    self = [super init];
-//    
-//  
-//    return self;
-//}
-
-
 
 
 #pragma FlutterTexture
@@ -139,9 +130,6 @@
 
     dispatch_async(dispatch_get_main_queue(), ^{
         
-         // NSLog(@"FLTVideo通信11111");
-       // NSLog(@"%d", EvtID);
-        // NSLog(@"FLTVideo通信11111");
         if(EvtID==PLAY_EVT_VOD_PLAY_PREPARED){
             if ([player isPlaying]) {
                 
@@ -178,13 +166,7 @@
                                    @"duration":@(durationint),
                                    @"playable":@(playableDurationInt)
                                    });
-                
-                //                self->_eventSink(@{
-                //                                   @"event":@"progress",
-                //                                   @"progress":@0,
-                //                                   @"duration":@0,
-                //                                   @"playable":@0,
-                //                                   });
+            
             }
             
         }else if(EvtID==PLAY_EVT_PLAY_LOADING){
@@ -200,14 +182,33 @@
                                @"event":@"playend",
                                });
         }else if(EvtID==PLAY_ERR_NET_DISCONNECT){
-            //TODO 停止播放操作
-            self->_eventSink(@{
-                               @"event":@"disconnect",
-                               });
-            
+            if(self->_eventSink!=nil){
+                self->_eventSink(@{
+                                   @"event":@"error",
+                                   @"errorInfo":param[@"EVT_MSG"],
+                                   });
+                
+                self->_eventSink(@{
+                                   @"event":@"disconnect",
+                                   });
+                
+            }
+          
+        }else if(EvtID==ERR_PLAY_LIVE_STREAM_NET_DISCONNECT){
+            if(self->_eventSink!=nil){
+                self->_eventSink(@{
+                                   @"event":@"error",
+                                   @"errorInfo":param[@"EVT_MSG"],
+                                   });
+            }
+        }else if(EvtID==WARNING_LIVE_STREAM_SERVER_RECONNECT){
+            if(self->_eventSink!=nil){
+                self->_eventSink(@{
+                                   @"event":@"error",
+                                   @"errorInfo":param[@"EVT_MSG"],
+                                   });
+            }
         }else {
-            NSLog(@"FLTVideo通信2222222222");
-            NSLog(@"PLAY_EVT_PLAY：@%d",EvtID);
             if(EvtID<0){
                 if(self->_eventSink!=nil){
                     self->_eventSink(@{
@@ -216,15 +217,12 @@
                                        });
                 }
             }
-            
-            
         }
         
     });
 }
 
 - (void)onNetStatus:(TXVodPlayer *)player withParam:(NSDictionary *)param {
-    
     self->_eventSink(@{
                        @"event":@"netStatus",
                        @"netSpeed": param[NET_STATUS_NET_SPEED],
