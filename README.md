@@ -45,7 +45,19 @@ allprojects {
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 ```
 
-> For Ios  // TODO
+> For Ios  
+
+
+
+``` 
+
+//项目的info.plist文件上添加如下权限 
+<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+  </dict>
+```
 
 # 2.Usage(TencentPlayer)
 
