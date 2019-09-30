@@ -19,8 +19,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 //ios主动和flutter通信
 @property(nonatomic) FlutterEventSink eventSink;
-@property(nonatomic, assign) CVPixelBufferRef newPixelBuffer;
-@property(nonatomic, assign) CVPixelBufferRef lastestPixelBuffer;
+//@property(nonatomic, assign) CVPixelBufferRef newPixelBuffer;
+//@property(nonatomic, assign) CVPixelBufferRef lastestPixelBuffer;
+@property (nonatomic,assign)CVPixelBufferRef pixelBufferNowRef;
 @property(nonatomic, readonly) bool disposed;
 @property(nonatomic, readonly) int64_t textureId;
 
@@ -32,8 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithCall:(FlutterMethodCall*)call
                 frameUpdater:(FLTFrameUpdater*)frameUpdater
-                registry:(NSObject<FlutterTextureRegistry>*)registry
-                messenger:(NSObject<FlutterBinaryMessenger>*)messenger;
+                    registry:(NSObject<FlutterTextureRegistry>*)registry
+                   messenger:(NSObject<FlutterBinaryMessenger>*)messenger;
 - (void)dispose;
 -(void)resume;
 -(void)pause;

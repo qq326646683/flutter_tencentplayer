@@ -8,14 +8,18 @@
 #import "FLTVideoPlayer.h"
 #import <libkern/OSAtomic.h>
 
-@implementation FLTVideoPlayer
+
+
+@implementation FLTVideoPlayer{
+    CVPixelBufferRef finalPiexelBuffer;
+}
 
 - (instancetype)initWithCall:(FlutterMethodCall *)call frameUpdater:(FLTFrameUpdater *)frameUpdater registry:(NSObject<FlutterTextureRegistry> *)registry messenger:(NSObject<FlutterBinaryMessenger>*)messenger{
     self = [super init];
     
     _textureId = [registry registerTexture:self];
     FlutterEventChannel* eventChannel = [FlutterEventChannel
-                eventChannelWithName:[NSString stringWithFormat:@"flutter_tencentplayer/videoEvents%lld",_textureId]
+                                         eventChannelWithName:[NSString stringWithFormat:@"flutter_tencentplayer/videoEvents%lld",_textureId]
                                          binaryMessenger:messenger];
     
     [eventChannel setStreamHandler:self];
@@ -27,33 +31,33 @@
     playConfig.connectRetryCount=  3 ;
     playConfig.connectRetryInterval = 3;
     playConfig.timeout = 10 ;
-
+    
     //     mVodPlayer.setLoop((boolean) call.argument("loop"));
-
-
+    
+    
     id headers = argsMap[@"headers"];
     if (headers!=nil&&headers!=NULL&&![@"" isEqualToString:headers]&&headers!=[NSNull null]) {
         NSDictionary* headers =  argsMap[@"headers"];
         playConfig.headers = headers;
     }
-
+    
     id cacheFolderPath = argsMap[@"cachePath"];
     if (cacheFolderPath!=nil&&cacheFolderPath!=NULL&&![@"" isEqualToString:cacheFolderPath]&&cacheFolderPath!=[NSNull null]) {
         playConfig.cacheFolderPath = cacheFolderPath;
     }
-
+    
     playConfig.maxCacheItems = 1;
     playConfig.progressInterval =  0.5; //[argsMap[@"progressInterval"] intValue] ;
     BOOL autoPlayArg = [argsMap[@"autoPlay"] boolValue];
     float startPosition=0;
-
+    
     id startTime = argsMap[@"startTime"];
     if(startTime!=nil&&startTime!=NULL&&![@"" isEqualToString:startTime]&&startTime!=[NSNull null]){
         startPosition =[argsMap[@"startTime"] floatValue];
     }
-
+    
     _frameUpdater = frameUpdater;
-
+    
     _txPlayer = [[TXVodPlayer alloc]init];
     [playConfig setPlayerPixelFormatType:kCVPixelFormatType_32BGRA];
     [_txPlayer setConfig:playConfig];
@@ -62,7 +66,7 @@
     [_txPlayer setVodDelegate:self];
     [_txPlayer setVideoProcessDelegate:self];
     [_txPlayer setStartTime:startPosition];
-
+    
     id  pathArg = argsMap[@"uri"];
     if(pathArg!=nil&&pathArg!=NULL&&![@"" isEqualToString:pathArg]&&pathArg!=[NSNull null]){
         NSLog(@"播放器启动方式1  play");
@@ -89,16 +93,8 @@
 
 #pragma FlutterTexture
 - (CVPixelBufferRef)copyPixelBuffer {
-    if(self.newPixelBuffer!=nil){
-        //出现过的异常：Signal 11 was raised, 原因：使用被释放掉的对象,注意内存问题
-        //ijk解决问题如下：弄不清楚原理
-        CVPixelBufferRetain(self.newPixelBuffer);
-        CVPixelBufferRef pixelBuffer = self.lastestPixelBuffer;
-        while (!OSAtomicCompareAndSwapPtrBarrier(pixelBuffer, self.newPixelBuffer, (void **) &_lastestPixelBuffer)) {
-            NSLog(@"OSAtomicCompareAndSwapPtrBarrier");
-            pixelBuffer = self.lastestPixelBuffer;
-        }
-        return pixelBuffer;
+    if(finalPiexelBuffer!=nil){
+        return  finalPiexelBuffer;
     }
     return NULL;
 }
@@ -106,14 +102,52 @@
 #pragma 腾讯播放器代理回调方法
 
 /**
- 视频渲染对象回调
- @param pixelBuffer 渲染图像，此为C引用，注意内存管理问题
- @return 返回YES则SDK不再显示；返回NO则SDK渲染模块继续渲染
- 说明：渲染图像的数据类型为config中设置的renderPixelFormatType
- 出现过的异常：Signal 11 was raised, 原因：使用被释放掉的对象
+ * 视频渲染对象回调
+ *
  */
+- (CVPixelBufferRef)copyPixelBufferNow {
+    if (_pixelBufferNowRef == NULL) {
+        return nil;
+    }
+    
+    CVPixelBufferRef pixelBufferOut = NULL;
+    CVReturn ret = kCVReturnError;
+    size_t height = CVPixelBufferGetHeight(_pixelBufferNowRef);
+    size_t width = CVPixelBufferGetWidth(_pixelBufferNowRef);
+    size_t bytersPerRow = CVPixelBufferGetBytesPerRow(_pixelBufferNowRef);
+    CFDictionaryRef attrs = NULL;
+    const void *keys[] = { kCVPixelBufferPixelFormatTypeKey };
+    //      kCVPixelFormatType_420YpCbCr8Planar is YUV420
+    //      kCVPixelFormatType_420YpCbCr8BiPlanarFullRange is NV12
+    uint32_t v = kCVPixelFormatType_420YpCbCr8BiPlanarFullRange;
+    const void *values[] = { CFNumberCreate(NULL, kCFNumberSInt32Type, &v) };
+    attrs = CFDictionaryCreate(NULL, keys, values, 1, NULL, NULL);
+    
+    ret = CVPixelBufferCreate(NULL,
+                              width,
+                              height,
+                              CVPixelBufferGetPixelFormatType(_pixelBufferNowRef),
+                              attrs,
+                              &pixelBufferOut);
+    CVPixelBufferLockBaseAddress(_pixelBufferNowRef, kCVPixelBufferLock_ReadOnly);
+    CVPixelBufferLockBaseAddress(pixelBufferOut, kCVPixelBufferLock_ReadOnly);
+    CFRelease(attrs);
+    if (ret == kCVReturnSuccess) {
+        memcpy(CVPixelBufferGetBaseAddress(pixelBufferOut), CVPixelBufferGetBaseAddress(_pixelBufferNowRef), height * bytersPerRow);
+    } else {
+        printf("why copy pixlbuffer error %d",ret);
+    }
+    CVPixelBufferUnlockBaseAddress(_pixelBufferNowRef, kCVPixelBufferLock_ReadOnly);
+    CVPixelBufferUnlockBaseAddress(pixelBufferOut, kCVPixelBufferLock_ReadOnly);
+    
+    return pixelBufferOut;
+}
+
+
 - (BOOL)onPlayerPixelBuffer:(CVPixelBufferRef)pixelBuffer{
-    self.newPixelBuffer = pixelBuffer;
+//    self.newPixelBuffer = pixelBuffer;
+    _pixelBufferNowRef =pixelBuffer;
+    finalPiexelBuffer =  [self copyPixelBufferNow];
     [self.frameUpdater refreshDisplay];
     return NO;
 }
@@ -127,7 +161,7 @@
  * @see TXVodPlayer
  */
 -(void)onPlayEvent:(TXVodPlayer *)player event:(int)EvtID withParam:(NSDictionary *)param{
-
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         
         if(EvtID==PLAY_EVT_VOD_PLAY_PREPARED){
@@ -136,7 +170,7 @@
                 int64_t duration = [player duration];
                 NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
                 NSInteger  durationInt = [durationStr intValue];
-               
+                
                 self->_eventSink(@{
                                    @"event":@"initialized",
                                    @"duration":@(durationInt),
@@ -150,8 +184,8 @@
                 int64_t progress = [player currentPlaybackTime];
                 int64_t duration = [player duration];
                 int64_t playableDuration  = [player playableDuration];
-             
-            
+                
+                
                 NSString *progressStr = [NSString stringWithFormat: @"%ld", (long)progress];
                 NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
                 NSString *playableDurationStr = [NSString stringWithFormat: @"%ld", (long)playableDuration];
@@ -166,7 +200,7 @@
                                    @"duration":@(durationint),
                                    @"playable":@(playableDurationInt)
                                    });
-            
+                
             }
             
         }else if(EvtID==PLAY_EVT_PLAY_LOADING){
@@ -193,7 +227,7 @@
                                    });
                 
             }
-          
+            
         }else if(EvtID==ERR_PLAY_LIVE_STREAM_NET_DISCONNECT){
             if(self->_eventSink!=nil){
                 self->_eventSink(@{
