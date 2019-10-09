@@ -37,6 +37,7 @@ class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
       } else {
         value[downloadValue.url] = downloadValue;
       }
+      notifyListeners();
     }
 
     _eventSubscription = _eventChannelFor(urlOrFileId)
