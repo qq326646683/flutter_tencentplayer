@@ -122,13 +122,29 @@
 
 - (void)onDownloadError:(TXVodDownloadMediaInfo *)mediaInfo errorCode:(TXDownloadError)code errorMsg:(NSString *)msg {
     
-     NSLog(@"onDownloadError");
-     NSLog(msg);
-     NSLog(_path);
-    self->_eventSink(@{
-                       @"downloadStatus":@"error",
-                       @"error":@(code),
-                       });
+    NSLog(@"onDownloadError");
+
+    NSString *quality = [NSString stringWithFormat:@"%ld",(long)mediaInfo.dataSource.quality];
+    NSString *duration = [NSString stringWithFormat:@"%d",mediaInfo.duration];
+    NSString *size = [NSString stringWithFormat:@"%d",mediaInfo.size];
+    NSString *downloadSize = [NSString stringWithFormat:@"%d",mediaInfo.downloadSize];
+    NSString *progress = [NSString stringWithFormat:@"%f",mediaInfo.progress];
+    if (mediaInfo.dataSource!=nil) {
+        self->_eventSink(@{
+                           @"downloadStatus":@"error",
+                           @"quanlity":quality ,
+                           @"duration":duration ,
+                           @"size":size ,
+                           @"downloadSize":downloadSize ,
+                           @"progress":progress ,
+                           @"playPath":mediaInfo.playPath ,
+                           @"isStop":@(true) ,
+                           @"url":mediaInfo.url ,
+                           @"fileId":mediaInfo.dataSource.auth.fileId,
+                           @"error":msg,
+                           
+                           });
+    }
 }
 
 - (int)hlsKeyVerify:(TXVodDownloadMediaInfo *)mediaInfo url:(NSString *)url data:(NSData *)data {
@@ -136,17 +152,30 @@
     return 0;
 }
 
-
-
 - (void)dealCallToFlutterData:(NSString*)type mediaInfo:(TXVodDownloadMediaInfo *)mediaInfo {
     NSLog(@"下载类型");
-    NSLog(type);
-    NSLog(@"%d", mediaInfo.downloadSize);
+  
+    NSString *quality = [NSString stringWithFormat:@"%ld",(long)mediaInfo.dataSource.quality];
+    NSString *duration = [NSString stringWithFormat:@"%d",mediaInfo.duration];
+    NSString *size = [NSString stringWithFormat:@"%d",mediaInfo.size];
+    NSString *downloadSize = [NSString stringWithFormat:@"%d",mediaInfo.downloadSize];
+    NSString *progress = [NSString stringWithFormat:@"%f",mediaInfo.progress];
+   
     if (mediaInfo.dataSource!=nil) {
         //        [mediaInfo.dataSource auth];
         self->_eventSink(@{
                            @"downloadStatus":type,
-                           @"quanlity":@0,
+                           @"quanlity":quality ,
+                                @"duration":duration ,
+                                @"size":size ,
+                                @"downloadSize":downloadSize ,
+                                @"progress":progress ,
+                                @"playPath":mediaInfo.playPath ,
+                                @"isStop":@(true) ,
+                                @"url":mediaInfo.url ,
+                                @"fileId":mediaInfo.dataSource.auth.fileId,
+                             @"error":@"error" ,
+                          
                            });
     }
     

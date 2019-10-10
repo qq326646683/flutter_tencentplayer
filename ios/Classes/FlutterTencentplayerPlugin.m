@@ -53,7 +53,7 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
         }
         result(nil);
     }else if([@"download" isEqualToString:call.method]){
-        
+          NSLog(@"download---------------");
          NSDictionary* argsMap = call.arguments;
          NSString* urlOrFileId = argsMap[@"urlOrFileId"];
         
