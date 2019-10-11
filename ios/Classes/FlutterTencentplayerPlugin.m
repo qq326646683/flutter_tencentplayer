@@ -58,10 +58,10 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
         }
         result(nil);
     }else if([@"download" isEqualToString:call.method]){
-          NSLog(@"start download---------------");
+        
          NSDictionary* argsMap = call.arguments;
          NSString* urlOrFileId = argsMap[@"urlOrFileId"];
-        
+        NSLog(@"下载相关   startdownload  %@", urlOrFileId);
         
         NSString* channelUrl =[NSString stringWithFormat:@"flutter_tencentplayer/downloadEvents%@",urlOrFileId];
         NSLog(@"%@", channelUrl);
@@ -74,17 +74,23 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
        [downLoadManager downLoad];
        
        _downLoads[urlOrFileId] = downLoadManager;
+       NSLog(@"下载相关   start 数组大小  %lu", (unsigned long)_downLoads.count);
+        
         
         result(nil);
     }else if([@"stopDownload" isEqualToString:call.method]){
-        NSLog(@"stopDownload---------------");
-      
         NSDictionary* argsMap = call.arguments;
         NSString* urlOrFileId = argsMap[@"urlOrFileId"];
-    
+        NSLog(@"下载相关    stopDownload  %@", urlOrFileId);
         FLTDownLoadManager* downLoadManager =   _downLoads[urlOrFileId];
-        [downLoadManager stopDownLoad];
+        if(downLoadManager!=nil){
+           [downLoadManager stopDownLoad];
+        }else{
+            NSLog(@"下载相关   对象为空  %lu", (unsigned long)_downLoads.count);
+        }
         
+        
+       
         result(nil);
     }else {
         [self onMethodCall:call result:result];

@@ -37,7 +37,7 @@
     //设置下载对象
     NSLog(@"开始下载");
     if([_urlOrFileId hasPrefix: @"http"]){
-        [_tXVodDownloadManager startDownloadUrl:_urlOrFileId];
+       _tempMedia = [_tXVodDownloadManager startDownloadUrl:_urlOrFileId];
     }else{
         NSDictionary* argsMap = _call.arguments;
         int appId = [argsMap[@"appId"] intValue];
@@ -49,7 +49,7 @@
         TXVodDownloadDataSource *dataSource = [TXVodDownloadDataSource new];
         dataSource.auth = auth;
         dataSource.quality = quanlity;
-        [_tXVodDownloadManager startDownload:dataSource];
+      _tempMedia =  [_tXVodDownloadManager startDownload:dataSource];
     }
     
 }
@@ -80,7 +80,6 @@
 //----------------下载回调相关
 
 - (void)onDownloadStart:(TXVodDownloadMediaInfo *)mediaInfo {
-    _tempMedia =mediaInfo;
     [self dealCallToFlutterData:@"start" mediaInfo:mediaInfo ];
 }
 
