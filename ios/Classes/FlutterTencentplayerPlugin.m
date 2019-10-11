@@ -9,7 +9,11 @@
 @property(readonly, nonatomic) NSObject<FlutterTextureRegistry>* registry;
 @property(readonly, nonatomic) NSObject<FlutterBinaryMessenger>* messenger;
 @property(readonly, nonatomic) NSMutableDictionary* players;
+@property(readonly, nonatomic) NSMutableDictionary* downLoads;
 @property(readonly, nonatomic) NSObject<FlutterPluginRegistrar>* registrar;
+
+
+
 
 @end
 
@@ -25,6 +29,7 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
     _messenger = [registrar messenger];
     _registrar = registrar;
     _players = [NSMutableDictionary dictionaryWithCapacity:1];
+    _downLoads = [NSMutableDictionary dictionaryWithCapacity:1];
     return self;
 }
 
@@ -53,7 +58,7 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
         }
         result(nil);
     }else if([@"download" isEqualToString:call.method]){
-          NSLog(@"download---------------");
+          NSLog(@"start download---------------");
          NSDictionary* argsMap = call.arguments;
          NSString* urlOrFileId = argsMap[@"urlOrFileId"];
         
@@ -67,16 +72,22 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
        [eventChannel setStreamHandler:downLoadManager];
        downLoadManager.eventChannel =eventChannel;
        [downLoadManager downLoad];
+       
+       _downLoads[urlOrFileId] = downLoadManager;
         
         result(nil);
     }else if([@"stopDownload" isEqualToString:call.method]){
-         NSLog(@"stopDownload---------------");
-         result(nil);
-    }else {
-       //TODO 获取对应的播放器进行操作
-        [self onMethodCall:call result:result];
-     
+        NSLog(@"stopDownload---------------");
+      
+        NSDictionary* argsMap = call.arguments;
+        NSString* urlOrFileId = argsMap[@"urlOrFileId"];
+    
+        FLTDownLoadManager* downLoadManager =   _downLoads[urlOrFileId];
+        [downLoadManager stopDownLoad];
         
+        result(nil);
+    }else {
+        [self onMethodCall:call result:result];
     }
 }
 

@@ -20,17 +20,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic) NSString* path;
 @property(nonatomic) NSString* urlOrFileId;
 @property(nonatomic) TXVodDownloadManager* tXVodDownloadManager;
-//handleMethodCall:(FlutterMethodCall*)call
+@property(nonatomic) TXVodDownloadMediaInfo* tempMedia;
+
 - (instancetype)initWithMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result;
 
 //下载的方法
 - (void)downLoad;
 //停止下载的方法
 - (void)stopDownLoad;
-
-
-
-
 
 @end
 
