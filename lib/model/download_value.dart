@@ -78,35 +78,19 @@ class DownloadValue {
 
   factory DownloadValue.fromJson(Map<dynamic, dynamic> json) {
 
-    if(Platform.isIOS){
-      return DownloadValue(
-        downloadStatus: json['downloadStatus'] as String,
-        quanlity: int.parse(json['quanlity']),
-        duration: int.parse(json['duration']),
-        size: int.parse(json['size']),
-        downloadSize: int.parse(json['downloadSize']),
-        progress: double.parse(json['downloadSize']),
-        playPath: json['playPath'] as String,
-        isStop: json['isStop'] == "true",
-        url: json['url'] as String,
-        fileId: json['fileId'] as String,
-        error: json['error'] as String,
-      );
-    }else{
-      return DownloadValue(
-        downloadStatus: json['downloadStatus'] as String,
-        quanlity: json['quanlity'] as int,
-        duration: int.parse(json['duration']),
-        size: int.parse(json['size']),
-        downloadSize: int.parse(json['downloadSize']),
-        progress: double.parse(json['downloadSize']),
-        playPath: json['playPath'] as String,
-        isStop: json['isStop'] == "true",
-        url: json['url'] as String,
-        fileId: json['fileId'] as String,
-        error: json['error'] as String,
-      );
-    }
+    return DownloadValue(
+      downloadStatus: json['downloadStatus'] as String,
+      quanlity: int.parse(json['quanlity'].toString()),
+      duration: int.parse(json['duration']),
+      size: int.parse(json['size']),
+      downloadSize: int.parse(json['downloadSize']),
+      progress: double.parse(json['progress']),
+      playPath: json['playPath'] as String,
+      isStop: json['isStop'] == "true",
+      url: json['url'] as String,
+      fileId: json['fileId'] as String,
+      error: json['error'] as String,
+    );
 
   }
 
