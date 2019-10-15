@@ -9,7 +9,11 @@
 @property(readonly, nonatomic) NSObject<FlutterTextureRegistry>* registry;
 @property(readonly, nonatomic) NSObject<FlutterBinaryMessenger>* messenger;
 @property(readonly, nonatomic) NSMutableDictionary* players;
+@property(readonly, nonatomic) NSMutableDictionary* downLoads;
 @property(readonly, nonatomic) NSObject<FlutterPluginRegistrar>* registrar;
+
+
+
 
 @end
 
@@ -25,6 +29,7 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
     _messenger = [registrar messenger];
     _registrar = registrar;
     _players = [NSMutableDictionary dictionaryWithCapacity:1];
+    _downLoads = [NSMutableDictionary dictionaryWithCapacity:1];
     return self;
 }
 
@@ -53,10 +58,10 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
         }
         result(nil);
     }else if([@"download" isEqualToString:call.method]){
-          NSLog(@"download---------------");
+        
          NSDictionary* argsMap = call.arguments;
          NSString* urlOrFileId = argsMap[@"urlOrFileId"];
-        
+        NSLog(@"下载相关   startdownload  %@", urlOrFileId);
         
         NSString* channelUrl =[NSString stringWithFormat:@"flutter_tencentplayer/downloadEvents%@",urlOrFileId];
         NSLog(@"%@", channelUrl);
@@ -67,16 +72,28 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
        [eventChannel setStreamHandler:downLoadManager];
        downLoadManager.eventChannel =eventChannel;
        [downLoadManager downLoad];
+       
+       _downLoads[urlOrFileId] = downLoadManager;
+       NSLog(@"下载相关   start 数组大小  %lu", (unsigned long)_downLoads.count);
+        
         
         result(nil);
     }else if([@"stopDownload" isEqualToString:call.method]){
-         NSLog(@"stopDownload---------------");
-         result(nil);
-    }else {
-       //TODO 获取对应的播放器进行操作
-        [self onMethodCall:call result:result];
-     
+        NSDictionary* argsMap = call.arguments;
+        NSString* urlOrFileId = argsMap[@"urlOrFileId"];
+        NSLog(@"下载相关    stopDownload  %@", urlOrFileId);
+        FLTDownLoadManager* downLoadManager =   _downLoads[urlOrFileId];
+        if(downLoadManager!=nil){
+           [downLoadManager stopDownLoad];
+        }else{
+            NSLog(@"下载相关   对象为空  %lu", (unsigned long)_downLoads.count);
+        }
         
+        
+       
+        result(nil);
+    }else {
+        [self onMethodCall:call result:result];
     }
 }
 

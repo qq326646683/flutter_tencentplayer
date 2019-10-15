@@ -44,9 +44,12 @@
     id cacheFolderPath = argsMap[@"cachePath"];
     if (cacheFolderPath!=nil&&cacheFolderPath!=NULL&&![@"" isEqualToString:cacheFolderPath]&&cacheFolderPath!=[NSNull null]) {
         playConfig.cacheFolderPath = cacheFolderPath;
+    }else{
+        // 设置缓存路径
+        playConfig.cacheFolderPath =[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     }
     
-    playConfig.maxCacheItems = 1;
+    playConfig.maxCacheItems = 5;
     playConfig.progressInterval =  0.5; //[argsMap[@"progressInterval"] intValue] ;
     BOOL autoPlayArg = [argsMap[@"autoPlay"] boolValue];
     float startPosition=0;
@@ -139,10 +142,31 @@
     }
     CVPixelBufferUnlockBaseAddress(_pixelBufferNowRef, kCVPixelBufferLock_ReadOnly);
     CVPixelBufferUnlockBaseAddress(pixelBufferOut, kCVPixelBufferLock_ReadOnly);
-    
+    [self processPixelBuffer:_pixelBufferNowRef];
     return pixelBufferOut;
 }
 
+- (void)processPixelBuffer: (CVImageBufferRef)pixelBuffer
+{
+    CVPixelBufferLockBaseAddress( pixelBuffer, 0 );
+
+    //int bufferWidth = CVPixelBufferGetWidth(pixelBuffer);
+    //int bufferHeight = CVPixelBufferGetHeight(pixelBuffer);
+    long bufferWidth = CVPixelBufferGetWidth(pixelBuffer);
+    long bufferHeight = CVPixelBufferGetHeight(pixelBuffer);
+    unsigned char *pixel = (unsigned char *)CVPixelBufferGetBaseAddress(pixelBuffer);
+
+    for( int row = 0; row < bufferHeight; row++ ) {
+        for( int column = 0; column < bufferWidth; column++ ) {
+            pixel[0] = 0;
+            pixel[1] = 0;
+            pixel[2] = 0;
+            pixel[3] = 0;
+            pixel += 4;
+        }
+    }
+    CVPixelBufferUnlockBaseAddress( pixelBuffer, 0 );
+}
 
 - (BOOL)onPlayerPixelBuffer:(CVPixelBufferRef)pixelBuffer{
 //    self.newPixelBuffer = pixelBuffer;

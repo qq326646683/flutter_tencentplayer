@@ -17,49 +17,28 @@
 //    [_eventChannel setStreamHandler:self];
     NSDictionary* argsMap = _call.arguments;
     _path = argsMap[@"savePath"];
+    
+    NSLog(@"下载地址 %@", _path);
     _urlOrFileId = argsMap[@"urlOrFileId"];
     if (_tXVodDownloadManager == nil) {
         _tXVodDownloadManager = [TXVodDownloadManager shareInstance];
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,  NSUserDomainMask, YES);
-        NSString *docPath = [paths lastObject];
-        NSString *downloadPath = [docPath stringByAppendingString:@"/downloader" ];
-        NSLog(downloadPath);
-        [_tXVodDownloadManager setDownloadPath:downloadPath];
-//        [_tXVodDownloadManager setDownloadPath: [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingString:@"/downloader"]];
+//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,  NSUserDomainMask, YES);
+//        NSString *docPath = [paths lastObject];
+//        NSString *downloadPath = [docPath stringByAppendingString:@"/downloader" ];
+////        NSLog(downloadPath);
+        [_tXVodDownloadManager setDownloadPath:_path];
     }
     _tXVodDownloadManager.delegate = self;
     return  self;
 }
-//
-////初始化
-//- (instancetype)initWithMethodCall:(NSString *)path mEventSink:(FlutterEventSink)mEventSink result:(FlutterResult)result {
-//    _eventSink =mEventSink;
-//
-//    //初始化下载对象
-//    _tXVodDownloadManager =[TXVodDownloadManager shareInstance];
-//    _tXVodDownloadManager.delegate = self;
-//    _result = result;
-//    _call =call;
-//
-//    NSDictionary* argsMap = _call.arguments;
-//    _path = argsMap[@"savePath"];
-//    _urlOrFileId = argsMap[@"urlOrFileId"];
-//    return  self;
-//}
-
 
 //开始下载
 - (void)downLoad{
     //设置下载对象
-    
     NSLog(@"开始下载");
- 
-    
     if([_urlOrFileId hasPrefix: @"http"]){
-        [_tXVodDownloadManager startDownloadUrl:_urlOrFileId];
-        
+       _tempMedia = [_tXVodDownloadManager startDownloadUrl:_urlOrFileId];
     }else{
-        
         NSDictionary* argsMap = _call.arguments;
         int appId = [argsMap[@"appId"] intValue];
         int quanlity = [argsMap[@"quanlity"] intValue];
@@ -70,7 +49,7 @@
         TXVodDownloadDataSource *dataSource = [TXVodDownloadDataSource new];
         dataSource.auth = auth;
         dataSource.quality = quanlity;
-        [_tXVodDownloadManager startDownload:dataSource];
+      _tempMedia =  [_tXVodDownloadManager startDownload:dataSource];
     }
     
 }
@@ -79,7 +58,7 @@
 //停止下载
 - (void)stopDownLoad{
     NSLog(@"停止下载");
-    [_tXVodDownloadManager startDownloadUrl:_urlOrFileId];
+    [_tXVodDownloadManager stopDownload:_tempMedia];
 }
 
 // ---------------通信相关
@@ -101,7 +80,6 @@
 //----------------下载回调相关
 
 - (void)onDownloadStart:(TXVodDownloadMediaInfo *)mediaInfo {
-    
     [self dealCallToFlutterData:@"start" mediaInfo:mediaInfo ];
 }
 
