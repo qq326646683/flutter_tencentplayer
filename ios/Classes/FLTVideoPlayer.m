@@ -149,13 +149,13 @@
 - (void)processPixelBuffer: (CVImageBufferRef)pixelBuffer
 {
     CVPixelBufferLockBaseAddress( pixelBuffer, 0 );
-
+    
     //int bufferWidth = CVPixelBufferGetWidth(pixelBuffer);
     //int bufferHeight = CVPixelBufferGetHeight(pixelBuffer);
     long bufferWidth = CVPixelBufferGetWidth(pixelBuffer);
     long bufferHeight = CVPixelBufferGetHeight(pixelBuffer);
     unsigned char *pixel = (unsigned char *)CVPixelBufferGetBaseAddress(pixelBuffer);
-
+    
     for( int row = 0; row < bufferHeight; row++ ) {
         for( int column = 0; column < bufferWidth; column++ ) {
             pixel[0] = 0;
@@ -169,7 +169,7 @@
 }
 
 - (BOOL)onPlayerPixelBuffer:(CVPixelBufferRef)pixelBuffer{
-//    self.newPixelBuffer = pixelBuffer;
+    //    self.newPixelBuffer = pixelBuffer;
     _pixelBufferNowRef =pixelBuffer;
     finalPiexelBuffer =  [self copyPixelBufferNow];
     [self.frameUpdater refreshDisplay];
@@ -194,13 +194,15 @@
                 int64_t duration = [player duration];
                 NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
                 NSInteger  durationInt = [durationStr intValue];
+                if(self->_eventSink!=nil){
+                    self->_eventSink(@{
+                        @"event":@"initialized",
+                        @"duration":@(durationInt),
+                        @"width":@([player width]),
+                        @"height":@([player height])
+                    });
+                }
                 
-                self->_eventSink(@{
-                                   @"event":@"initialized",
-                                   @"duration":@(durationInt),
-                                   @"width":@([player width]),
-                                   @"height":@([player height])
-                                   });
             }
             
         }else if(EvtID==PLAY_EVT_PLAY_PROGRESS){
@@ -218,61 +220,72 @@
                 NSInteger  playableDurationInt = [playableDurationStr intValue]*1000;
                 //                NSLog(@"单精度浮点数： %d",progressInt);
                 //                NSLog(@"单精度浮点数： %d",durationint);
-                self->_eventSink(@{
-                                   @"event":@"progress",
-                                   @"progress":@(progressInt),
-                                   @"duration":@(durationint),
-                                   @"playable":@(playableDurationInt)
-                                   });
+                if(self->_eventSink!=nil){
+                    self->_eventSink(@{
+                        @"event":@"progress",
+                        @"progress":@(progressInt),
+                        @"duration":@(durationint),
+                        @"playable":@(playableDurationInt)
+                    });
+                }
                 
             }
             
         }else if(EvtID==PLAY_EVT_PLAY_LOADING){
-            self->_eventSink(@{
-                               @"event":@"loading",
-                               });
+            if(self->_eventSink!=nil){
+                self->_eventSink(@{
+                    @"event":@"loading",
+                });
+            }
+            
         }else if(EvtID==PLAY_EVT_VOD_LOADING_END){
-            self->_eventSink(@{
-                               @"event":@"loadingend",
-                               });
+            if(self->_eventSink!=nil){
+                self->_eventSink(@{
+                    @"event":@"loadingend",
+                });
+            }
+            
         }else if(EvtID==PLAY_EVT_PLAY_END){
-            self->_eventSink(@{
-                               @"event":@"playend",
-                               });
+            if(self->_eventSink!=nil){
+                self->_eventSink(@{
+                    @"event":@"playend",
+                });
+            }
+            
         }else if(EvtID==PLAY_ERR_NET_DISCONNECT){
             if(self->_eventSink!=nil){
                 self->_eventSink(@{
-                                   @"event":@"error",
-                                   @"errorInfo":param[@"EVT_MSG"],
-                                   });
+                    @"event":@"error",
+                    @"errorInfo":param[@"EVT_MSG"],
+                });
                 
                 self->_eventSink(@{
-                                   @"event":@"disconnect",
-                                   });
+                    @"event":@"disconnect",
+                });
                 
             }
             
         }else if(EvtID==ERR_PLAY_LIVE_STREAM_NET_DISCONNECT){
             if(self->_eventSink!=nil){
                 self->_eventSink(@{
-                                   @"event":@"error",
-                                   @"errorInfo":param[@"EVT_MSG"],
-                                   });
+                    @"event":@"error",
+                    @"errorInfo":param[@"EVT_MSG"],
+                });
             }
         }else if(EvtID==WARNING_LIVE_STREAM_SERVER_RECONNECT){
             if(self->_eventSink!=nil){
                 self->_eventSink(@{
-                                   @"event":@"error",
-                                   @"errorInfo":param[@"EVT_MSG"],
-                                   });
+                    @"event":@"error",
+                    @"errorInfo":param[@"EVT_MSG"],
+                });
             }
         }else {
             if(EvtID<0){
                 if(self->_eventSink!=nil){
                     self->_eventSink(@{
-                                       @"event":@"error",
-                                       @"errorInfo":param[@"EVT_MSG"],
-                                       });
+                        @"event":@"error",
+                        @"errorInfo":param[@"EVT_MSG"],
+                    });
                 }
             }
         }
@@ -281,13 +294,13 @@
 }
 
 - (void)onNetStatus:(TXVodPlayer *)player withParam:(NSDictionary *)param {
-    self->_eventSink(@{
-                       @"event":@"netStatus",
-                       @"netSpeed": param[NET_STATUS_NET_SPEED],
-                       @"cacheSize": param[NET_STATUS_V_SUM_CACHE_SIZE],
-                       });
-    
-    
+    if(self->_eventSink!=nil){
+        self->_eventSink(@{
+            @"event":@"netStatus",
+            @"netSpeed": param[NET_STATUS_NET_SPEED],
+            @"cacheSize": param[NET_STATUS_V_SUM_CACHE_SIZE],
+        });
+    }
 }
 
 #pragma FlutterStreamHandler
