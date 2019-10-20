@@ -49,8 +49,10 @@
         playConfig.cacheFolderPath =[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     }
     
-    playConfig.maxCacheItems = 5;
-    playConfig.progressInterval =  0.5; //[argsMap[@"progressInterval"] intValue] ;
+    playConfig.maxCacheItems = 2;
+    playConfig.progressInterval =  2.5;
+    playConfig.maxBufferSize=4;
+    //[argsMap[@"progressInterval"] intValue] ;
     BOOL autoPlayArg = [argsMap[@"autoPlay"] boolValue];
     float startPosition=0;
     
@@ -323,6 +325,8 @@
 - (void)dispose {
     _disposed = true;
     [self stopPlay];
+    _txPlayer = nil;
+    _frameUpdater = nil;
     [_eventChannel setStreamHandler:nil];
 }
 
