@@ -11,21 +11,28 @@
 
 
 @implementation FLTVideoPlayer{
-    CVPixelBufferRef finalPiexelBuffer;
+//    CVPixelBufferRef finalPiexelBuffer;
+//    CVPixelBufferRef pixelBufferNowRef;
+    CVPixelBufferRef volatile _latestPixelBuffer;
+    CVPixelBufferRef _lastBuffer;
 }
 
 - (instancetype)initWithCall:(FlutterMethodCall *)call frameUpdater:(FLTFrameUpdater *)frameUpdater registry:(NSObject<FlutterTextureRegistry> *)registry messenger:(NSObject<FlutterBinaryMessenger>*)messenger{
     self = [super init];
-    
+    _latestPixelBuffer = nil;
+     _lastBuffer = nil;
+    // NSLog(@"FLTVideo  初始化播放器");
     _textureId = [registry registerTexture:self];
+    // NSLog(@"FLTVideo  _textureId %lld",_textureId);
+    
     FlutterEventChannel* eventChannel = [FlutterEventChannel
                                          eventChannelWithName:[NSString stringWithFormat:@"flutter_tencentplayer/videoEvents%lld",_textureId]
                                          binaryMessenger:messenger];
     
-    [eventChannel setStreamHandler:self];
+   
     
     _eventChannel = eventChannel;
-    
+    [_eventChannel setStreamHandler:self];
     NSDictionary* argsMap = call.arguments;
     TXVodPlayConfig* playConfig = [[TXVodPlayConfig alloc]init];
     playConfig.connectRetryCount=  3 ;
@@ -50,7 +57,7 @@
     }
     
     playConfig.maxCacheItems = 2;
-    playConfig.progressInterval =  2.5;
+    playConfig.progressInterval =  1;
     playConfig.maxBufferSize=4;
     //[argsMap[@"progressInterval"] intValue] ;
     BOOL autoPlayArg = [argsMap[@"autoPlay"] boolValue];
@@ -91,6 +98,7 @@
     }
     NSLog(@"播放器初始化结束");
     
+ 
     return  self;
     
 }
@@ -98,82 +106,37 @@
 
 #pragma FlutterTexture
 - (CVPixelBufferRef)copyPixelBuffer {
-    if(finalPiexelBuffer!=nil){
-        return  finalPiexelBuffer;
-    }
-    return NULL;
+    CVPixelBufferRef pixelBuffer = _latestPixelBuffer;
+       while (!OSAtomicCompareAndSwapPtrBarrier(pixelBuffer, nil,
+                                                (void **)&_latestPixelBuffer)) {
+           pixelBuffer = _latestPixelBuffer;
+       }
+       return pixelBuffer;
 }
 
 #pragma 腾讯播放器代理回调方法
-
-/**
- * 视频渲染对象回调
- *
- */
-- (CVPixelBufferRef)copyPixelBufferNow {
-    if (_pixelBufferNowRef == NULL) {
-        return nil;
-    }
-    
-    CVPixelBufferRef pixelBufferOut = NULL;
-    CVReturn ret = kCVReturnError;
-    size_t height = CVPixelBufferGetHeight(_pixelBufferNowRef);
-    size_t width = CVPixelBufferGetWidth(_pixelBufferNowRef);
-    size_t bytersPerRow = CVPixelBufferGetBytesPerRow(_pixelBufferNowRef);
-    CFDictionaryRef attrs = NULL;
-    const void *keys[] = { kCVPixelBufferPixelFormatTypeKey };
-    //      kCVPixelFormatType_420YpCbCr8Planar is YUV420
-    //      kCVPixelFormatType_420YpCbCr8BiPlanarFullRange is NV12
-    uint32_t v = kCVPixelFormatType_420YpCbCr8BiPlanarFullRange;
-    const void *values[] = { CFNumberCreate(NULL, kCFNumberSInt32Type, &v) };
-    attrs = CFDictionaryCreate(NULL, keys, values, 1, NULL, NULL);
-    
-    ret = CVPixelBufferCreate(NULL,
-                              width,
-                              height,
-                              CVPixelBufferGetPixelFormatType(_pixelBufferNowRef),
-                              attrs,
-                              &pixelBufferOut);
-    CVPixelBufferLockBaseAddress(_pixelBufferNowRef, kCVPixelBufferLock_ReadOnly);
-    CVPixelBufferLockBaseAddress(pixelBufferOut, kCVPixelBufferLock_ReadOnly);
-    CFRelease(attrs);
-    if (ret == kCVReturnSuccess) {
-        memcpy(CVPixelBufferGetBaseAddress(pixelBufferOut), CVPixelBufferGetBaseAddress(_pixelBufferNowRef), height * bytersPerRow);
-    } else {
-        printf("why copy pixlbuffer error %d",ret);
-    }
-    CVPixelBufferUnlockBaseAddress(_pixelBufferNowRef, kCVPixelBufferLock_ReadOnly);
-    CVPixelBufferUnlockBaseAddress(pixelBufferOut, kCVPixelBufferLock_ReadOnly);
-    [self processPixelBuffer:_pixelBufferNowRef];
-    return pixelBufferOut;
-}
-
-- (void)processPixelBuffer: (CVImageBufferRef)pixelBuffer
-{
-    CVPixelBufferLockBaseAddress( pixelBuffer, 0 );
-    
-    //int bufferWidth = CVPixelBufferGetWidth(pixelBuffer);
-    //int bufferHeight = CVPixelBufferGetHeight(pixelBuffer);
-    long bufferWidth = CVPixelBufferGetWidth(pixelBuffer);
-    long bufferHeight = CVPixelBufferGetHeight(pixelBuffer);
-    unsigned char *pixel = (unsigned char *)CVPixelBufferGetBaseAddress(pixelBuffer);
-    
-    for( int row = 0; row < bufferHeight; row++ ) {
-        for( int column = 0; column < bufferWidth; column++ ) {
-            pixel[0] = 0;
-            pixel[1] = 0;
-            pixel[2] = 0;
-            pixel[3] = 0;
-            pixel += 4;
-        }
-    }
-    CVPixelBufferUnlockBaseAddress( pixelBuffer, 0 );
-}
-
 - (BOOL)onPlayerPixelBuffer:(CVPixelBufferRef)pixelBuffer{
-    //    self.newPixelBuffer = pixelBuffer;
-    _pixelBufferNowRef =pixelBuffer;
-    finalPiexelBuffer =  [self copyPixelBufferNow];
+    
+    if (_lastBuffer == nil) {
+        _lastBuffer = CVPixelBufferRetain(pixelBuffer);
+        CFRetain(pixelBuffer);
+    } else if (_lastBuffer != pixelBuffer) {
+        CVPixelBufferRelease(_lastBuffer);
+        _lastBuffer = CVPixelBufferRetain(pixelBuffer);
+        CFRetain(pixelBuffer);
+    }
+
+    CVPixelBufferRef newBuffer = pixelBuffer;
+
+    CVPixelBufferRef old = _latestPixelBuffer;
+    while (!OSAtomicCompareAndSwapPtrBarrier(old, newBuffer,
+                                             (void **)&_latestPixelBuffer)) {
+        old = _latestPixelBuffer;
+    }
+
+    if (old && old != pixelBuffer) {
+        CFRelease(old);
+    }
     [self.frameUpdater refreshDisplay];
     return NO;
 }
@@ -308,7 +271,6 @@
 #pragma FlutterStreamHandler
 - (FlutterError* _Nullable)onCancelWithArguments:(id _Nullable)arguments {
     _eventSink = nil;
-    
     NSLog(@"FLTVideo停止通信");
     return nil;
 }
@@ -327,7 +289,26 @@
     [self stopPlay];
     _txPlayer = nil;
     _frameUpdater = nil;
-    [_eventChannel setStreamHandler:nil];
+     NSLog(@"FLTVideo  dispose");
+    CVPixelBufferRef old = _latestPixelBuffer;
+       while (!OSAtomicCompareAndSwapPtrBarrier(old, nil,
+                                                (void **)&_latestPixelBuffer)) {
+           old = _latestPixelBuffer;
+       }
+       if (old) {
+           CFRelease(old);
+       }
+
+       if (_lastBuffer) {
+           CVPixelBufferRelease(_lastBuffer);
+           _lastBuffer = nil;
+       }
+    
+//    if(_eventChannel){
+//        [_eventChannel setStreamHandler:nil];
+//        _eventChannel =nil;
+//    }
+    
 }
 
 -(void)setLoop:(BOOL)loop{
