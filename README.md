@@ -1,6 +1,12 @@
 # 1.Setup
 ```
 flutter_tencentplayer: ${last_version}
+
+or
+
+flutter_tencentplayer:
+    git:
+      url: https://github.com/qq326646683/flutter_tencentplayer.git
 ```
 > For Android
 
@@ -146,14 +152,13 @@ _controller.addListener(listener);
 ```
 d.切换清晰度
 ```dart
-// m3u8视频可以无缝切换
-_controller.setBitrateIndex(0); // 0: 标清 1: 高清 2: 超清
-// 普通视频切换可以参考切换视频源
-_controller = TencentPlayerController.network(spe1, playerConfig: PlayerConfig(startTime: _controller.value.position.inSeconds));
-_controller.initialize().then((_) {
-setState(() {});
+controller?.removeListener(listener);
+controller?.pause();
+controller = TencentPlayerController.network(url, playerConfig: PlayerConfig(startTime: startTime ?? controller.value.position.inSeconds));
+controller?.initialize().then((_) {
+  if (mounted) setState(() {});
 });
-_controller.addListener(listener);
+controller?.addListener(listener);
 ```
 
 # 3.Usage(Download)
