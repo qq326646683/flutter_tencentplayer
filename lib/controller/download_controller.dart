@@ -29,8 +29,8 @@ class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
 
     void eventListener(dynamic event) {
       final Map<dynamic, dynamic> map = event;
-      print("native to flutter");
-      print(map);
+      debugPrint("native to flutter");
+      debugPrint(map.toString());
       DownloadValue downloadValue = DownloadValue.fromJson(map);
       if (downloadValue.fileId != null) {
         value[downloadValue.fileId] = downloadValue;
@@ -45,7 +45,7 @@ class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
         .listen(eventListener);
   }
 
-  Future stopDownload(String urlOrFileId) async {
+  Future pauseDownload(String urlOrFileId) async {
     await channel.invokeMethod(
       'stopDownload',
       {
@@ -53,6 +53,24 @@ class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
       },
     );
   }
+
+  Future cancelDownload(String urlOrFileId) async {
+    await channel.invokeMethod(
+      'stopDownload',
+      {
+        "urlOrFileId": urlOrFileId,
+      },
+    );
+
+    if (value.containsKey(urlOrFileId)) {
+      Future.delayed(Duration(milliseconds: 2500), () {
+        value.remove(urlOrFileId);
+      });
+    }
+
+    notifyListeners();
+  }
+
 
   EventChannel _eventChannelFor(String urlOrFileId) {
     return EventChannel('flutter_tencentplayer/downloadEvents$urlOrFileId');
