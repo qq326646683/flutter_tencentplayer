@@ -105,6 +105,10 @@ FLTVideoPlayer* player ;
 -(void) onMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result{
     
     NSDictionary* argsMap = call.arguments;
+   // int64_t textureId = ((NSNumber*)argsMap[@"textureId"]).unsignedIntegerValue;
+    if([NSNull null]==argsMap[@"textureId"]) {
+        return;
+    }
     int64_t textureId = ((NSNumber*)argsMap[@"textureId"]).unsignedIntegerValue;
 //    FLTVideoPlayer* player = _players[@(textureId)];
 
