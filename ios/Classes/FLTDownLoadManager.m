@@ -108,20 +108,22 @@
     NSString *downloadSize = [NSString stringWithFormat:@"%d",mediaInfo.downloadSize];
     NSString *progress = [NSString stringWithFormat:@"%f",mediaInfo.progress];
     if (mediaInfo.dataSource!=nil) {
-        self->_eventSink(@{
-                           @"downloadStatus":@"error",
-                           @"quanlity":quality ,
-                           @"duration":duration ,
-                           @"size":size ,
-                           @"downloadSize":downloadSize ,
-                           @"progress":progress ,
-                           @"playPath":mediaInfo.playPath ,
-                           @"isStop":@(true) ,
-                           @"url":mediaInfo.url ,
-                           @"fileId":mediaInfo.dataSource.auth.fileId,
-                           @"error":msg,
-                           
-                           });
+        if(self->_eventSink!=nil){
+            self->_eventSink(@{
+                               @"downloadStatus":@"error",
+                               @"quanlity":quality ,
+                               @"duration":duration ,
+                               @"size":size ,
+                               @"downloadSize":downloadSize ,
+                               @"progress":progress ,
+                               @"playPath":mediaInfo.playPath ,
+                               @"isStop":@(true) ,
+                               @"url":mediaInfo.url ,
+                               @"fileId":mediaInfo.dataSource.auth.fileId,
+                               @"error":msg,
+
+                               });
+         }
     }
 }
 
@@ -141,20 +143,22 @@
    
     if (mediaInfo.dataSource!=nil) {
         //        [mediaInfo.dataSource auth];
-        self->_eventSink(@{
-                           @"downloadStatus":type,
-                           @"quanlity":quality ,
-                                @"duration":duration ,
-                                @"size":size ,
-                                @"downloadSize":downloadSize ,
-                                @"progress":progress ,
-                                @"playPath":mediaInfo.playPath ,
-                                @"isStop":@(true) ,
-                                @"url":mediaInfo.url ,
-                                @"fileId":mediaInfo.dataSource.auth.fileId,
-                             @"error":@"error" ,
-                          
-                           });
+        if(self->_eventSink!=nil){
+            self->_eventSink(@{
+                               @"downloadStatus":type,
+                               @"quanlity":quality ,
+                                    @"duration":duration ,
+                                    @"size":size ,
+                                    @"downloadSize":downloadSize ,
+                                    @"progress":progress ,
+                                    @"playPath":mediaInfo.playPath ,
+                                    @"isStop":@(true) ,
+                                    @"url":mediaInfo.url ,
+                                    @"fileId":mediaInfo.dataSource.auth.fileId,
+                                 @"error":@"error" ,
+
+                               });
+         }
     }
     
 }
