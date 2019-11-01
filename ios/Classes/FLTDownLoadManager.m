@@ -48,7 +48,14 @@
         auth.fileId = _urlOrFileId;
         TXVodDownloadDataSource *dataSource = [TXVodDownloadDataSource new];
         dataSource.auth = auth;
-        dataSource.quality = quanlity;
+        dataSource.templateName = @"HLS-标清-SD";
+        if (quanlity == 2) {
+            dataSource.templateName = @"HLS-标清-SD";
+        } else if (quanlity == 3) {
+            dataSource.templateName = @"HLS-高清-HD";
+        } else if (quanlity == 4) {
+            dataSource.templateName = @"HLS-全高清-FHD";
+        }
       _tempMedia =  [_tXVodDownloadManager startDownload:dataSource];
     }
     

@@ -315,7 +315,16 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
                 TXPlayerAuthBuilder auth = new TXPlayerAuthBuilder();
                 auth.setAppId(((Number)call.argument("appId")).intValue());
                 auth.setFileId(urlOrFileId);
-                TXVodDownloadDataSource source = new TXVodDownloadDataSource(auth, ((Number)call.argument("quanlity")).intValue());
+                int quanlity = ((Number)call.argument("quanlity")).intValue();
+                String templateName = "HLS-标清-SD";
+                if (quanlity == 2) {
+                    templateName = "HLS-标清-SD";
+                } else if (quanlity == 3) {
+                    templateName = "HLS-高清-HD";
+                } else if (quanlity == 4) {
+                    templateName = "HLS-全高清-FHD";
+                }
+                TXVodDownloadDataSource source = new TXVodDownloadDataSource(auth, templateName);
                 txVodDownloadMediaInfo = downloader.startDownload(source);
             }
 
