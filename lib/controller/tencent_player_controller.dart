@@ -152,6 +152,9 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
     if (_isDisposed) {
       return;
     }
+    if (moment == null) {
+      return;
+    }
     if (moment > value.duration) {
       moment = value.duration;
     } else if (moment < const Duration()) {

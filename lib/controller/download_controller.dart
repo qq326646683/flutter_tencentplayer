@@ -9,6 +9,7 @@ class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
   final int appId;
   StreamSubscription<dynamic> _eventSubscription;
   MethodChannel channel = TencentPlayer.channel;
+  bool _isDisposed = false;
 
 
   DownloadController(this.savePath, {this.appId})
@@ -28,6 +29,9 @@ class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
     );
 
     void eventListener(dynamic event) {
+      if (_isDisposed) {
+        return;
+      }
       final Map<dynamic, dynamic> map = event;
       debugPrint("native to flutter");
       debugPrint(map.toString());
@@ -45,7 +49,16 @@ class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
         .listen(eventListener);
   }
 
+  @override
+  Future dispose() async {
+    _isDisposed = true;
+    super.dispose();
+  }
+
   Future pauseDownload(String urlOrFileId) async {
+    if (_isDisposed) {
+      return;
+    }
     await channel.invokeMethod(
       'stopDownload',
       {
@@ -55,6 +68,9 @@ class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
   }
 
   Future cancelDownload(String urlOrFileId) async {
+    if (_isDisposed) {
+      return;
+    }
     await channel.invokeMethod(
       'stopDownload',
       {
