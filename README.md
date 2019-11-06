@@ -188,7 +188,7 @@ _downloadController.dowload("4564972819220421305", quanlity: 2);
 ```
 b. 暂停下载
 ```dart
-_downloadController.stopDownload("4564972819220421305");
+_downloadController.pauseDownload("4564972819220421305");
 // _downloadController.stopDownload("http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4bdff799031868222924043041/playlist.m3u8");
 
 ```

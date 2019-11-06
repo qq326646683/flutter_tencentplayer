@@ -67,7 +67,6 @@ class _MyAppState extends State<MyApp> {
 //        auth: {"appId": , "fileId": ''}
 //    ))
     _controller = TencentPlayerController.network(spe3, playerConfig: PlayerConfig())
-    //TODO 播放资源文件   播放数据指定目录文件
 
 //        _controller = TencentPlayerController.asset('static/tencent1.mp4')
 //        _controller = TencentPlayerController.file('/storage/emulated/0/test.mp4')
@@ -344,7 +343,7 @@ class _MyAppState extends State<MyApp> {
                       ),
                       FlatButton(
                         onPressed: () {
-                          _downloadController.stopDownload("4564972819220421305");
+                          _downloadController.pauseDownload("4564972819220421305");
                         },
                         child: Text(
                           'download1 - stop',
@@ -365,7 +364,7 @@ class _MyAppState extends State<MyApp> {
                     ),
                     FlatButton(
                       onPressed: () {
-                        _downloadController.stopDownload(testDownload);
+                        _downloadController.pauseDownload(testDownload);
                       },
                       child: Text(
                         'download2 - stop',
