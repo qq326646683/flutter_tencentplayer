@@ -1,3 +1,5 @@
+线上项目应用运行效果：
+http://file.jinxianyun.com/tencentplayer.MP4
 # 1.Setup
 ```
 flutter_tencentplayer: ${last_version}
@@ -144,14 +146,6 @@ _controller.setRate(1.5); // 1.0 ~ 2.0
 ```
 c.切换播放源
 ```dart
-_controller = TencentPlayerController.network(mu);
-_controller.initialize().then((_) {
-    setState(() {});
-    });
-_controller.addListener(listener);
-```
-d.切换清晰度
-```dart
 controller?.removeListener(listener);
 controller?.pause();
 controller = TencentPlayerController.network(url, playerConfig: PlayerConfig(startTime: startTime ?? controller.value.position.inSeconds));
@@ -160,6 +154,8 @@ controller?.initialize().then((_) {
 });
 controller?.addListener(listener);
 ```
+d.切换清晰度(实质就是切换播放源)
+
 
 # 3.Usage(Download)
 > 离线下载, 支持断点续传(这里只支持m3u8视频、fileId), 支持多文件同时下载
@@ -194,6 +190,12 @@ b. 暂停下载
 ```dart
 _downloadController.stopDownload("4564972819220421305");
 // _downloadController.stopDownload("http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4bdff799031868222924043041/playlist.m3u8");
+
+```
+b. 取消下载
+```dart
+_downloadController.cancelDownload("4564972819220421305");
+// _downloadController.cancelDownload("http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4bdff799031868222924043041/playlist.m3u8");
 
 ```
 

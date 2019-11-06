@@ -63,10 +63,10 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> initPlatformState() async {
     //点播
-     _controller = TencentPlayerController.network(null, playerConfig:  PlayerConfig(
-        auth: {"appId": 1259801863, "fileId": '5285890792731302930'}
-    ))
-//    _controller = TencentPlayerController.network(spe3, playerConfig: PlayerConfig())
+//     _controller = TencentPlayerController.network(null, playerConfig:  PlayerConfig(
+//        auth: {"appId": , "fileId": ''}
+//    ))
+    _controller = TencentPlayerController.network(spe3, playerConfig: PlayerConfig())
     //TODO 播放资源文件   播放数据指定目录文件
 
 //        _controller = TencentPlayerController.asset('static/tencent1.mp4')
