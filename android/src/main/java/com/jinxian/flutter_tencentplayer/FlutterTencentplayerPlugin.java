@@ -88,6 +88,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
                 mPlayConfig.setMaxCacheItems(1);
             } else {
                 mPlayConfig.setCacheFolderPath(null);
+                mPlayConfig.setMaxCacheItems(0);
             }
             if (call.argument("headers") != null) {
                 mPlayConfig.setHeaders((Map<String, String>) call.argument("headers"));

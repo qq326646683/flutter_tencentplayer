@@ -1,3 +1,5 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+## 0.0.2
+
+关闭android播放时默认缓存
