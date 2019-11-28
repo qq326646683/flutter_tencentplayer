@@ -1,19 +1,21 @@
 线上项目应用运行效果：
 http://file.jinxianyun.com/tencentplayer.MP4
 # 1.Setup
-```
-flutter_tencentplayer: ${last_version}
-
-or
-
-flutter_tencentplayer:
-    git:
-      url: https://github.com/qq326646683/flutter_tencentplayer.git
-```
+    
+    ```
+    flutter_tencentplayer: ${last_version}
+    
+    or
+    
+    flutter_tencentplayer:
+        git:
+          url: https://github.com/qq326646683/flutter_tencentplayer.git
+    ```
 > For Android
 
 1. project/android/build.gradle 添加依赖的aar：
-```gradle
+
+```
 def flutterProjectRoot = rootProject.projectDir.parentFile.toPath()
 def plugins = new Properties()
 def pluginsFile = new File(flutterProjectRoot.toFile(), '.flutter-plugins')
@@ -33,25 +35,26 @@ allprojects {
 ```
 
 2. AndroidManifest.xml 声明权限:
-```
-<!--网络权限-->
 
-<uses-permission android:name="android.permission.INTERNET" />
-
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
-<!--点播播放器悬浮窗权限-->
-
-<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
-<!--存储-->
-
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-```
+    ```
+    <!--网络权限-->
+    
+    <uses-permission android:name="android.permission.INTERNET" />
+    
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    
+    <!--点播播放器悬浮窗权限-->
+    
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    
+    <!--存储-->
+    
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    ```
 
 > For Ios  
 
@@ -69,9 +72,22 @@ allprojects {
 
 # 2.Usage(TencentPlayer)
 
-> 和video_player api相似,支持直播源,视频跳转,切换视频源,边下边播放,清晰度切换,设置播放速度
+flutter_tencentplayer  提供video_player 相似api 
 
-### 1.初始化播放器,支持asset、network、filePath、fileId四种方式播放
+## 支持功能
+
+1. 支持直播源
+2. 视频跳转
+3. 切换视频源
+4. 边下边播放
+5. 清晰度切换
+6. 设置播放速度
+
+### 1.初始化播放器
+
+提供 asset、network、filePath、fileId四种方式播放
+
+
 ```dart
 TencentPlayerController _controller;
 
@@ -97,6 +113,7 @@ initState() {
 ```
 
 ### 2.<font color=#0000FF >PlayerConfig</font> (播放器配置参数 )
+
 ```dart
 _controller = TencentPlayerController.network(url, playerConfig: PlayerConfig())
 
@@ -135,16 +152,21 @@ bitrateIndex | int | 视频清晰度
 ### 4.<font color=#0000FF >Event</font> (播放器事件)
 
 a.跳转进度
+
 ```dart
 _controller.seekTo(Duration(seconds: 5));
 
 ```
+
 b.设置播放速度
+
 ```dart
 _controller.setRate(1.5); // 1.0 ~ 2.0
 
 ```
+
 c.切换播放源
+
 ```dart
 controller?.removeListener(listener);
 controller?.pause();
@@ -154,10 +176,12 @@ controller?.initialize().then((_) {
 });
 controller?.addListener(listener);
 ```
+
 d.切换清晰度(实质就是切换播放源)
 
 
 # 3.Usage(Download)
+
 > 离线下载, 支持断点续传(这里只支持m3u8视频、fileId), 支持多文件同时下载
 
 ### 1.初始化下载器
@@ -182,17 +206,22 @@ initState() {
 ### 2.<font color=#0000FF >Event</font> (下载事件)
 
 a. 下载
+
 ```dart
 _downloadController.dowload("4564972819220421305", quanlity: 2);
 // _downloadController.dowload("http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4bdff799031868222924043041/playlist.m3u8");
 ```
+
 b. 暂停下载
+
 ```dart
 _downloadController.pauseDownload("4564972819220421305");
 // _downloadController.stopDownload("http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4bdff799031868222924043041/playlist.m3u8");
 
 ```
+
 b. 取消下载
+
 ```dart
 _downloadController.cancelDownload("4564972819220421305");
 // _downloadController.cancelDownload("http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4bdff799031868222924043041/playlist.m3u8");
@@ -220,6 +249,20 @@ error | String | 下载的错误信息
 
 
 # 4.[Example](https://github.com/qq326646683/flutter_tencentplayer/blob/master/example/lib/main.dart)
+
+
+
+# 5.更新内容 
+    
+     1,升级IOS  LiteAVSDK 6.8.7969
+ 
+
+# 6.解决的问题
+    
+    1,解决切换视频黑屏
+    2,解决IOS设置loop属性无效问题
+    3,再就是ios的必须设置了autoPlay为true才能播放，设置了false后，在后面执行 controller.play()也不会播放
+    
 
 
 

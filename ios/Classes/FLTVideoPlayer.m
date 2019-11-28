@@ -39,7 +39,6 @@
     playConfig.connectRetryInterval = 3;
     playConfig.timeout = 10 ;
     
-    //     mVodPlayer.setLoop((boolean) call.argument("loop"));
     
     
     id headers = argsMap[@"headers"];
@@ -80,6 +79,9 @@
     [_txPlayer setVideoProcessDelegate:self];
     [_txPlayer setStartTime:startPosition];
     
+    BOOL loop =  [argsMap[@"loop"] boolValue];
+    [_txPlayer setLoop: loop];
+  
     id  pathArg = argsMap[@"uri"];
     if(pathArg!=nil&&pathArg!=NULL&&![@"" isEqualToString:pathArg]&&pathArg!=[NSNull null]){
         NSLog(@"播放器启动方式1  play");

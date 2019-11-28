@@ -16,6 +16,6 @@
 }
 
 -(void)refreshDisplay{
-    [_registry textureFrameAvailable:_textureId];
+    [_registry textureFrameAvailable:self.textureId];
 }
 @end
