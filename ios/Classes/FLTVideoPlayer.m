@@ -68,6 +68,7 @@
         startPosition =[argsMap[@"startTime"] floatValue];
     }
     
+    frameUpdater.textureId = _textureId;
     _frameUpdater = frameUpdater;
     
     _txPlayer = [[TXVodPlayer alloc]init];
