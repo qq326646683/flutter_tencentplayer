@@ -175,22 +175,20 @@
             int64_t progress = [player currentPlaybackTime];
                            int64_t duration = [player duration];
                            int64_t playableDuration  = [player playableDuration];
-                           
-                           
-                           NSString *progressStr = [NSString stringWithFormat: @"%ld", (long)progress];
-                           NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
-                           NSString *playableDurationStr = [NSString stringWithFormat: @"%ld", (long)playableDuration];
-                           NSInteger  progressInt = [progressStr intValue]*1000;
-                           NSInteger  durationint = [durationStr intValue]*1000;
-                           NSInteger  playableDurationInt = [playableDurationStr intValue]*1000;
+//                           NSString *progressStr = [NSString stringWithFormat: @"%ld", (long)progress];
+//                           NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
+//                           NSString *playableDurationStr = [NSString stringWithFormat: @"%ld", (long)playableDuration];
+//                           long  progressInt = [progress intValue]*1000;
+//                           long  durationint = [duration intValue]*1000;
+//                           long  playableDurationInt = [playableDuration intValue]*1000;
                            //                NSLog(@"单精度浮点数： %d",progressInt);
                            //                NSLog(@"单精度浮点数： %d",durationint);
                            if(self->_eventSink!=nil){
                                self->_eventSink(@{
                                    @"event":@"progress",
-                                   @"progress":@(progressInt),
-                                   @"duration":@(durationint),
-                                   @"playable":@(playableDurationInt)
+                                   @"progress":@(progress*1000),
+                                   @"duration":@(duration*1000),
+                                   @"playable":@(playableDuration*1000)
                                });
                            }
             
