@@ -50,11 +50,11 @@
     id cacheFolderPath = argsMap[@"cachePath"];
     if (cacheFolderPath!=nil&&cacheFolderPath!=NULL&&![@"" isEqualToString:cacheFolderPath]&&cacheFolderPath!=[NSNull null]) {
         playConfig.cacheFolderPath = cacheFolderPath;
-        playConfig.maxCacheItems = 2;
+        playConfig.maxCacheItems = 20;
     }else{
         // 设置缓存路径
-        //playConfig.cacheFolderPath =[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        playConfig.maxCacheItems = 0;
+        playConfig.cacheFolderPath =[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        playConfig.maxCacheItems = 10;
     }
 
     playConfig.progressInterval =  1;
