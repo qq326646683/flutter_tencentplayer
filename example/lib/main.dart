@@ -73,8 +73,7 @@ class _MyAppState extends State<MyApp> {
 //     _controller = TencentPlayerController.network(null, playerConfig:  PlayerConfig(
 //        auth: {"appId": , "fileId": ''}
 //    ))
-    _controller = TencentPlayerController.network(spe3,
-        playerConfig: PlayerConfig(autoPlay: false))
+    _controller = TencentPlayerController.network(spe3, playerConfig: PlayerConfig(autoPlay: false))
 
 //        _controller = TencentPlayerController.asset('static/tencent1.mp4')
 //        _controller = TencentPlayerController.file('/storage/emulated/0/test.mp4')
@@ -83,9 +82,8 @@ class _MyAppState extends State<MyApp> {
       });
 
     _controller.addListener(listener);
-    _downloadController = DownloadController(
-        '/storage/emulated/0/tencentdownload',
-        appId: 1252463788);
+    /// 下载目录  ios 的和android的不一致 注意在ios项目运行的时候传递ios的目录
+    _downloadController = DownloadController('/storage/emulated/0/tencentdownload', appId: 1252463788);
     _downloadController.addListener(downloadListener);
   }
 

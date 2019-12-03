@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
 
-
 class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
   final String savePath;
   final int appId;
   StreamSubscription<dynamic> _eventSubscription;
   MethodChannel channel = TencentPlayer.channel;
   bool _isDisposed = false;
-
 
   DownloadController(this.savePath, {this.appId})
       : super(Map<String, DownloadValue>());
@@ -27,31 +25,35 @@ class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
       'download',
       downloadInfoMap,
     );
-
-    void eventListener(dynamic event) {
-      if (_isDisposed) {
-        return;
-      }
-      final Map<dynamic, dynamic> map = event;
-      debugPrint("native to flutter");
-      debugPrint(map.toString());
-      DownloadValue downloadValue = DownloadValue.fromJson(map);
-      if (downloadValue.fileId != null) {
-        value[downloadValue.fileId] = downloadValue;
-      } else {
-        value[downloadValue.url] = downloadValue;
-      }
-      notifyListeners();
-    }
-
     _eventSubscription = _eventChannelFor(urlOrFileId)
         .receiveBroadcastStream()
         .listen(eventListener);
   }
 
+  EventChannel _eventChannelFor(String urlOrFileId) {
+    return EventChannel('flutter_tencentplayer/downloadEvents$urlOrFileId');
+  }
+
+  void eventListener(dynamic event) {
+    if (_isDisposed) {
+      return;
+    }
+    final Map<dynamic, dynamic> map = event;
+    debugPrint("native to flutter");
+    debugPrint(map.toString());
+    DownloadValue downloadValue = DownloadValue.fromJson(map);
+    if (downloadValue.fileId != null) {
+      value[downloadValue.fileId] = downloadValue;
+    } else {
+      value[downloadValue.url] = downloadValue;
+    }
+    notifyListeners();
+  }
+
   @override
   Future dispose() async {
     _isDisposed = true;
+    _eventSubscription.cancel();
     super.dispose();
   }
 
@@ -86,10 +88,4 @@ class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
 
     notifyListeners();
   }
-
-
-  EventChannel _eventChannelFor(String urlOrFileId) {
-    return EventChannel('flutter_tencentplayer/downloadEvents$urlOrFileId');
-  }
-
 }

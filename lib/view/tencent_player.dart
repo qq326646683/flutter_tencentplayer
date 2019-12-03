@@ -1,11 +1,11 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
 
-
 class TencentPlayer extends StatefulWidget {
   static MethodChannel channel = const MethodChannel('flutter_tencentplayer')
+
+    /// init方法是TencentPlayer 第一次加载的时候执行 并且只是执行一次
     ..invokeMethod<void>('init');
 
   final TencentPlayerController controller;
@@ -44,10 +44,6 @@ class _TencentPlayerState extends State<TencentPlayer> {
   void didUpdateWidget(TencentPlayer oldWidget) {
     //print("TencentPlayer  didUpdateWidget");
     super.didUpdateWidget(oldWidget);
-//    if (oldWidget.controller.dataSource != widget.controller.dataSource) {
-//      oldWidget.controller.dispose();
-//      print("TencentPlayer  oldWidget  dispose");
-//    }
     oldWidget.controller.removeListener(_listener);
     _textureId = widget.controller.textureId;
     widget.controller.addListener(_listener);
@@ -64,7 +60,6 @@ class _TencentPlayerState extends State<TencentPlayer> {
   Widget build(BuildContext context) {
     return _textureId == null ? Container() : Texture(textureId: _textureId);
   }
-
 
   @override
   void dispose() {
