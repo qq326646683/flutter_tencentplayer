@@ -54,15 +54,14 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
         result(nil);
     }else if([@"create" isEqualToString:call.method]){
         NSLog(@"FLTVideo  create");
-        [self disposeAllPlayers];
+       // [self disposeAllPlayers];
         FLTFrameUpdater* frameUpdater = [[FLTFrameUpdater alloc] initWithRegistry:_registry];
         FLTVideoPlayer* player= [[FLTVideoPlayer alloc] initWithCall:call frameUpdater:frameUpdater registry:_registry messenger:_messenger];
         
         if (player) {
             [self onPlayerSetup:player frameUpdater:frameUpdater result:result];
-            NSString *textureIdStr = [NSString stringWithFormat: @"%lld",[player textureId]];
-
-            [_players setObject:player forKey:textureIdStr];
+           // NSString *textureIdStr = [NSString stringWithFormat: @"%lld",[player textureId]];
+            //[_players setObject:player forKey:textureIdStr];
         }
         result(nil);
     }else if([@"download" isEqualToString:call.method]){
@@ -113,8 +112,9 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
         return;
     }
 //    int64_t textureId = ((NSNumber*)argsMap[@"textureId"]).unsignedIntegerValue;
-    NSString *textureIdStr = [NSString stringWithFormat: @"%lld",textureId];
-    FLTVideoPlayer* player = _players[textureIdStr];
+    //NSString *textureIdStr = [NSString stringWithFormat: @"%lld",textureId];
+    //FLTVideoPlayer* player = _players[textureIdStr];
+    FLTVideoPlayer* player = _players[@(textureId)];
 
     if([@"play" isEqualToString:call.method]){
         [player resume];
@@ -144,9 +144,12 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
     }else if([@"dispose" isEqualToString:call.method]){
          NSLog(@"FLTVideo  dispose   ----   ");
         [_registry unregisterTexture:textureId];
-       // [_players removeObjectForKey:@(textureId)];
-        //_players= nil;
-        [self disposeAllPlayers];
+        [player dispose];
+         player= nil;
+       
+        [_players removeObjectForKey:@(textureId)];
+       
+       // [self disposeAllPlayers];
         result(nil);
     }else{
         result(FlutterMethodNotImplemented);
@@ -157,7 +160,7 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
 - (void)onPlayerSetup:(FLTVideoPlayer*)player
          frameUpdater:(FLTFrameUpdater*)frameUpdater
                result:(FlutterResult)result {
-//    _players[@(player.textureId)] = player;
+    _players[@(player.textureId)] = player;
     result(@{@"textureId" : @(player.textureId)});
     
 }
