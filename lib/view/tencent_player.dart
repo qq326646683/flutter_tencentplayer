@@ -17,25 +17,25 @@ class TencentPlayer extends StatefulWidget {
 }
 
 class _TencentPlayerState extends State<TencentPlayer> {
-  VoidCallback _listener;
-  int _textureId;
-
-  _TencentPlayerState() {
-    _listener = () {
-      final int newTextureId = widget.controller.textureId;
-      if (newTextureId != _textureId) {
-        setState(() {
-          _textureId = newTextureId;
-        });
-      }
-    };
-  }
+//  VoidCallback _listener;
+//  int _textureId;
+//
+//  _TencentPlayerState() {
+//    _listener = () {
+//      final int newTextureId = widget.controller.textureId;
+//      if (newTextureId != _textureId) {
+//        setState(() {
+//          _textureId = newTextureId;
+//        });
+//      }
+//    };
+//  }
 
   @override
   void initState() {
     super.initState();
-    _textureId = widget.controller.textureId;
-    widget.controller.addListener(_listener);
+//    _textureId = widget.controller.textureId;
+//    widget.controller.addListener(_listener);
 
     print("TencentPlayer  initState");
   }
@@ -44,21 +44,31 @@ class _TencentPlayerState extends State<TencentPlayer> {
   void didUpdateWidget(TencentPlayer oldWidget) {
     //print("TencentPlayer  didUpdateWidget");
     super.didUpdateWidget(oldWidget);
-    oldWidget.controller.removeListener(_listener);
-    _textureId = widget.controller.textureId;
-    widget.controller.addListener(_listener);
+//    oldWidget.controller.removeListener(_listener);
+//    _textureId = widget.controller.textureId;
+//    widget.controller.addListener(_listener);
   }
 
   @override
   void deactivate() {
     print("TencentPlayer  deactivate");
     super.deactivate();
-    widget.controller.removeListener(_listener);
+//    widget.controller.removeListener(_listener);
   }
 
   @override
   Widget build(BuildContext context) {
-    return _textureId == null ? Container() : Texture(textureId: _textureId);
+
+
+    return  ValueListenableBuilder(
+      valueListenable: widget.controller,
+      builder: (BuildContext context, TencentPlayerValue value, Widget child){
+        return  Texture(textureId: widget.controller.textureId);
+      },
+    );
+//    ChangeNotifierProvider
+//
+//    return _textureId == null ? Container() : Texture(textureId: _textureId);
   }
 
   @override

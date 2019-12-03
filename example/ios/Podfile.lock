@@ -2,7 +2,7 @@ PODS:
   - Flutter (1.0.0)
   - flutter_tencentplayer (0.0.1):
     - Flutter
-    - TXLiteAVSDK_Player
+    - TXLiteAVSDK_Player (= 6.8.7969)
   - TXLiteAVSDK_Player (6.8.7969)
 
 DEPENDENCIES:
@@ -21,7 +21,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_tencentplayer: 7fe3de00727b08ad732b3ac7fa01fb7664691610
+  flutter_tencentplayer: a2e2650df150941cc7f6a694f1f18bd53b983bcd
   TXLiteAVSDK_Player: a3799add98c6802e382972d98cc0e7bacb50984f
 
 PODFILE CHECKSUM: 7fb83752f59ead6285236625b82473f90b1cb932

@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
 import 'package:flutter_tencentplayer_example/home_page.dart';
 
-//void main() => runApp(MyApp());
-void main() => runApp(launch);
+void main() => runApp(MyApp());
+//void main() => runApp(launch);
 
 class MyApp extends StatefulWidget {
   @override
@@ -54,12 +54,12 @@ class _MyAppState extends State<MyApp> {
   }
 
   addListener() {
-    listener = () {
-      if (!mounted) {
-        return;
-      }
-      setState(() {});
-    };
+//    listener = () {
+//      if (!mounted) {
+//        return;
+//      }
+//      setState(() {});
+//    };
     downloadListener = () {
       if (!mounted) {
         return;
@@ -81,7 +81,7 @@ class _MyAppState extends State<MyApp> {
         setState(() {});
       });
 
-    _controller.addListener(listener);
+//    _controller.addListener(listener);
     /// 下载目录  ios 的和android的不一致 注意在ios项目运行的时候传递ios的目录
     _downloadController = DownloadController('/storage/emulated/0/tencentdownload', appId: 1252463788);
     _downloadController.addListener(downloadListener);
@@ -90,7 +90,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     super.dispose();
-    _controller.removeListener(listener);
+//    _controller.removeListener(listener);
     _downloadController.removeListener(downloadListener);
   }
 
@@ -103,21 +103,42 @@ class _MyAppState extends State<MyApp> {
           child: Column(
             children: <Widget>[
               Container(
-                child: Stack(
-                  alignment: AlignmentDirectional.center,
-                  children: <Widget>[
-                    _controller.value.initialized
-                        ? AspectRatio(
-                            aspectRatio: _controller.value.aspectRatio,
-                            child: TencentPlayer(_controller),
-                          )
-                        : Container(),
-                    Center(
-                      child: _controller.value.isLoading
-                          ? CircularProgressIndicator()
-                          : SizedBox(),
-                    ),
-                  ],
+                child: ValueListenableBuilder(
+                  valueListenable: _controller,
+                  builder: (BuildContext  context,TencentPlayerValue value,Widget child){
+                    return Stack(
+                      alignment: AlignmentDirectional.center,
+                      children: <Widget>[
+                        _controller.value.initialized
+                            ? AspectRatio(
+                          aspectRatio: _controller.value.aspectRatio,
+                          child: TencentPlayer(_controller),
+                        )
+                            : Container(),
+                        Center(
+                          child: _controller.value.isLoading
+                              ? CircularProgressIndicator()
+                              : SizedBox(),
+                        ),
+                      ],
+                    );
+                  },
+//                  child: Stack(
+//                    alignment: AlignmentDirectional.center,
+//                    children: <Widget>[
+//                      _controller.value.initialized
+//                          ? AspectRatio(
+//                              aspectRatio: _controller.value.aspectRatio,
+//                              child: TencentPlayer(_controller),
+//                            )
+//                          : Container(),
+//                      Center(
+//                        child: _controller.value.isLoading
+//                            ? CircularProgressIndicator()
+//                            : SizedBox(),
+//                      ),
+//                    ],
+//                  ),
                 ),
               ),
               Expanded(
@@ -196,7 +217,7 @@ class _MyAppState extends State<MyApp> {
                               _controller.initialize().then((_) {
                                 setState(() {});
                               });
-                              _controller.addListener(listener);
+                            //  _controller.addListener(listener);
                             },
                             child: Text(
                               'm3u8点播',
@@ -211,7 +232,7 @@ class _MyAppState extends State<MyApp> {
                             _controller.initialize().then((_) {
                               setState(() {});
                             });
-                            _controller.addListener(listener);
+                           // _controller.addListener(listener);
                           },
                           child: Text(
                             '普通点播',
@@ -289,7 +310,7 @@ class _MyAppState extends State<MyApp> {
                               _controller.initialize().then((_) {
                                 setState(() {});
                               });
-                              _controller.addListener(listener);
+                           //   _controller.addListener(listener);
                             },
                             child: Text(
                               '标',
@@ -308,7 +329,7 @@ class _MyAppState extends State<MyApp> {
                               _controller.initialize().then((_) {
                                 setState(() {});
                               });
-                              _controller.addListener(listener);
+                          //    _controller.addListener(listener);
                             },
                             child: Text(
                               '高',
@@ -322,11 +343,11 @@ class _MyAppState extends State<MyApp> {
                             _controller = TencentPlayerController.network(spe3,
                                 playerConfig: PlayerConfig(
                                     startTime:
-                                        _controller.value.position.inSeconds));
+                                    _controller.value.position.inSeconds));
                             _controller.initialize().then((_) {
                               setState(() {});
                             });
-                            _controller.addListener(listener);
+                          //  _controller.addListener(listener);
                           },
                           child: Text(
                             '超',
