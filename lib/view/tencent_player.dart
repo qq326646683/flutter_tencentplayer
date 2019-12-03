@@ -36,14 +36,18 @@ class _TencentPlayerState extends State<TencentPlayer> {
     super.initState();
     _textureId = widget.controller.textureId;
     widget.controller.addListener(_listener);
+
+    print("TencentPlayer  initState");
   }
 
   @override
   void didUpdateWidget(TencentPlayer oldWidget) {
+    //print("TencentPlayer  didUpdateWidget");
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.controller.dataSource != widget.controller.dataSource) {
+//    if (oldWidget.controller.dataSource != widget.controller.dataSource) {
 //      oldWidget.controller.dispose();
-    }
+//      print("TencentPlayer  oldWidget  dispose");
+//    }
     oldWidget.controller.removeListener(_listener);
     _textureId = widget.controller.textureId;
     widget.controller.addListener(_listener);
@@ -51,6 +55,7 @@ class _TencentPlayerState extends State<TencentPlayer> {
 
   @override
   void deactivate() {
+    print("TencentPlayer  deactivate");
     super.deactivate();
     widget.controller.removeListener(_listener);
   }
@@ -58,5 +63,13 @@ class _TencentPlayerState extends State<TencentPlayer> {
   @override
   Widget build(BuildContext context) {
     return _textureId == null ? Container() : Texture(textureId: _textureId);
+  }
+
+
+  @override
+  void dispose() {
+    print("TencentPlayer  dispose");
+    widget.controller.dispose();
+    super.dispose();
   }
 }

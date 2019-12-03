@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
-import 'package:flutter_tencentplayer_example/home_page.dart';
+import 'package:flutter_tencentplayer_example/video_play_page2.dart';
 
-//void main() => runApp(MyApp());
-void main() => runApp(launch);
-
-class MyApp extends StatefulWidget {
+class VideoPlayPage extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  _VideoPlayPageState createState() => _VideoPlayPageState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _VideoPlayPageState extends State<VideoPlayPage> {
   TencentPlayerController _controller;
   VoidCallback listener;
 
@@ -42,18 +39,17 @@ class _MyAppState extends State<MyApp> {
   String downloadRes2 =
       '/storage/emulated/0/tencentdownload/txdownload/cf3e281653e562303c8c2b14729ba7f5.m3u8.sqlite';
 
+
+
   @override
   void initState() {
     super.initState();
-
-
     addListener();
     initPlatformState();
 
-
   }
 
-  addListener() {
+  addListener(){
     listener = () {
       if (!mounted) {
         return;
@@ -381,6 +377,22 @@ class _MyAppState extends State<MyApp> {
                           },
                           child: Text(
                             'download2 - stop',
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => VideoPlayPage2()));
+                          },
+                          child: Text(
+                            '进入下一个界面播放',
                             style: TextStyle(color: Colors.blue),
                           ),
                         ),

@@ -23,6 +23,8 @@
 NSObject<FlutterPluginRegistrar>* mRegistrar;
 //FLTVideoPlayer* player ;
 
+
+//第一次进来先执行的方法  注册插件
 - (instancetype)initWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
     self = [super init];
     NSAssert(self, @"super init cannot be nil");
@@ -31,7 +33,7 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
     _registrar = registrar;
     _players =  [NSMutableDictionary dictionary];
     _downLoads = [NSMutableDictionary dictionaryWithCapacity:1];
-     NSLog(@"FLTVideo  initWithRegistrar");
+     NSLog(@"FLTVideo     initWithRegistrar");
     return self;
 }
 
@@ -41,19 +43,18 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
                                      binaryMessenger:[registrar messenger]];
 //    FlutterTencentplayerPlugin* instance = [[FlutterTencentplayerPlugin alloc] init];
    FlutterTencentplayerPlugin* instance = [[FlutterTencentplayerPlugin alloc] initWithRegistrar:registrar];
-    
+    NSLog(@"FLTVideo     registerWithRegistrar");
     [registrar addMethodCallDelegate:instance channel:channel];
 
    
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-     //NSLog(@"FLTVideo  call name   %@",call.method);
+     NSLog(@"FLTVideo  call name   %@",call.method);
     if ([@"init" isEqualToString:call.method]) {
         [self disposeAllPlayers];
         result(nil);
     }else if([@"create" isEqualToString:call.method]){
-        NSLog(@"FLTVideo  create");
        // [self disposeAllPlayers];
         FLTFrameUpdater* frameUpdater = [[FLTFrameUpdater alloc] initWithRegistry:_registry];
         FLTVideoPlayer* player= [[FLTVideoPlayer alloc] initWithCall:call frameUpdater:frameUpdater registry:_registry messenger:_messenger];
@@ -142,14 +143,10 @@ NSObject<FlutterPluginRegistrar>* mRegistrar;
         [player setBitrateIndex:index];
         result(nil);
     }else if([@"dispose" isEqualToString:call.method]){
-         NSLog(@"FLTVideo  dispose   ----   ");
         [_registry unregisterTexture:textureId];
         [player dispose];
          player= nil;
-       
         [_players removeObjectForKey:@(textureId)];
-       
-       // [self disposeAllPlayers];
         result(nil);
     }else{
         result(FlutterMethodNotImplemented);

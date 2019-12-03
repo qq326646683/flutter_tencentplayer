@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
-import 'package:flutter_tencentplayer_example/home_page.dart';
 
-//void main() => runApp(MyApp());
-void main() => runApp(launch);
-
-class MyApp extends StatefulWidget {
+class VideoPlayPage2 extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  _VideoPlayPage2State createState() => _VideoPlayPage2State();
 }
 
-class _MyAppState extends State<MyApp> {
+class _VideoPlayPage2State extends State<VideoPlayPage2> {
   TencentPlayerController _controller;
   VoidCallback listener;
 
@@ -45,13 +41,11 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
-
     addListener();
     initPlatformState();
 
-
   }
+
 
   addListener() {
     listener = () {
@@ -67,14 +61,13 @@ class _MyAppState extends State<MyApp> {
       setState(() {});
     };
   }
-
   Future<void> initPlatformState() async {
     //点播
 //     _controller = TencentPlayerController.network(null, playerConfig:  PlayerConfig(
 //        auth: {"appId": , "fileId": ''}
 //    ))
     _controller = TencentPlayerController.network(spe3,
-        playerConfig: PlayerConfig(autoPlay: false))
+        playerConfig: PlayerConfig(autoPlay: true))
 
 //        _controller = TencentPlayerController.asset('static/tencent1.mp4')
 //        _controller = TencentPlayerController.file('/storage/emulated/0/test.mp4')

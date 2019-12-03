@@ -20,7 +20,7 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
   TencentPlayerController.file(String filePath, {this.playerConfig = const PlayerConfig()}): dataSource = filePath, dataSourceType = DataSourceType.file, super(TencentPlayerValue());
 
   bool _isDisposed = false;
-  Completer<void> _creatingCompleter;
+//  Completer<void> _creatingCompleter;
   StreamSubscription<dynamic> _eventSubscription;
   _VideoAppLifeCycleObserver _lifeCycleObserver;
 
@@ -30,7 +30,7 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
   Future<void> initialize() async {
     _lifeCycleObserver = _VideoAppLifeCycleObserver(this);
     _lifeCycleObserver.initialize();
-    _creatingCompleter = Completer<void>();
+//    _creatingCompleter = Completer<void>();
     Map<dynamic, dynamic> dataSourceDescription;
     switch (dataSourceType) {
       case DataSourceType.asset:
@@ -41,76 +41,95 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
         dataSourceDescription = <String, dynamic>{'uri': dataSource};
         break;
     }
+
     value = value.copyWith(isPlaying: playerConfig.autoPlay);
     dataSourceDescription.addAll(playerConfig.toJson());
+
+
+
     final Map<String, dynamic> response = await channel.invokeMapMethod<String, dynamic>(
       'create',
       dataSourceDescription,
     );
+
     _textureId = response['textureId'];
-    _creatingCompleter.complete(null);
-    final Completer<void> initializingCompleter = Completer<void>();
 
-    void eventListener(dynamic event) {
-      if (_isDisposed) {
-        return;
-      }
-      final Map<dynamic, dynamic> map = event;
-      switch (map['event']) {
-        case 'initialized':
-          value = value.copyWith(
-            duration: Duration(milliseconds: map['duration']),
-            size: Size(map['width']?.toDouble() ?? 0.0,
-                map['height']?.toDouble() ?? 0.0),
-          );
-          initializingCompleter.complete(null);
-          break;
-        case 'progress':
-          value = value.copyWith(
-            position: Duration(milliseconds: map['progress']),
-            duration: Duration(milliseconds: map['duration']),
-            playable: Duration(milliseconds: map['playable']),
-          );
-          break;
-        case 'loading':
-          value = value.copyWith(isLoading: true);
-          break;
-        case 'loadingend':
-          value = value.copyWith(isLoading: false);
-          break;
-        case 'playend':
-          value = value.copyWith(isPlaying: false, position: value.duration);
-          break;
-        case 'netStatus':
-          value = value.copyWith(netSpeed: map['netSpeed']);
-          break;
-        case 'error':
-          value = value.copyWith(errorDescription: map['errorInfo']);
-          break;
-      }
-    }
 
+//    _creatingCompleter.complete(null);
+//    final Completer<void> initializingCompleter = Completer<void>();
+
+    ///设置监听naive 返回的的数据
     _eventSubscription = _eventChannelFor(_textureId).receiveBroadcastStream().listen(eventListener);
-    return initializingCompleter.future;
+//    return initializingCompleter.future;
   }
+
+
 
   EventChannel _eventChannelFor(int textureId) {
     return EventChannel('flutter_tencentplayer/videoEvents$textureId');
   }
 
+
+  ///native 传递到flutter
+  void eventListener(dynamic event) {
+    if (_isDisposed) {
+      return;
+    }
+    final Map<dynamic, dynamic> map = event;
+    switch (map['event']) {
+      case 'initialized':
+        value = value.copyWith(
+          duration: Duration(milliseconds: map['duration']),
+          size: Size(map['width']?.toDouble() ?? 0.0,
+              map['height']?.toDouble() ?? 0.0),
+        );
+//          initializingCompleter.complete(null);
+        break;
+      case 'progress':
+        value = value.copyWith(
+          position: Duration(milliseconds: map['progress']),
+          duration: Duration(milliseconds: map['duration']),
+          playable: Duration(milliseconds: map['playable']),
+        );
+        break;
+      case 'loading':
+        value = value.copyWith(isLoading: true);
+        break;
+      case 'loadingend':
+        value = value.copyWith(isLoading: false);
+        break;
+      case 'playend':
+        value = value.copyWith(isPlaying: false, position: value.duration);
+        break;
+      case 'netStatus':
+        value = value.copyWith(netSpeed: map['netSpeed']);
+        break;
+      case 'error':
+        value = value.copyWith(errorDescription: map['errorInfo']);
+        break;
+    }
+  }
+
+
+
   @override
   Future dispose() async {
-    if (_creatingCompleter != null) {
-      await _creatingCompleter.future;
-      if (!_isDisposed) {
-        _isDisposed = true;
-        await _eventSubscription?.cancel();
-        await channel.invokeListMethod(
-            'dispose', <String, dynamic>{'textureId': _textureId});
-        _lifeCycleObserver.dispose();
-      }
+//    if (_creatingCompleter != null) {
+//      await _creatingCompleter.future;
+//      if (!_isDisposed) {
+//        _isDisposed = true;
+//        await _eventSubscription?.cancel();
+//        await channel.invokeListMethod('dispose', <String, dynamic>{'textureId': _textureId});
+//        _lifeCycleObserver.dispose();
+//      }
+//    }
+    if (!_isDisposed) {
+      _isDisposed = true;
+      await _eventSubscription?.cancel();
+      await channel.invokeListMethod('dispose', <String, dynamic>{'textureId': _textureId});
+      _lifeCycleObserver.dispose();
     }
-    _isDisposed = true;
+//    _isDisposed = true;
     super.dispose();
   }
 
@@ -164,7 +183,6 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
       'textureId': _textureId,
       'index': index,
     });
-    print('hahaha');
     value = value.copyWith(bitrateIndex: index);
   }
 
@@ -199,10 +217,12 @@ class _VideoAppLifeCycleObserver with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
+      ///组件进入暂停状态
       case AppLifecycleState.paused:
         _wasPlayingBeforePause = _controller.value.isPlaying;
         _controller.pause();
         break;
+      ///组件进入活跃状态
       case AppLifecycleState.resumed:
         if (_wasPlayingBeforePause) {
           _controller.play();
