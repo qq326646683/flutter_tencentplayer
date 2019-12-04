@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
 import 'package:flutter_tencentplayer_example/home_page.dart';
 
-void main() => runApp(MyApp());
-//void main() => runApp(launch);
+//void main() => runApp(MyApp());
+void main() => runApp(launch);
 
 class MyApp extends StatefulWidget {
   @override
@@ -46,11 +46,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-
     addListener();
     initPlatformState();
-
-
   }
 
   addListener() {
@@ -73,7 +70,8 @@ class _MyAppState extends State<MyApp> {
 //     _controller = TencentPlayerController.network(null, playerConfig:  PlayerConfig(
 //        auth: {"appId": , "fileId": ''}
 //    ))
-    _controller = TencentPlayerController.network(spe3, playerConfig: PlayerConfig(autoPlay: false))
+    _controller = TencentPlayerController.network(spe3,
+        playerConfig: PlayerConfig(autoPlay: false))
 
 //        _controller = TencentPlayerController.asset('static/tencent1.mp4')
 //        _controller = TencentPlayerController.file('/storage/emulated/0/test.mp4')
@@ -83,7 +81,9 @@ class _MyAppState extends State<MyApp> {
 
 //    _controller.addListener(listener);
     /// 下载目录  ios 的和android的不一致 注意在ios项目运行的时候传递ios的目录
-    _downloadController = DownloadController('/storage/emulated/0/tencentdownload', appId: 1252463788);
+    _downloadController = DownloadController(
+        '/storage/emulated/0/tencentdownload',
+        appId: 1252463788);
     _downloadController.addListener(downloadListener);
   }
 
@@ -98,334 +98,323 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Video Demo',
-      home: Scaffold(
-        body: Container(
-          child: Column(
-            children: <Widget>[
-              Container(
-                child: ValueListenableBuilder(
-                  valueListenable: _controller,
-                  builder: (BuildContext  context,TencentPlayerValue value,Widget child){
-                    return Stack(
+      home: ValueListenableBuilder(
+        valueListenable: _controller,
+        builder:
+            (BuildContext context, TencentPlayerValue value, Widget child) {
+          return Scaffold(
+            body: Container(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    child: Stack(
                       alignment: AlignmentDirectional.center,
                       children: <Widget>[
-                        _controller.value.initialized
-                            ? AspectRatio(
+//                        _controller.value.initialized ?
+                        AspectRatio(
                           aspectRatio: _controller.value.aspectRatio,
                           child: TencentPlayer(_controller),
-                        )
-                            : Container(),
+                        ),
                         Center(
                           child: _controller.value.isLoading
                               ? CircularProgressIndicator()
                               : SizedBox(),
                         ),
                       ],
-                    );
-                  },
-//                  child: Stack(
-//                    alignment: AlignmentDirectional.center,
-//                    children: <Widget>[
-//                      _controller.value.initialized
-//                          ? AspectRatio(
-//                              aspectRatio: _controller.value.aspectRatio,
-//                              child: TencentPlayer(_controller),
-//                            )
-//                          : Container(),
-//                      Center(
-//                        child: _controller.value.isLoading
-//                            ? CircularProgressIndicator()
-//                            : SizedBox(),
-//                      ),
-//                    ],
-//                  ),
-                ),
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView(
+                      children: <Widget>[
+                        Text(
+                          "播放网速：" + _controller.value.netSpeed.toString(),
+                          style: TextStyle(color: Colors.pink),
+                        ),
+                        Text(
+                          "错误：" + _controller.value.errorDescription.toString(),
+                          style: TextStyle(color: Colors.pink),
+                        ),
+                        Text(
+                          "播放进度：" + _controller.value.position.toString(),
+                          style: TextStyle(color: Colors.pink),
+                        ),
+                        Text(
+                          "缓冲进度：" + _controller.value.playable.toString(),
+                          style: TextStyle(color: Colors.pink),
+                        ),
+                        Text(
+                          "总时长：" + _controller.value.duration.toString(),
+                          style: TextStyle(color: Colors.pink),
+                        ),
+                        FlatButton(
+                            onPressed: () {
+                              _controller.seekTo(Duration(seconds: 5));
+                            },
+                            child: Text(
+                              'seekTo 00:00:05',
+                              style: TextStyle(color: Colors.blue),
+                            )),
+                        Row(
+                          children: <Widget>[
+                            FlatButton(
+                                onPressed: () {
+                                  _controller.setRate(1.0);
+                                },
+                                child: Text(
+                                  'setRate 1.0',
+                                  style: TextStyle(
+                                      color: _controller.value.rate == 1.0
+                                          ? Colors.red
+                                          : Colors.blue),
+                                )),
+                            FlatButton(
+                                onPressed: () {
+                                  _controller.setRate(1.5);
+                                },
+                                child: Text(
+                                  'setRate 1.5',
+                                  style: TextStyle(
+                                      color: _controller.value.rate == 1.5
+                                          ? Colors.red
+                                          : Colors.blue),
+                                )),
+                            FlatButton(
+                                onPressed: () {
+                                  _controller.setRate(2.0);
+                                },
+                                child: Text(
+                                  'setRate 2.0',
+                                  style: TextStyle(
+                                      color: _controller.value.rate == 2.0
+                                          ? Colors.red
+                                          : Colors.blue),
+                                )),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            FlatButton(
+                                onPressed: () {
+                                  _controller =
+                                      TencentPlayerController.network(mu);
+                                  _controller.initialize().then((_) {
+                                    setState(() {});
+                                  });
+                                  //  _controller.addListener(listener);
+                                },
+                                child: Text(
+                                  'm3u8点播',
+                                  style: TextStyle(
+                                      color:
+                                          _controller.dataSource == videoUrlAAA
+                                              ? Colors.red
+                                              : Colors.blue),
+                                )),
+                            FlatButton(
+                              onPressed: () {
+                                _controller =
+                                    TencentPlayerController.network(spe1);
+                                _controller.initialize().then((_) {
+                                  setState(() {});
+                                });
+                                // _controller.addListener(listener);
+                              },
+                              child: Text(
+                                '普通点播',
+                                style: TextStyle(
+                                    color: _controller.dataSource == videoUrlBBB
+                                        ? Colors.red
+                                        : Colors.blue),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.only(left: 15),
+                              child: Text(
+                                'm3u8点播 : ',
+                                style: TextStyle(color: Colors.orange),
+                              ),
+                            ),
+                            FlatButton(
+                              child: Text(
+                                '标',
+                                style: TextStyle(
+                                    color: _controller.value.bitrateIndex == 0
+                                        ? Colors.yellow
+                                        : Colors.green),
+                              ),
+                              onPressed: () {
+                                _controller.setBitrateIndex(0);
+                              },
+                            ),
+                            FlatButton(
+                              child: Text(
+                                '高',
+                                style: TextStyle(
+                                    color: _controller.value.bitrateIndex == 1
+                                        ? Colors.yellow
+                                        : Colors.green),
+                              ),
+                              onPressed: () {
+                                _controller.setBitrateIndex(1);
+                              },
+                            ),
+                            FlatButton(
+                              child: Text(
+                                '超',
+                                style: TextStyle(
+                                    color: _controller.value.bitrateIndex == 2
+                                        ? Colors.yellow
+                                        : Colors.green),
+                              ),
+                              onPressed: () {
+                                _controller.setBitrateIndex(2);
+                              },
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.only(left: 15),
+                              child: Text(
+                                '普通点播 : ',
+                                style: TextStyle(color: Colors.orange),
+                              ),
+                            ),
+                            FlatButton(
+                                onPressed: () {
+                                  _controller = TencentPlayerController.network(
+                                      spe1,
+                                      playerConfig: PlayerConfig(
+                                          startTime: _controller
+                                              .value.position.inSeconds));
+                                  _controller.initialize().then((_) {
+                                    setState(() {});
+                                  });
+                                  //   _controller.addListener(listener);
+                                },
+                                child: Text(
+                                  '标',
+                                  style: TextStyle(
+                                      color: _controller.dataSource == videoUrlB
+                                          ? Colors.red
+                                          : Colors.blue),
+                                )),
+                            FlatButton(
+                                onPressed: () {
+                                  _controller = TencentPlayerController.network(
+                                      spe2,
+                                      playerConfig: PlayerConfig(
+                                          startTime: _controller
+                                              .value.position.inSeconds));
+                                  _controller.initialize().then((_) {
+                                    setState(() {});
+                                  });
+                                  //    _controller.addListener(listener);
+                                },
+                                child: Text(
+                                  '高',
+                                  style: TextStyle(
+                                      color: _controller.dataSource == videoUrlG
+                                          ? Colors.red
+                                          : Colors.blue),
+                                )),
+                            FlatButton(
+                              onPressed: () {
+                                _controller = TencentPlayerController.network(
+                                    spe3,
+                                    playerConfig: PlayerConfig(
+                                        startTime: _controller
+                                            .value.position.inSeconds));
+                                _controller.initialize().then((_) {
+                                  setState(() {});
+                                });
+                                //  _controller.addListener(listener);
+                              },
+                              child: Text(
+                                '超',
+                                style: TextStyle(
+                                    color: _controller.dataSource == videoUrl
+                                        ? Colors.red
+                                        : Colors.blue),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            FlatButton(
+                              onPressed: () {
+                                _downloadController.dowload(
+                                    "4564972819220421305",
+                                    quanlity: 2);
+                              },
+                              child: Text(
+                                'download1',
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ),
+                            FlatButton(
+                              onPressed: () {
+                                _downloadController
+                                    .pauseDownload("4564972819220421305");
+                              },
+                              child: Text(
+                                'download1 - stop',
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            FlatButton(
+                              onPressed: () {
+                                _downloadController.dowload(testDownload);
+                              },
+                              child: Text(
+                                'download2',
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ),
+                            FlatButton(
+                              onPressed: () {
+                                _downloadController.pauseDownload(testDownload);
+                              },
+                              child: Text(
+                                'download2 - stop',
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(_downloadController.value != null
+                            ? _downloadController.value.toString()
+                            : '')
+                      ],
+                    ),
+                  )
+                ],
               ),
-              Expanded(
-                child: ListView(
-                  children: <Widget>[
-                    Text(
-                      "播放网速：" + _controller.value.netSpeed.toString(),
-                      style: TextStyle(color: Colors.pink),
-                    ),
-                    Text(
-                      "错误：" + _controller.value.errorDescription.toString(),
-                      style: TextStyle(color: Colors.pink),
-                    ),
-                    Text(
-                      "播放进度：" + _controller.value.position.toString(),
-                      style: TextStyle(color: Colors.pink),
-                    ),
-                    Text(
-                      "缓冲进度：" + _controller.value.playable.toString(),
-                      style: TextStyle(color: Colors.pink),
-                    ),
-                    Text(
-                      "总时长：" + _controller.value.duration.toString(),
-                      style: TextStyle(color: Colors.pink),
-                    ),
-                    FlatButton(
-                        onPressed: () {
-                          _controller.seekTo(Duration(seconds: 5));
-                        },
-                        child: Text(
-                          'seekTo 00:00:05',
-                          style: TextStyle(color: Colors.blue),
-                        )),
-                    Row(
-                      children: <Widget>[
-                        FlatButton(
-                            onPressed: () {
-                              _controller.setRate(1.0);
-                            },
-                            child: Text(
-                              'setRate 1.0',
-                              style: TextStyle(
-                                  color: _controller.value.rate == 1.0
-                                      ? Colors.red
-                                      : Colors.blue),
-                            )),
-                        FlatButton(
-                            onPressed: () {
-                              _controller.setRate(1.5);
-                            },
-                            child: Text(
-                              'setRate 1.5',
-                              style: TextStyle(
-                                  color: _controller.value.rate == 1.5
-                                      ? Colors.red
-                                      : Colors.blue),
-                            )),
-                        FlatButton(
-                            onPressed: () {
-                              _controller.setRate(2.0);
-                            },
-                            child: Text(
-                              'setRate 2.0',
-                              style: TextStyle(
-                                  color: _controller.value.rate == 2.0
-                                      ? Colors.red
-                                      : Colors.blue),
-                            )),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        FlatButton(
-                            onPressed: () {
-                              _controller = TencentPlayerController.network(mu);
-                              _controller.initialize().then((_) {
-                                setState(() {});
-                              });
-                            //  _controller.addListener(listener);
-                            },
-                            child: Text(
-                              'm3u8点播',
-                              style: TextStyle(
-                                  color: _controller.dataSource == videoUrlAAA
-                                      ? Colors.red
-                                      : Colors.blue),
-                            )),
-                        FlatButton(
-                          onPressed: () {
-                            _controller = TencentPlayerController.network(spe1);
-                            _controller.initialize().then((_) {
-                              setState(() {});
-                            });
-                           // _controller.addListener(listener);
-                          },
-                          child: Text(
-                            '普通点播',
-                            style: TextStyle(
-                                color: _controller.dataSource == videoUrlBBB
-                                    ? Colors.red
-                                    : Colors.blue),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(left: 15),
-                          child: Text(
-                            'm3u8点播 : ',
-                            style: TextStyle(color: Colors.orange),
-                          ),
-                        ),
-                        FlatButton(
-                          child: Text(
-                            '标',
-                            style: TextStyle(
-                                color: _controller.value.bitrateIndex == 0
-                                    ? Colors.yellow
-                                    : Colors.green),
-                          ),
-                          onPressed: () {
-                            _controller.setBitrateIndex(0);
-                          },
-                        ),
-                        FlatButton(
-                          child: Text(
-                            '高',
-                            style: TextStyle(
-                                color: _controller.value.bitrateIndex == 1
-                                    ? Colors.yellow
-                                    : Colors.green),
-                          ),
-                          onPressed: () {
-                            _controller.setBitrateIndex(1);
-                          },
-                        ),
-                        FlatButton(
-                          child: Text(
-                            '超',
-                            style: TextStyle(
-                                color: _controller.value.bitrateIndex == 2
-                                    ? Colors.yellow
-                                    : Colors.green),
-                          ),
-                          onPressed: () {
-                            _controller.setBitrateIndex(2);
-                          },
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(left: 15),
-                          child: Text(
-                            '普通点播 : ',
-                            style: TextStyle(color: Colors.orange),
-                          ),
-                        ),
-                        FlatButton(
-                            onPressed: () {
-                              _controller = TencentPlayerController.network(
-                                  spe1,
-                                  playerConfig: PlayerConfig(
-                                      startTime: _controller
-                                          .value.position.inSeconds));
-                              _controller.initialize().then((_) {
-                                setState(() {});
-                              });
-                           //   _controller.addListener(listener);
-                            },
-                            child: Text(
-                              '标',
-                              style: TextStyle(
-                                  color: _controller.dataSource == videoUrlB
-                                      ? Colors.red
-                                      : Colors.blue),
-                            )),
-                        FlatButton(
-                            onPressed: () {
-                              _controller = TencentPlayerController.network(
-                                  spe2,
-                                  playerConfig: PlayerConfig(
-                                      startTime: _controller
-                                          .value.position.inSeconds));
-                              _controller.initialize().then((_) {
-                                setState(() {});
-                              });
-                          //    _controller.addListener(listener);
-                            },
-                            child: Text(
-                              '高',
-                              style: TextStyle(
-                                  color: _controller.dataSource == videoUrlG
-                                      ? Colors.red
-                                      : Colors.blue),
-                            )),
-                        FlatButton(
-                          onPressed: () {
-                            _controller = TencentPlayerController.network(spe3,
-                                playerConfig: PlayerConfig(
-                                    startTime:
-                                    _controller.value.position.inSeconds));
-                            _controller.initialize().then((_) {
-                              setState(() {});
-                            });
-                          //  _controller.addListener(listener);
-                          },
-                          child: Text(
-                            '超',
-                            style: TextStyle(
-                                color: _controller.dataSource == videoUrl
-                                    ? Colors.red
-                                    : Colors.blue),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        FlatButton(
-                          onPressed: () {
-                            _downloadController.dowload("4564972819220421305",
-                                quanlity: 2);
-                          },
-                          child: Text(
-                            'download1',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        ),
-                        FlatButton(
-                          onPressed: () {
-                            _downloadController
-                                .pauseDownload("4564972819220421305");
-                          },
-                          child: Text(
-                            'download1 - stop',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        FlatButton(
-                          onPressed: () {
-                            _downloadController.dowload(testDownload);
-                          },
-                          child: Text(
-                            'download2',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        ),
-                        FlatButton(
-                          onPressed: () {
-                            _downloadController.pauseDownload(testDownload);
-                          },
-                          child: Text(
-                            'download2 - stop',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Text(_downloadController.value != null
-                        ? _downloadController.value.toString()
-                        : '')
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              _controller.value.isPlaying
-                  ? _controller.pause()
-                  : _controller.play();
-            });
-          },
-          child: Icon(
-            _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-          ),
-        ),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                setState(() {
+                  _controller.value.isPlaying
+                      ? _controller.pause()
+                      : _controller.play();
+                });
+              },
+              child: Icon(
+                _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+              ),
+            ),
+          );
+        },
       ),
     );
   }

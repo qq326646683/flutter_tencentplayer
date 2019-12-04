@@ -63,7 +63,9 @@ class _TencentPlayerState extends State<TencentPlayer> {
     return  ValueListenableBuilder(
       valueListenable: widget.controller,
       builder: (BuildContext context, TencentPlayerValue value, Widget child){
-        return  Texture(textureId: widget.controller.textureId);
+//        return  Texture(textureId: widget.controller.textureId);
+      var  _textureId = widget.controller.textureId;
+        return _textureId == null ? Container() : Texture(textureId: _textureId);
       },
     );
 //    ChangeNotifierProvider
