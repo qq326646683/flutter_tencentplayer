@@ -3,14 +3,14 @@ PODS:
   - flutter_tencentplayer (0.0.1):
     - Flutter
     - TXLiteAVSDK_Player
-  - TXLiteAVSDK_Player (6.6.7460)
+  - TXLiteAVSDK_Player (6.8.7969)
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
   - flutter_tencentplayer (from `.symlinks/plugins/flutter_tencentplayer/ios`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  trunk:
     - TXLiteAVSDK_Player
 
 EXTERNAL SOURCES:
@@ -22,8 +22,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_tencentplayer: 7fe3de00727b08ad732b3ac7fa01fb7664691610
-  TXLiteAVSDK_Player: 7f55053b2e03e0f58f366122693f88dfbb97e3cd
+  TXLiteAVSDK_Player: a3799add98c6802e382972d98cc0e7bacb50984f
 
 PODFILE CHECKSUM: 7fb83752f59ead6285236625b82473f90b1cb932
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.8.0
