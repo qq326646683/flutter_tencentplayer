@@ -42,7 +42,7 @@ class _TencentPlayerState extends State<TencentPlayer> {
   void didUpdateWidget(TencentPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.controller.dataSource != widget.controller.dataSource) {
-//      oldWidget.controller.dispose();
+      oldWidget.controller.dispose();
     }
     oldWidget.controller.removeListener(_listener);
     _textureId = widget.controller.textureId;

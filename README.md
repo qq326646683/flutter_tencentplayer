@@ -250,18 +250,6 @@ error | String | 下载的错误信息
 
 # 4.[Example](https://github.com/qq326646683/flutter_tencentplayer/blob/master/example/lib/main.dart)
 
-
-
-# 5.更新内容 
-    
-     1,升级IOS  LiteAVSDK 6.8.7969
- 
-
-# 6.解决的问题
-    
-    1,解决切换视频黑屏
-    2,解决IOS设置loop属性无效问题
-    3,再就是ios的必须设置了autoPlay为true才能播放，设置了false后，在后面执行 controller.play()也不会播放
     
 
 

@@ -1,7 +1,7 @@
 name: flutter_tencentplayer
 description: A new Flutter plugin.
-version: 0.0.2
-author: qq326646683<326646683@qq.com>
+version: 0.0.3
+author: qq326646683<326646683@qq.com>,yxwandroid<yxw_flutter@163.com>
 homepage: https://github.com/qq326646683/flutter_tencentplayer
 
 environment:

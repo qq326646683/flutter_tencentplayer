@@ -125,10 +125,9 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
   }
 
   Future<void> _applyPlayPause() async {
-//    if (!value.initialized || _isDisposed) {
-//    if (!value.initialized) {
-//      return;
-//    }
+    if (!value.initialized || _isDisposed) {
+      return;
+    }
     if (value.isPlaying) {
       await channel.invokeMethod('play', <String, dynamic>{'textureId': _textureId});
     } else {
