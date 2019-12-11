@@ -37,8 +37,8 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation(name: 'LiteAVSDK_Player_6.6.7458', ext: 'aar')
-    implementation(name: 'lib_tcsuperplayer', ext: 'aar')
+    implementation(name: 'LiteAVSDK_Player', ext: 'aar')
+    implementation(name: 'libsuperplayer', ext: 'aar')
 // 超级播放器弹幕集成的第三方库
     implementation 'com.github.ctiao:DanmakuFlameMaster:0.5.3'
 
