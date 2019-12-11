@@ -1,4 +1,4 @@
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
@@ -42,7 +42,7 @@ class _TencentPlayerState extends State<TencentPlayer> {
   void didUpdateWidget(TencentPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.controller.dataSource != widget.controller.dataSource) {
-      oldWidget.controller.dispose();
+      if(Platform.isAndroid) oldWidget.controller.dispose();
     }
     oldWidget.controller.removeListener(_listener);
     _textureId = widget.controller.textureId;
