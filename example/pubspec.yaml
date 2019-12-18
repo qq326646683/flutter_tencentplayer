@@ -20,6 +20,9 @@ dev_dependencies:
   flutter_tencentplayer:
     path: ../
 
+  screen: 0.0.5
+  flutter_forbidshot: 0.0.2
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -65,3 +68,12 @@ flutter:
 
   assets:
     - static/tencent1.mp4
+    - static/icon_back.png
+    - static/place_nodata.png
+    - static/player_lock.png
+    - static/player_pause.png
+    - static/player_play.png
+    - static/player_progress_img.png
+    - static/player_rotate.png
+    - static/player_unlock.png
+    - static/video_loading.png

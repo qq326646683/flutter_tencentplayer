@@ -41,13 +41,20 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_forbidshot:
+    dependency: "direct dev"
+    description:
+      name: flutter_forbidshot
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   flutter_tencentplayer:
     dependency: "direct dev"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.0.2"
+    version: "0.0.3"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -88,6 +95,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
+  screen:
+    dependency: "direct dev"
+    description:
+      name: screen
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.5"
   sky_engine:
     dependency: transitive
     description: flutter

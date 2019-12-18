@@ -80,7 +80,7 @@ class DownloadValue {
 
     return DownloadValue(
       downloadStatus: json['downloadStatus'] as String,
-      quanlity: int.parse(json['quanlity'].toString()),
+      quanlity: int.parse((json['quanlity'] ?? 0).toString()),
       duration: int.parse(json['duration']),
       size: int.parse(json['size']),
       downloadSize: int.parse(json['downloadSize']),
