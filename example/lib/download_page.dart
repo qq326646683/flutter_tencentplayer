@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
 import 'package:flutter_tencentplayer_example/full_video_page.dart';
 import 'package:flutter_tencentplayer_example/main.dart';
@@ -31,8 +34,16 @@ class _DownloadPageState extends State<DownloadPage> {
   @override
   void initState() {
     super.initState();
-    _downloadController = DownloadController('/storage/emulated/0/tencentdownload');
+    _init();
+  }
+
+  _init() async {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String appDocPath = appDocDir.path;
+    _downloadController = DownloadController(appDocPath);
     _downloadController.addListener(downloadListener);
+    setState(() {
+    });
   }
 
   @override
@@ -57,6 +68,9 @@ class _DownloadPageState extends State<DownloadPage> {
   }
 
   Widget getItem(int index) {
+    if (_downloadController == null) {
+      return SizedBox();
+    }
     DownloadValue value = _downloadController.value[urlList[index]];
     return Card(
       child: Padding(
