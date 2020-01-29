@@ -34,7 +34,7 @@ enum PlayType {
 }
 
 String networkMp4 = 'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f10.mp4';
-String liveUrl = 'http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4bdff799031868222924043041/playlist.m3u8';
+String liveUrl = 'http://5815.liveplay.myqcloud.com/live/5815_89aad37e06ff11e892905cb9018cf0d4.flv';
 String assetPath = 'static/tencent1.mp4';
 
 class ListPage extends StatelessWidget {

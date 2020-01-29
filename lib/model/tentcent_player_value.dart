@@ -12,7 +12,7 @@ class TencentPlayerValue {
   final double rate;
   final int bitrateIndex;
 
-  bool get initialized => duration.inMilliseconds != 0;
+  bool get initialized => size?.width != null;
 
   bool get hasError => errorDescription != null;
 
