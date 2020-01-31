@@ -8,3 +8,6 @@
 3. 修复autoPlay为false的bug
 4. 升级IOS/Android  LiteAVSDK 6.8.7969
 5. 修复退出播放页面还有声音
+
+## 0.0.4
+修复直播初始化bug
