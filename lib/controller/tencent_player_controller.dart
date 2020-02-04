@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
 
-
-
 class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
   int _textureId;
   final String dataSource;
@@ -12,19 +10,27 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
   final PlayerConfig playerConfig;
   MethodChannel channel = TencentPlayer.channel;
 
+  TencentPlayerController.asset(this.dataSource,
+      {this.playerConfig = const PlayerConfig()})
+      : dataSourceType = DataSourceType.asset,
+        super(TencentPlayerValue());
 
-  TencentPlayerController.asset(this.dataSource, {this.playerConfig = const PlayerConfig()}): dataSourceType = DataSourceType.asset, super(TencentPlayerValue());
+  TencentPlayerController.network(this.dataSource,
+      {this.playerConfig = const PlayerConfig()})
+      : dataSourceType = DataSourceType.network,
+        super(TencentPlayerValue());
 
-  TencentPlayerController.network(this.dataSource, {this.playerConfig = const PlayerConfig()}): dataSourceType = DataSourceType.network, super(TencentPlayerValue());
-
-  TencentPlayerController.file(String filePath, {this.playerConfig = const PlayerConfig()}): dataSource = filePath, dataSourceType = DataSourceType.file, super(TencentPlayerValue());
+  TencentPlayerController.file(String filePath,
+      {this.playerConfig = const PlayerConfig()})
+      : dataSource = filePath,
+        dataSourceType = DataSourceType.file,
+        super(TencentPlayerValue());
 
   bool _isDisposed = false;
   Completer<void> _creatingCompleter;
   StreamSubscription<dynamic> _eventSubscription;
   _VideoAppLifeCycleObserver _lifeCycleObserver;
 
-  @visibleForTesting
   int get textureId => _textureId;
 
   Future<void> initialize() async {
@@ -43,7 +49,8 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
     }
     value = value.copyWith(isPlaying: playerConfig.autoPlay);
     dataSourceDescription.addAll(playerConfig.toJson());
-    final Map<String, dynamic> response = await channel.invokeMapMethod<String, dynamic>(
+    final Map<String, dynamic> response =
+        await channel.invokeMapMethod<String, dynamic>(
       'create',
       dataSourceDescription,
     );
@@ -90,7 +97,9 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
       }
     }
 
-    _eventSubscription = _eventChannelFor(_textureId).receiveBroadcastStream().listen(eventListener);
+    _eventSubscription = _eventChannelFor(_textureId)
+        .receiveBroadcastStream()
+        .listen(eventListener);
     return initializingCompleter.future;
   }
 
@@ -129,9 +138,11 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
       return;
     }
     if (value.isPlaying) {
-      await channel.invokeMethod('play', <String, dynamic>{'textureId': _textureId});
+      await channel
+          .invokeMethod('play', <String, dynamic>{'textureId': _textureId});
     } else {
-      await channel.invokeMethod('pause', <String, dynamic>{'textureId': _textureId});
+      await channel
+          .invokeMethod('pause', <String, dynamic>{'textureId': _textureId});
     }
   }
 

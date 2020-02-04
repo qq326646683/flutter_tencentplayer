@@ -16,7 +16,9 @@ class TencentPlayerValue {
 
   bool get hasError => errorDescription != null;
 
-  double get aspectRatio => size != null ? size.width / size.height > 0.0 ? size.width / size.height : 1.0 : 1.0;
+  double get aspectRatio => size != null
+      ? size.width / size.height > 0.0 ? size.width / size.height : 1.0
+      : 1.0;
 
   TencentPlayerValue({
     this.duration = const Duration(),

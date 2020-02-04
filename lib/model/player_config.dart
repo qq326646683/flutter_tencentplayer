@@ -8,24 +8,23 @@ class PlayerConfig {
   final int startTime;
   final Map<String, dynamic> auth;
 
-
-  const PlayerConfig(
-      {this.autoPlay = true,
-        this.loop = false,
-        this.headers,
-        this.cachePath,
-        this.progressInterval = 200,
-        this.startTime,
-        this.auth,
-      });
+  const PlayerConfig({
+    this.autoPlay = true,
+    this.loop = false,
+    this.headers,
+    this.cachePath,
+    this.progressInterval = 200,
+    this.startTime,
+    this.auth,
+  });
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-    'autoPlay': this.autoPlay,
-    'loop': this.loop,
-    'headers': this.headers,
-    'cachePath': this.cachePath,
-    'progressInterval': this.progressInterval,
-    'startTime': this.startTime,
-    'auth': this.auth,
-  };
+        'autoPlay': this.autoPlay,
+        'loop': this.loop,
+        'headers': this.headers,
+        'cachePath': this.cachePath,
+        'progressInterval': this.progressInterval,
+        'startTime': this.startTime,
+        'auth': this.auth,
+      };
 }

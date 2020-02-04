@@ -1,5 +1,3 @@
-import 'dart:io';
-
 class DownloadValue {
   final String downloadStatus;
   final int quanlity;

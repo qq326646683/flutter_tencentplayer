@@ -53,6 +53,7 @@ class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
   Future dispose() async {
     _isDisposed = true;
     super.dispose();
+    _eventSubscription?.cancel();
   }
 
   Future pauseDownload(String urlOrFileId) async {
