@@ -33,7 +33,6 @@ class _FullVideoPageState extends State<FullVideoPage> {
   bool isLock = false;
   bool showCover = false;
   Timer timer;
-  bool leftRotate = true;
 
 
   _FullVideoPageState() {
@@ -50,6 +49,10 @@ class _FullVideoPageState extends State<FullVideoPage> {
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
     _initController();
     controller.initialize();
     controller.addListener(listener);
@@ -62,6 +65,9 @@ class _FullVideoPageState extends State<FullVideoPage> {
   Future dispose() {
     super.dispose();
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top, SystemUiOverlay.bottom]);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     controller.removeListener(listener);
     controller.dispose();
     ForbidShotUtil.disposeForbid();
@@ -95,114 +101,94 @@ class _FullVideoPageState extends State<FullVideoPage> {
           hideCover();
         },
         onDoubleTap: () {
-          if (!widget.showBottomWidget) return;
+          if (!widget.showBottomWidget || isLock) return;
           if (controller.value.isPlaying) {
             controller.pause();
           } else {
             controller.play();
           }
         },
-        child: RotatedBox(
-          quarterTurns: leftRotate ? 1 : 3,
-          child: Container(
-            color: Colors.black,
-            child: Stack(
-              overflow: Overflow.visible,
-              alignment: Alignment.center,
-              children: <Widget>[
-                /// 视频
-                controller.value.initialized
-                    ? AspectRatio(
-                  aspectRatio: controller.value.aspectRatio,
-                  child: TencentPlayer(controller),
-                ) : Image.asset('static/place_nodata.png'),
-                /// 半透明浮层
-                showCover ?Container(color: Color(0x7f000000)) : SizedBox(),
-                /// 处理滑动手势
-                Offstage(
-                  offstage: isLock,
-                  child: TencentPlayerGestureCover(
+        child:Container(
+          color: Colors.black,
+          child: Stack(
+            overflow: Overflow.visible,
+            alignment: Alignment.center,
+            children: <Widget>[
+              /// 视频
+              controller.value.initialized
+                  ? AspectRatio(
+                aspectRatio: controller.value.aspectRatio,
+                child: TencentPlayer(controller),
+              ) : Image.asset('static/place_nodata.png'),
+              /// 支撑全屏
+              Container(),
+              /// 半透明浮层
+              showCover ?Container(color: Color(0x7f000000)) : SizedBox(),
+              /// 处理滑动手势
+              Offstage(
+                offstage: isLock,
+                child: TencentPlayerGestureCover(
+                  controller: controller,
+                  showBottomWidget: widget.showBottomWidget,
+                  behavingCallBack: delayHideCover,
+                ),
+              ),
+              /// 加载loading
+              TencentPlayerLoading(controller: controller, iconW: 53,),
+              /// 头部浮层
+              !isLock && showCover ? Positioned(
+                top: 0,
+                left: MediaQuery.of(context).padding.top,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.only(top: 34, left: 10),
+                    child: Image.asset('static/icon_back.png', width: 20, height: 20, fit: BoxFit.contain, color: Colors.white,
+                    ),
+                  ),
+                ),
+              ) : SizedBox(),
+              /// 锁
+              showCover ? Align(
+                alignment: Alignment.centerLeft,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    setState(() {
+                      isLock = !isLock;
+                    });
+                    delayHideCover();
+                  },
+                  child: Container(
+                    color: Colors.transparent,
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top, right: 20, bottom: 20, left: MediaQuery.of(context).padding.top,),
+                    child: Image.asset(isLock ? 'static/player_lock.png' : 'static/player_unlock.png', width: 38, height: 38,),
+                  ),
+                ),
+              ): SizedBox(),
+              /// 进度、清晰度、速度
+              Offstage(
+                offstage: !widget.showBottomWidget,
+                child: Padding(
+                  padding: EdgeInsets.only(left: MediaQuery.of(context).padding.top, right: MediaQuery.of(context).padding.bottom),
+                  child: TencentPlayerBottomWidget(
+                    isShow: !isLock && showCover,
                     controller: controller,
-                    showBottomWidget: widget.showBottomWidget,
-                    behavingCallBack: delayHideCover,
-                  ),
-                ),
-                /// 加载loading
-                TencentPlayerLoading(controller: controller, iconW: 53,),
-                /// 头部浮层
-                !isLock && showCover ? Positioned(
-                  top: 0,
-                  left: MediaQuery.of(context).padding.top,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      padding: EdgeInsets.only(top: 34, left: 10),
-                      child: Image.asset('static/icon_back.png', width: 20, height: 20, fit: BoxFit.contain, color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ) : SizedBox(),
-                /// 锁
-                showCover ? Align(
-                  alignment: Alignment.centerLeft,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      setState(() {
-                        isLock = !isLock;
-                      });
+                    showClearBtn: widget.showClearBtn,
+                    behavingCallBack: () {
                       delayHideCover();
                     },
-                    child: Container(
-                      color: Colors.transparent,
-                      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top, right: 20, bottom: 20, left: MediaQuery.of(context).padding.top,),
-                      child: Image.asset(isLock ? 'static/player_lock.png' : 'static/player_unlock.png', width: 38, height: 38,),
-                    ),
-                  ),
-                ): SizedBox(),
-                ///旋转按钮
-                !isLock && showCover ? Align(
-                  alignment: Alignment.topRight,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      setState(() {
-                        leftRotate = !leftRotate;
-                      });
-                      delayHideCover();
+                    changeClear: (int index) {
+                      changeClear(index);
                     },
-                    child: Container(
-                      color: Colors.transparent,
-                      padding: EdgeInsets.only(top: 34, right: MediaQuery.of(context).padding.top, bottom: 20, left: 20,),
-                      child: Image.asset('static/player_rotate.png', width: 25, height: 25,),
-                    ),
-                  ),
-                ): SizedBox(),
-                /// 进度、清晰度、速度
-                Offstage(
-                  offstage: !widget.showBottomWidget,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: MediaQuery.of(context).padding.top, right: MediaQuery.of(context).padding.bottom),
-                    child: TencentPlayerBottomWidget(
-                      isShow: !isLock && showCover,
-                      controller: controller,
-                      showClearBtn: widget.showClearBtn,
-                      behavingCallBack: () {
-                        delayHideCover();
-                      },
-                      changeClear: (int index) {
-                        changeClear(index);
-                      },
-                    ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-
         ),
       ),
     );

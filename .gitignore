@@ -5,3 +5,5 @@
 .pub/
 .idea/
 build/
+example/ios/Flutter/Flutter.podspec
+example/ios/Flutter/flutter_export_environment.sh

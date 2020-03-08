@@ -1,9 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_tencentplayer_example/download_page.dart';
 import 'package:flutter_tencentplayer_example/full_video_page.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -34,7 +41,8 @@ enum PlayType {
 }
 
 String networkMp4 = 'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f10.mp4';
-String liveUrl = 'http://5815.liveplay.myqcloud.com/live/5815_89aad37e06ff11e892905cb9018cf0d4.flv';
+String liveUrl1 = 'http://5815.liveplay.myqcloud.com/live/5815_89aad37e06ff11e892905cb9018cf0d4.flv';
+String liveUrl2 = 'rtmp://58.200.131.2:1935/livetv/hunantv';
 String assetPath = 'static/tencent1.mp4';
 
 class ListPage extends StatelessWidget {
@@ -51,9 +59,15 @@ class ListPage extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('直播'),
+            title: Text('直播1'),
             onTap: () {
-              Navigator.of(context).push(CupertinoPageRoute(builder: (_) => FullVideoPage(playType: PlayType.network, dataSource: liveUrl, showBottomWidget: false, showClearBtn: false,)));
+              Navigator.of(context).push(CupertinoPageRoute(builder: (_) => FullVideoPage(playType: PlayType.network, dataSource: liveUrl1, showBottomWidget: false, showClearBtn: false,)));
+            },
+          ),
+          ListTile(
+            title: Text('直播2'),
+            onTap: () {
+              Navigator.of(context).push(CupertinoPageRoute(builder: (_) => FullVideoPage(playType: PlayType.network, dataSource: liveUrl2, showBottomWidget: false, showClearBtn: false,)));
             },
           ),
           ListTile(

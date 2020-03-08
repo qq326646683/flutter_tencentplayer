@@ -2,14 +2,14 @@ PODS:
   - Flutter (1.0.0)
   - flutter_forbidshot (0.0.1):
     - Flutter
-  - flutter_tencentplayer (0.0.1):
+  - flutter_tencentplayer (0.0.2):
     - Flutter
-    - TXLiteAVSDK_Player (= 6.8.7969)
+    - TXLiteAVSDK_Player (= 6.9.8341)
   - path_provider (0.0.1):
     - Flutter
   - screen (0.0.1):
     - Flutter
-  - TXLiteAVSDK_Player (6.8.7969)
+  - TXLiteAVSDK_Player (6.9.8341)
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
@@ -37,10 +37,10 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_forbidshot: feac5273065c5b7b6b57a9c6ec4936e3be473523
-  flutter_tencentplayer: a2e2650df150941cc7f6a694f1f18bd53b983bcd
+  flutter_tencentplayer: daa025748a9ab43116f40aaa690deed6e54a47db
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
-  TXLiteAVSDK_Player: a3799add98c6802e382972d98cc0e7bacb50984f
+  TXLiteAVSDK_Player: efe75b1e4f830b45bfd2500bc01f3d9bed178cef
 
 PODFILE CHECKSUM: 7fb83752f59ead6285236625b82473f90b1cb932
 
