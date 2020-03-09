@@ -46,6 +46,15 @@ android {
 //        }
     }
 
+    signingConfigs {
+        release {
+            storeFile     file("sign.keystore") // 替换成你实际密匙文件所在位置
+            storePassword     "123456" // 替换成你实际的密码
+            keyAlias    "sign.keystore" // 替换
+            keyPassword     "123456" // 替换
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
