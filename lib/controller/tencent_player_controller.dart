@@ -34,8 +34,10 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
   int get textureId => _textureId;
 
   Future<void> initialize() async {
-    _lifeCycleObserver = _VideoAppLifeCycleObserver(this);
-    _lifeCycleObserver.initialize();
+    if (this.playerConfig.supportBackground == false) {
+      _lifeCycleObserver = _VideoAppLifeCycleObserver(this);
+      _lifeCycleObserver.initialize();
+    }
     _creatingCompleter = Completer<void>();
     Map<dynamic, dynamic> dataSourceDescription;
     switch (dataSourceType) {
@@ -116,7 +118,7 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
         await _eventSubscription?.cancel();
         await channel.invokeListMethod(
             'dispose', <String, dynamic>{'textureId': _textureId});
-        _lifeCycleObserver.dispose();
+        _lifeCycleObserver?.dispose();
       }
     }
     _isDisposed = true;

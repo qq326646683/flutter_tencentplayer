@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
 
-
 class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
   final String savePath;
   final int appId;
   StreamSubscription<dynamic> _eventSubscription;
   MethodChannel channel = TencentPlayer.channel;
   bool _isDisposed = false;
-
 
   DownloadController(this.savePath, {this.appId})
       : super(Map<String, DownloadValue>());
@@ -88,9 +86,7 @@ class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
     notifyListeners();
   }
 
-
   EventChannel _eventChannelFor(String urlOrFileId) {
     return EventChannel('flutter_tencentplayer/downloadEvents$urlOrFileId');
   }
-
 }

@@ -116,6 +116,7 @@ cachePath | String |  | 缓存路径(边播放边下载)
 progressInterval | int | 200 | 播放进度回调频率(毫秒)
 startTime | int | 0 | 哪里开始播放(秒)
 auth | Map<String, dynamic> |  | 云点播视频源appId&fileId
+supportBackground | bool | false | 是否后台播放
 
 
 

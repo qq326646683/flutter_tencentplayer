@@ -7,6 +7,8 @@ class PlayerConfig {
   // 单位:秒
   final int startTime;
   final Map<String, dynamic> auth;
+  // 后台播放
+  final bool supportBackground;
 
   const PlayerConfig({
     this.autoPlay = true,
@@ -16,6 +18,7 @@ class PlayerConfig {
     this.progressInterval = 200,
     this.startTime,
     this.auth,
+    this.supportBackground = false,
   });
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -26,5 +29,6 @@ class PlayerConfig {
         'progressInterval': this.progressInterval,
         'startTime': this.startTime,
         'auth': this.auth,
+        'supportBackground': this.supportBackground,
       };
 }

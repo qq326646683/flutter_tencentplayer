@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
 
-
 class TencentPlayer extends StatefulWidget {
   static MethodChannel channel = const MethodChannel('flutter_tencentplayer')
     ..invokeMethod<void>('init');
@@ -42,7 +41,7 @@ class _TencentPlayerState extends State<TencentPlayer> {
   void didUpdateWidget(TencentPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.controller.dataSource != widget.controller.dataSource) {
-      if(Platform.isAndroid) oldWidget.controller.dispose();
+      if (Platform.isAndroid) oldWidget.controller.dispose();
     }
     oldWidget.controller.removeListener(_listener);
     _textureId = widget.controller.textureId;

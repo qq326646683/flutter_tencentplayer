@@ -1,3 +1,6 @@
+## 0.3.0
+1.PlayerConfig添加是否后台播放supportBackground
+
 ## 0.2.0
 1. 支持androidX
 2. 升级腾讯播放器sdk
