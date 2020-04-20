@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tencentplayer_example/download_page.dart';
 import 'package:flutter_tencentplayer_example/full_video_page.dart';
+import 'package:flutter_tencentplayer_example/window_video_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +27,7 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         routes: {
           '/': (_) => ListPage(),
+          'window': (_) => WindowVideoPage(),
           'full': (_) => FullVideoPage(),
           'download': (_) => DownloadPage(),
         }
@@ -52,6 +54,12 @@ class ListPage extends StatelessWidget {
       appBar: AppBar(title: Text('腾讯播放器Demo'),),
       body: ListView(
         children: <Widget>[
+          ListTile(
+            title: Text('小窗视频'),
+            onTap: () {
+              Navigator.of(context).push(CupertinoPageRoute(builder: (_) => WindowVideoPage(playType: PlayType.network, dataSource: networkMp4,)));
+            },
+          ),
           ListTile(
             title: Text('网络视频'),
             onTap: () {

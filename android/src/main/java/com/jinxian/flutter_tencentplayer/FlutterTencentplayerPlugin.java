@@ -4,6 +4,7 @@ import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.LongSparseArray;
+import android.view.OrientationEventListener;
 import android.view.Surface;
 
 import io.flutter.plugin.common.MethodCall;
@@ -56,6 +57,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
 
         private final Registrar mRegistrar;
 
+        private OrientationEventListener orientationEventListener;
 
 
         TencentPlayer(
@@ -78,6 +80,25 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
             setFlutterBridge(eventChannel, textureEntry, result);
 
             setPlaySource(call);
+
+            setOrientationEventListener();
+
+        }
+
+        private void setOrientationEventListener() {
+            orientationEventListener = new OrientationEventListener(mRegistrar.context()) {
+                @Override
+                public void onOrientationChanged(int orientation) {
+                    if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) {
+                        return;  //手机平放时，检测不到有效的角度
+                    }
+                    Map<String, Object> orientationMap = new HashMap<>();
+                    orientationMap.put("event", "orientation");
+                    orientationMap.put("orientation", orientation);
+                    eventSink.success(orientationMap);
+                }
+            };
+            orientationEventListener.enable();
         }
 
 
@@ -270,6 +291,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
             if (surface != null) {
                 surface.release();
             }
+            orientationEventListener.disable();
         }
     }
     ///////////////////// TencentPlayer 结束////////////////////

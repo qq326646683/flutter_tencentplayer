@@ -1,3 +1,11 @@
+## 0.4.0
+1. 更新sdk:
+ios: 7.2.8927
+android: 7.2.8925
+2. TencentPlayerValue 添加手机旋转角度属性orientation (android only,ios有已知bug)
+3. Demo补充小窗、全屏切换
+4. Demo支持随手机旋转；🔒（icon）添加锁定旋转功能(android only,ios有已知bug)
+
 ## 0.3.0
 1.PlayerConfig添加是否后台播放supportBackground
 

@@ -28,6 +28,7 @@
         android:label="flutter_tencentplayer_example"
         tools:replace="android:label"
         android:usesCleartextTraffic="true"
+        android:screenOrientation="portrait"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

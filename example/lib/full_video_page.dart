@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tencentplayer_example/widget/tencent_player_bottom_widget.dart';
@@ -13,13 +14,14 @@ import 'package:flutter_tencentplayer_example/util/forbidshot_util.dart';
 class FullVideoPage extends StatefulWidget {
   PlayType playType;
   String dataSource;
+  TencentPlayerController controller;
 
   //UI
   bool showBottomWidget;
   bool showClearBtn;
 
 
-  FullVideoPage({this.showBottomWidget = true, this.showClearBtn = true, this.dataSource, this.playType = PlayType.network});
+  FullVideoPage({this.controller, this.showBottomWidget = true, this.showClearBtn = true, this.dataSource, this.playType = PlayType.network});
 
   @override
   _FullVideoPageState createState() => _FullVideoPageState();
@@ -54,7 +56,6 @@ class _FullVideoPageState extends State<FullVideoPage> {
       DeviceOrientation.landscapeRight,
     ]);
     _initController();
-    controller.initialize();
     controller.addListener(listener);
     hideCover();
     ForbidShotUtil.initForbid(context);
@@ -69,12 +70,18 @@ class _FullVideoPageState extends State<FullVideoPage> {
       DeviceOrientation.portraitUp,
     ]);
     controller.removeListener(listener);
-    controller.dispose();
+    if (widget.controller == null) {
+      controller.dispose();
+    }
     ForbidShotUtil.disposeForbid();
     Screen.keepOn(false);
   }
 
   _initController() {
+    if (widget.controller != null) {
+      controller = widget.controller;
+      return;
+    }
     switch (widget.playType) {
       case PlayType.network:
         controller = TencentPlayerController.network(widget.dataSource);
@@ -89,6 +96,7 @@ class _FullVideoPageState extends State<FullVideoPage> {
         controller = TencentPlayerController.network(null, playerConfig: PlayerConfig(auth: {"appId": 1252463788, "fileId": widget.dataSource}));
         break;
     }
+    controller.initialize();
   }
 
 
@@ -161,6 +169,19 @@ class _FullVideoPageState extends State<FullVideoPage> {
                       isLock = !isLock;
                     });
                     delayHideCover();
+                    if (Platform.isAndroid) {
+                      DeviceOrientation deviceOrientation = controller.value.orientation < 180 ? DeviceOrientation.landscapeRight : DeviceOrientation.landscapeLeft;
+                      if (isLock) {
+                        SystemChrome.setPreferredOrientations([
+                          deviceOrientation
+                        ]);
+                      } else {
+                        SystemChrome.setPreferredOrientations([
+                          DeviceOrientation.landscapeLeft,
+                          DeviceOrientation.landscapeRight,
+                        ]);
+                      }
+                    }
                   },
                   child: Container(
                     color: Colors.transparent,

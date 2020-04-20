@@ -78,3 +78,4 @@ flutter:
     - static/player_rotate.png
     - static/player_unlock.png
     - static/video_loading.png
+    - static/full_screen_on.png

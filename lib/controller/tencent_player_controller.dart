@@ -96,6 +96,9 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
         case 'error':
           value = value.copyWith(errorDescription: map['errorInfo']);
           break;
+        case 'orientation':
+          value = value.copyWith(orientation: map['orientation']);
+          break;
       }
     }
 

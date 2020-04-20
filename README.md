@@ -137,6 +137,7 @@ isLoading | bool | 是否在加载
 netSpeed | int | 视频播放网速
 rate | double | 播放速度
 bitrateIndex | int | 视频清晰度
+orientation | int | 手机旋转角度(android only)
 
 ### 4.<font color=#0000FF >Event</font> (播放器事件)
 
