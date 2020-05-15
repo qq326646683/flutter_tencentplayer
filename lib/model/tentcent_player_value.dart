@@ -59,7 +59,7 @@ class TencentPlayerValue {
       netSpeed: netSpeed ?? this.netSpeed,
       rate: rate ?? this.rate,
       bitrateIndex: bitrateIndex ?? this.bitrateIndex,
-      orientation: orientation?? this.orientation,
+      orientation: orientation ?? this.orientation,
     );
   }
 

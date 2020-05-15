@@ -1,3 +1,7 @@
+#
+## 0.5.0
+修复ios设置progressInterval无效
+
 ## 0.4.0
 1. 更新sdk:
 ios: 7.2.8927

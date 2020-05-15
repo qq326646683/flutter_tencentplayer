@@ -79,6 +79,13 @@ class ListPage extends StatelessWidget {
             },
           ),
           ListTile(
+            title: Text('file视频'),
+            subtitle: Text('（在/storage/emulated/0/test.mp4放对应视频，并打开文件读写权限）', style: TextStyle(fontSize: 10, color: Color(0xff999999)),),
+            onTap: () {
+              Navigator.of(context).push(CupertinoPageRoute(builder: (_) => FullVideoPage(playType: PlayType.file, dataSource: '/storage/emulated/0/test.mp4',)));
+            },
+          ),
+          ListTile(
             title: Text('asset视频'),
             onTap: () {
               Navigator.of(context).push(CupertinoPageRoute(builder: (_) => FullVideoPage(playType: PlayType.asset, dataSource: assetPath,)));

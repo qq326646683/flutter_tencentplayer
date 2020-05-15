@@ -2,9 +2,10 @@
 http://file.jinxianyun.com/tencentplayer.MP4
 
 demo apk：
-http://file.jinxianyun.com/flutter_tencentplayer_demo.apk
+http://file.jinxianyun.com/flutter_tencentplayer_0_5_0.apk
 
-![下载二维码](http://file.jinxianyun.com/tencent_qrcode.png)
+![](https://user-gold-cdn.xitu.io/2020/5/15/172166bc281e3c7a?w=256&h=256&f=png&s=6135)
+
 # 1.Setup
 ```
 flutter_tencentplayer: ${last_version}
