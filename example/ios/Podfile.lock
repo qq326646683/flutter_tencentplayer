@@ -4,12 +4,12 @@ PODS:
     - Flutter
   - flutter_tencentplayer (0.0.2):
     - Flutter
-    - TXLiteAVSDK_Player (= 7.2.8927)
+    - TXLiteAVSDK_Player (= 7.2.8932)
   - path_provider (0.0.1):
     - Flutter
   - screen (0.0.1):
     - Flutter
-  - TXLiteAVSDK_Player (7.2.8927)
+  - TXLiteAVSDK_Player (7.2.8932)
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
@@ -37,11 +37,11 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_forbidshot: feac5273065c5b7b6b57a9c6ec4936e3be473523
-  flutter_tencentplayer: e38a753197c226b8d4c11a746959ce1256c8591a
+  flutter_tencentplayer: 11f77b0f6bcfe917386b4b64804d2e3cdcd47dd9
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
-  TXLiteAVSDK_Player: d3025ba5cfe50e0debbffd94b15b018cf34fe201
+  TXLiteAVSDK_Player: 7e2f5854f131f0de16ffdefa35081a36bb4f1e93
 
 PODFILE CHECKSUM: 7fb83752f59ead6285236625b82473f90b1cb932
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.1

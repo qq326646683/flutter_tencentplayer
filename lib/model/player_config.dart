@@ -3,7 +3,8 @@ class PlayerConfig {
   final bool loop;
   final Map<String, String> headers;
   final String cachePath;
-  final int progressInterval;
+  // 单位:秒
+  final double progressInterval;
   // 单位:秒
   final int startTime;
   final Map<String, dynamic> auth;
@@ -15,7 +16,7 @@ class PlayerConfig {
     this.loop = false,
     this.headers,
     this.cachePath,
-    this.progressInterval = 200,
+    this.progressInterval = 1,
     this.startTime,
     this.auth,
     this.supportBackground = false,

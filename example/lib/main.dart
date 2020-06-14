@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_tencentplayer_example/auto_change_next_source_page.dart';
 import 'package:flutter_tencentplayer_example/download_page.dart';
 import 'package:flutter_tencentplayer_example/full_video_page.dart';
 import 'package:flutter_tencentplayer_example/window_video_page.dart';
@@ -95,6 +96,12 @@ class ListPage extends StatelessWidget {
             title: Text('下载播放视频'),
             onTap: () {
               Navigator.of(context).push(CupertinoPageRoute(builder: (_) => DownloadPage()));
+            },
+          ),
+          ListTile(
+            title: Text('自动切换集'),
+            onTap: () {
+              Navigator.of(context).push(CupertinoPageRoute(builder: (_) => AutoChangeNextSourcePage()));
             },
           ),
         ],

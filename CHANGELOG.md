@@ -1,4 +1,11 @@
 #
+## 0.6.0
+1. 更新sdk
+ios: 7.2.8932
+android: 7.2.8927
+2. 修复progressInterval参数，单位：秒
+3. Demo 添加自动切换下一集
+
 ## 0.5.0
 修复ios设置progressInterval无效
 

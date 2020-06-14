@@ -23,6 +23,7 @@ allprojects {
         flatDir {
             dirs "${plugins.get("flutter_tencentplayer")}android/libs"
         }
+        maven { url 'http://download.flutter.io' }
     }
 }
 
