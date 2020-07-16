@@ -1,4 +1,12 @@
 #
+## 0.7.0
+1. 更新sdk
+ios: 7.4.9203
+android: 7.4.9211
+2.修复https://github.com/qq326646683/flutter_tencentplayer/issues/43
+3.修改ios文件名防止和video_player冲突
+
+
 ## 0.6.0
 1. 更新sdk
 ios: 7.2.8932

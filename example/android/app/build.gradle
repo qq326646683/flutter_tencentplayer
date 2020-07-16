@@ -39,11 +39,6 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        // 打release需要👇代码
-//        ndk {
-//            //设置支持的SO库架构
-//            abiFilters 'armeabi-v7a'
-//        }
     }
 
     signingConfigs {
@@ -57,9 +52,13 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
+            ndk {
+                abiFilters 'armeabi-v7a'
+            }
+        }
+        debug {
+            signingConfig signingConfigs.release
         }
     }
 }

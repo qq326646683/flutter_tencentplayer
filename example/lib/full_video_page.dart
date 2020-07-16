@@ -150,7 +150,7 @@ class _FullVideoPageState extends State<FullVideoPage> {
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.pop(context, controller);
                   },
                   child: Container(
                     padding: EdgeInsets.only(top: 34, left: 10),

@@ -190,8 +190,11 @@ class _WindowVideoPageState extends State<WindowVideoPage> {
                 bottom: 20,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    Navigator.of(context).push(CupertinoPageRoute(builder: (_) => FullVideoPage(controller: controller, playType: PlayType.network)));
+                  onTap: () async {
+                    TencentPlayerController newController = await Navigator.of(context).push(CupertinoPageRoute(builder: (_) => FullVideoPage(controller: controller, playType: PlayType.network), fullscreenDialog: true));
+                    setState(() {
+                      controller = newController;
+                    });
                   },
                   child: Container(
                     padding: EdgeInsets.all(20),

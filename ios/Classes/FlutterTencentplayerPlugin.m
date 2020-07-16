@@ -1,8 +1,8 @@
 #import "FlutterTencentplayerPlugin.h"
 
-#import "FLTVideoPlayer.h"
-#import "FLTFrameUpdater.h"
-#import "FLTDownLoadManager.h"
+#import "TencentVideoPlayer.h"
+#import "TencentFrameUpdater.h"
+#import "TencentDownLoadManager.h"
 
 @interface FlutterTencentplayerPlugin ()
 
@@ -21,7 +21,7 @@
 @implementation FlutterTencentplayerPlugin
 
 NSObject<FlutterPluginRegistrar>* mRegistrar;
-FLTVideoPlayer* player ;
+TencentVideoPlayer* player ;
 
 - (instancetype)initWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
     self = [super init];
@@ -55,9 +55,9 @@ FLTVideoPlayer* player ;
     }else if([@"create" isEqualToString:call.method]){
         NSLog(@"FLTVideo  create");
         [self disposeAllPlayers];
-        FLTFrameUpdater* frameUpdater = [[FLTFrameUpdater alloc] initWithRegistry:_registry];
-//        FLTVideoPlayer*
-        player= [[FLTVideoPlayer alloc] initWithCall:call frameUpdater:frameUpdater registry:_registry messenger:_messenger];
+        TencentFrameUpdater* frameUpdater = [[TencentFrameUpdater alloc] initWithRegistry:_registry];
+//        TencentVideoPlayer*
+        player= [[TencentVideoPlayer alloc] initWithCall:call frameUpdater:frameUpdater registry:_registry messenger:_messenger];
         if (player) {
             [self onPlayerSetup:player frameUpdater:frameUpdater result:result];
         }
@@ -73,7 +73,7 @@ FLTVideoPlayer* player ;
         FlutterEventChannel* eventChannel = [FlutterEventChannel
                                              eventChannelWithName:channelUrl
                                              binaryMessenger:_messenger];
-       FLTDownLoadManager* downLoadManager = [[FLTDownLoadManager alloc] initWithMethodCall:call result:result];
+       TencentDownLoadManager* downLoadManager = [[TencentDownLoadManager alloc] initWithMethodCall:call result:result];
        [eventChannel setStreamHandler:downLoadManager];
        downLoadManager.eventChannel =eventChannel;
        [downLoadManager downLoad];
@@ -87,7 +87,7 @@ FLTVideoPlayer* player ;
         NSDictionary* argsMap = call.arguments;
         NSString* urlOrFileId = argsMap[@"urlOrFileId"];
         NSLog(@"下载相关    stopDownload  %@", urlOrFileId);
-        FLTDownLoadManager* downLoadManager =   _downLoads[urlOrFileId];
+        TencentDownLoadManager* downLoadManager =   _downLoads[urlOrFileId];
         if(downLoadManager!=nil){
            [downLoadManager stopDownLoad];
         }else{
@@ -110,7 +110,7 @@ FLTVideoPlayer* player ;
         return;
     }
     int64_t textureId = ((NSNumber*)argsMap[@"textureId"]).unsignedIntegerValue;
-//    FLTVideoPlayer* player = _players[@(textureId)];
+//    TencentVideoPlayer* player = _players[@(textureId)];
 
     if([@"play" isEqualToString:call.method]){
         [player resume];
@@ -150,8 +150,8 @@ FLTVideoPlayer* player ;
     
 }
 
-- (void)onPlayerSetup:(FLTVideoPlayer*)player
-         frameUpdater:(FLTFrameUpdater*)frameUpdater
+- (void)onPlayerSetup:(TencentVideoPlayer*)player
+         frameUpdater:(TencentFrameUpdater*)frameUpdater
                result:(FlutterResult)result {
 //    _players[@(player.textureId)] = player;
     result(@{@"textureId" : @(player.textureId)});
