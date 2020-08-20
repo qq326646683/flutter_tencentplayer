@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_tencentplayer_example/auto_change_next_source_page.dart';
 import 'package:flutter_tencentplayer_example/download_page.dart';
 import 'package:flutter_tencentplayer_example/full_video_page.dart';
+import 'package:flutter_tencentplayer_example/page/tiktok/tiktok_page.dart';
 import 'package:flutter_tencentplayer_example/window_video_page.dart';
 
 void main() {
@@ -102,6 +103,12 @@ class ListPage extends StatelessWidget {
             title: Text('自动切换集'),
             onTap: () {
               Navigator.of(context).push(CupertinoPageRoute(builder: (_) => AutoChangeNextSourcePage()));
+            },
+          ),
+          ListTile(
+            title: Text('仿抖音'),
+            onTap: () {
+              Navigator.of(context).push(CupertinoPageRoute(builder: (_) => TiktokPage()));
             },
           ),
         ],
