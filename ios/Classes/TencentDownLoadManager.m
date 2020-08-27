@@ -114,24 +114,26 @@
     NSString *size = [NSString stringWithFormat:@"%d",mediaInfo.size];
     NSString *downloadSize = [NSString stringWithFormat:@"%d",mediaInfo.downloadSize];
     NSString *progress = [NSString stringWithFormat:@"%f",mediaInfo.progress];
-    if (mediaInfo.dataSource!=nil) {
-        if(self->_eventSink!=nil){
-            NSMutableDictionary* paramDic = [NSMutableDictionary dictionary];
-            [paramDic setValue:@"error" forKey:@"downloadStatus"];
-            [paramDic setValue:quality forKey:@"quanlity"];
-            [paramDic setValue:duration forKey:@"duration"];
-            [paramDic setValue:size forKey:@"size"];
-            [paramDic setValue:downloadSize forKey:@"downloadSize"];
-            [paramDic setValue:progress forKey:@"progress"];
-            [paramDic setValue:mediaInfo.playPath forKey:@"playPath"];
-            [paramDic setValue:@(true) forKey:@"isStop"];
-            [paramDic setValue:mediaInfo.url forKey:@"url"];
+  
+    if(self->_eventSink != nil){
+        NSMutableDictionary* paramDic = [NSMutableDictionary dictionary];
+        [paramDic setValue:@"error" forKey:@"downloadStatus"];
+        [paramDic setValue:quality forKey:@"quanlity"];
+        [paramDic setValue:duration forKey:@"duration"];
+        [paramDic setValue:size forKey:@"size"];
+        [paramDic setValue:downloadSize forKey:@"downloadSize"];
+        [paramDic setValue:progress forKey:@"progress"];
+        [paramDic setValue:mediaInfo.playPath forKey:@"playPath"];
+        [paramDic setValue:@(true) forKey:@"isStop"];
+        [paramDic setValue:mediaInfo.url forKey:@"url"];
+        if (mediaInfo.dataSource != nil) {
             [paramDic setValue:mediaInfo.dataSource.auth.fileId forKey:@"fileId"];
-            [paramDic setValue:msg forKey:@"error"];
+        }
+        [paramDic setValue:msg forKey:@"error"];
 
-            self->_eventSink(paramDic);
-         }
-    }
+        self->_eventSink(paramDic);
+     }
+    
 }
 
 - (int)hlsKeyVerify:(TXVodDownloadMediaInfo *)mediaInfo url:(NSString *)url data:(NSData *)data {
@@ -148,25 +150,26 @@
     NSString *downloadSize = [NSString stringWithFormat:@"%d",mediaInfo.downloadSize];
     NSString *progress = [NSString stringWithFormat:@"%f",mediaInfo.progress];
    
-    if (mediaInfo.dataSource!=nil) {
-        //        [mediaInfo.dataSource auth];
-        if(self->_eventSink!=nil){
-            self->_eventSink(@{
-                               @"downloadStatus":type,
-                               @"quanlity":quality ,
-                                    @"duration":duration ,
-                                    @"size":size ,
-                                    @"downloadSize":downloadSize ,
-                                    @"progress":progress ,
-                                    @"playPath":mediaInfo.playPath ,
-                                    @"isStop":@(true) ,
-                                    @"url":mediaInfo.url ,
-                                    @"fileId":mediaInfo.dataSource.auth.fileId,
-                                 @"error":@"error" ,
 
-                               });
-         }
-    }
+    if (self->_eventSink != nil) {
+        NSMutableDictionary* paramDic = [NSMutableDictionary dictionary];
+        [paramDic setValue:type forKey:@"downloadStatus"];
+        [paramDic setValue:quality forKey:@"quality"];
+        [paramDic setValue:duration forKey:@"duration"];
+        [paramDic setValue:size forKey:@"size"];
+        [paramDic setValue:downloadSize forKey:@"downloadSize"];
+        [paramDic setValue:progress forKey:@"progress"];
+        [paramDic setValue:mediaInfo.playPath forKey:@"playPath"];
+        [paramDic setValue:@(true) forKey:@"isStop"];
+        [paramDic setValue:mediaInfo.url forKey:@"url"];
+        [paramDic setValue:@"error" forKey:@"error"];
+        if (mediaInfo.dataSource != nil) {
+            [paramDic setValue:mediaInfo.dataSource.auth.fileId forKey:@"fileId"];
+        }
+        
+        
+        self->_eventSink(paramDic);
+     }
     
 }
 
