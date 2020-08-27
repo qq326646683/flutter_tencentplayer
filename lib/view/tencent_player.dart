@@ -4,8 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
 
 class TencentPlayer extends StatefulWidget {
-  static MethodChannel channel = const MethodChannel('flutter_tencentplayer')
-    ..invokeMethod<void>('init');
+  static MethodChannel channel = const MethodChannel('flutter_tencentplayer')..invokeMethod<void>('init');
 
   final TencentPlayerController controller;
 

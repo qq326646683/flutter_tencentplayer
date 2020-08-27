@@ -3,11 +3,14 @@ class PlayerConfig {
   final bool loop;
   final Map<String, String> headers;
   final String cachePath;
+
   // 单位:秒
   final double progressInterval;
+
   // 单位:秒
   final int startTime;
   final Map<String, dynamic> auth;
+
   // 后台播放
   final bool supportBackground;
 

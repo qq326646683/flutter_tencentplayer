@@ -10,8 +10,7 @@ class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
   MethodChannel channel = TencentPlayer.channel;
   bool _isDisposed = false;
 
-  DownloadController(this.savePath, {this.appId})
-      : super(Map<String, DownloadValue>());
+  DownloadController(this.savePath, {this.appId}) : super(Map<String, DownloadValue>());
 
   void dowload(String urlOrFileId, {int quanlity}) async {
     Map<dynamic, dynamic> downloadInfoMap = {
@@ -42,9 +41,7 @@ class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
       notifyListeners();
     }
 
-    _eventSubscription = _eventChannelFor(urlOrFileId)
-        .receiveBroadcastStream()
-        .listen(eventListener);
+    _eventSubscription = _eventChannelFor(urlOrFileId).receiveBroadcastStream().listen(eventListener);
   }
 
   @override
