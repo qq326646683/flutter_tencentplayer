@@ -1,10 +1,17 @@
 #
+## 0.8.0
+1. 修复ios autoPlay:false导致不能播放bug
+2. 修复ios不能下载视频bug
+3. 更新sdk android: 7.6.9376  ios: 7.6.9355
+
+4. 优化value赋值
+
 ## 0.7.0
 1. 更新sdk
 ios: 7.4.9203
 android: 7.4.9211
-2.修复https://github.com/qq326646683/flutter_tencentplayer/issues/43
-3.修改ios文件名防止和video_player冲突
+2. 修复https://github.com/qq326646683/flutter_tencentplayer/issues/43
+3. 修改ios文件名防止和video_player冲突
 
 
 ## 0.6.0

@@ -75,10 +75,13 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
           initializingCompleter.complete(null);
           break;
         case 'progress':
+          Duration newProgress = Duration(milliseconds: map['progress']);
+          Duration newPlayable = Duration(milliseconds: map['playable']);
+          if (value.position == newProgress && value.playable == newPlayable) return;
           value = value.copyWith(
-            position: Duration(milliseconds: map['progress']),
+            position: newProgress,
             duration: Duration(milliseconds: map['duration']),
-            playable: Duration(milliseconds: map['playable']),
+            playable: newPlayable,
           );
           break;
         case 'loading':
@@ -91,6 +94,7 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
           value = value.copyWith(isPlaying: false, position: value.duration);
           break;
         case 'netStatus':
+          if (value.netSpeed == map['netSpeed']) return;
           value = value.copyWith(netSpeed: map['netSpeed']);
           break;
         case 'error':

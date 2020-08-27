@@ -2,9 +2,8 @@
 http://file.jinxianyun.com/tencentplayer.MP4
 
 demo apk：
-http://file.jinxianyun.com/flutter_tencentplayer_0_5_0.apk
+http://file.jinxianyun.com/flutter_tencentplayer_0_8_0.apk
 
-![](https://user-gold-cdn.xitu.io/2020/5/15/172166bc281e3c7a?w=256&h=256&f=png&s=6135)
 
 # 1.Setup
 ```
