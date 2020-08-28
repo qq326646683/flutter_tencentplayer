@@ -1,4 +1,8 @@
 #
+## 0.9.0
+1. 修复yaml指定包名类名
+
+
 ## 0.8.0
 1. 修复ios autoPlay:false导致不能播放bug
 2. 修复ios不能下载视频bug
