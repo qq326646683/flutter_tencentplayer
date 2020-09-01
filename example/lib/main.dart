@@ -1,11 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_tencentplayer_example/auto_change_next_source_page.dart';
-import 'package:flutter_tencentplayer_example/download_page.dart';
-import 'package:flutter_tencentplayer_example/full_video_page.dart';
-import 'package:flutter_tencentplayer_example/page/tiktok/tiktok_page.dart';
-import 'package:flutter_tencentplayer_example/window_video_page.dart';
+
+import 'page/index.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -82,9 +79,8 @@ class ListPage extends StatelessWidget {
           ),
           ListTile(
             title: Text('file视频'),
-            subtitle: Text('（在/storage/emulated/0/test.mp4放对应视频，并打开文件读写权限）', style: TextStyle(fontSize: 10, color: Color(0xff999999)),),
             onTap: () {
-              Navigator.of(context).push(CupertinoPageRoute(builder: (_) => FullVideoPage(playType: PlayType.file, dataSource: '/storage/emulated/0/test.mp4',)));
+              Navigator.of(context).push(CupertinoPageRoute(builder: (_) => FileVideoPage()));
             },
           ),
           ListTile(

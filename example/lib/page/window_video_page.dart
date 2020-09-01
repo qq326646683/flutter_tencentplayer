@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_tencentplayer_example/full_video_page.dart';
+import 'package:flutter_tencentplayer_example/page/index.dart';
 import 'package:flutter_tencentplayer_example/widget/tencent_player_bottom_widget.dart';
 import 'package:flutter_tencentplayer_example/widget/tencent_player_gesture_cover.dart';
 import 'package:flutter_tencentplayer_example/widget/tencent_player_loading.dart';

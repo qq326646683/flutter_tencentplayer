@@ -10,6 +10,8 @@
 //    CVPixelBufferRef pixelBufferNowRef;
     CVPixelBufferRef volatile _latestPixelBuffer;
     CVPixelBufferRef _lastBuffer;
+    //视频自带角度
+    NSNumber* _degree;
 }
 
 - (instancetype)initWithCall:(FlutterMethodCall *)call frameUpdater:(TencentFrameUpdater *)frameUpdater registry:(NSObject<FlutterTextureRegistry> *)registry messenger:(NSObject<FlutterBinaryMessenger>*)messenger{
@@ -85,6 +87,7 @@
     id  pathArg = argsMap[@"uri"];
     if(pathArg!=nil&&pathArg!=NULL&&![@"" isEqualToString:pathArg]&&pathArg!=[NSNull null]){
         NSLog(@"播放器启动方式1  play");
+        _degree = [NSNumber numberWithInteger:[self degressFromVideoFileWithURL: pathArg]];
         [_txPlayer startPlay:pathArg];
     }else{
         NSLog(@"播放器启动方式2  fileid");
@@ -160,13 +163,19 @@
             int64_t duration = [player duration];
             NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
             NSInteger  durationInt = [durationStr intValue];
+            
             if(self->_eventSink!=nil){
-                self->_eventSink(@{
-                    @"event":@"initialized",
-                    @"duration":@(durationInt),
-                    @"width":@([player width]),
-                    @"height":@([player height])
-                });
+                NSMutableDictionary* paramDic = [NSMutableDictionary dictionary];
+                [paramDic setValue:@"initialized" forKey:@"event"];
+                [paramDic setValue:@(durationInt) forKey:@"duration"];
+                [paramDic setValue:@([player width]) forKey:@"width"];
+                [paramDic setValue:@([player height]) forKey:@"height"];
+    
+                if (self->_degree != nil) {
+                    [paramDic setValue:@([self->_degree integerValue]) forKey:@"degree"];
+                }
+                
+                self->_eventSink(paramDic);
             }
             
         }else if(EvtID==PLAY_EVT_PLAY_PROGRESS){
@@ -385,4 +394,32 @@
     
 }
 
+- (NSUInteger)degressFromVideoFileWithURL:(NSString *)path
+{
+    NSUInteger degress = 0;
+   
+    //AVAsset *asset = [AVAsset assetWithURL:url];
+    AVURLAsset* videoAsset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath: path] options:nil];
+    NSArray *tracks = [videoAsset tracksWithMediaType:AVMediaTypeVideo];
+    if([tracks count] > 0) {
+        AVAssetTrack *videoTrack = [tracks objectAtIndex:0];
+        CGAffineTransform t = videoTrack.preferredTransform;
+       
+        if(t.a == 0 && t.b == 1.0 && t.c == -1.0 && t.d == 0){
+            // Portrait
+            degress = 90;
+        }else if(t.a == 0 && t.b == -1.0 && t.c == 1.0 && t.d == 0){
+            // PortraitUpsideDown
+            degress = 270;
+        }else if(t.a == 1.0 && t.b == 0 && t.c == 0 && t.d == 1.0){
+            // LandscapeRight
+            degress = 0;
+        }else if(t.a == -1.0 && t.b == 0 && t.c == 0 && t.d == -1.0){
+            // LandscapeLeft
+            degress = 180;
+        }
+    }
+   
+    return degress;
+}
 @end

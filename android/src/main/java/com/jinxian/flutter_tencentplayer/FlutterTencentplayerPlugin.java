@@ -1,6 +1,7 @@
 package com.jinxian.flutter_tencentplayer;
 
 import android.content.res.AssetManager;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.LongSparseArray;
@@ -48,6 +49,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
         TXVodPlayConfig mPlayConfig;
         private Surface surface;
         TXPlayerAuthBuilder authBuilder;
+        int degree = 0;
 
         private final TextureRegistry.SurfaceTextureEntry textureEntry;
 
@@ -190,7 +192,17 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
                     }
                 } else {
                     // file、 network播放
-                    mVodPlayer.startPlay(call.argument("uri").toString());
+                    String urlOrPath = call.argument("uri").toString();
+
+                    if (!urlOrPath.startsWith("http")) {
+                        // file
+                        MediaMetadataRetriever retr = new MediaMetadataRetriever();
+                        retr.setDataSource(urlOrPath);
+                        String rotation = retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+                        degree = Integer.parseInt(rotation);
+                    }
+
+                    mVodPlayer.startPlay(urlOrPath);
                 }
             }
         }
@@ -206,6 +218,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
                     preparedMap.put("duration", (int) player.getDuration());
                     preparedMap.put("width", player.getWidth());
                     preparedMap.put("height", player.getHeight());
+                    preparedMap.put("degree", degree);
                     eventSink.success(preparedMap);
                     break;
                 case TXLiveConstants.PLAY_EVT_PLAY_PROGRESS:

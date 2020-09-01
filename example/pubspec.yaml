@@ -23,6 +23,7 @@ dev_dependencies:
   screen: 0.0.5
   flutter_forbidshot: 0.0.2
   path_provider: 1.5.0
+  image_picker: 0.6.7+7
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

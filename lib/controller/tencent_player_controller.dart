@@ -66,6 +66,7 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
           value = value.copyWith(
             duration: Duration(milliseconds: map['duration']),
             size: Size(map['width']?.toDouble() ?? 0.0, map['height']?.toDouble() ?? 0.0),
+            degree: map['degree'] ?? 0,
           );
           initializingCompleter.complete(null);
           break;

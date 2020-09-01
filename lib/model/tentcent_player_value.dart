@@ -12,6 +12,7 @@ class TencentPlayerValue {
   final double rate;
   final int bitrateIndex;
   final int orientation;
+  final int degree;
 
   bool get initialized => size?.width != null;
 
@@ -31,6 +32,7 @@ class TencentPlayerValue {
     this.rate = 1.0,
     this.bitrateIndex = 0, //TODO 默认清晰度
     this.orientation = 0,
+    this.degree = 0,
   });
 
   TencentPlayerValue copyWith({
@@ -45,6 +47,7 @@ class TencentPlayerValue {
     double rate,
     int bitrateIndex,
     int orientation,
+    int degree,
   }) {
     return TencentPlayerValue(
       duration: duration ?? this.duration,
@@ -58,6 +61,7 @@ class TencentPlayerValue {
       rate: rate ?? this.rate,
       bitrateIndex: bitrateIndex ?? this.bitrateIndex,
       orientation: orientation ?? this.orientation,
+      degree: degree ?? this.degree,
     );
   }
 
@@ -74,6 +78,7 @@ class TencentPlayerValue {
         'rate: $rate),'
         'bitrateIndex: $bitrateIndex),'
         'orientation: $orientation),'
+        'degree: $degree),'
         'size: $size)';
   }
 }

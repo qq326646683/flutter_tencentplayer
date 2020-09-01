@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, readonly) bool disposed;
 @property(nonatomic, readonly) int64_t textureId;
 
+
 /**
  * 是否循环播放
  */

@@ -55,6 +55,6 @@ class _TencentPlayerState extends State<TencentPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return _textureId == null ? Container() : Texture(textureId: _textureId);
+    return _textureId == null ? Container() : RotatedBox(quarterTurns: (widget.controller.value.degree / 90).floor(), child: Texture(textureId: _textureId));
   }
 }
