@@ -23,7 +23,7 @@ http://file.jinxianyun.com/flutter_tencentplayer_0_8_0.apk
 
 # 0.Tip
 1. 必须真机
-2.android打release包必须加--no-shrink： flutter build apk --release --no-shrink
+2. android打release包必须加--no-shrink： flutter build apk --release --no-shrink
 
 # 1.Setup
 ```
