@@ -19,7 +19,7 @@
 http://file.jinxianyun.com/tencentplayer.MP4
 
 demo apk：
-http://file.jinxianyun.com/flutter_tencentplayer_0_8_0.apk
+http://file.jinxianyun.com/flutter_tencentplayer_0_11_0.apk
 
 # 0.Tip
 1. 必须真机

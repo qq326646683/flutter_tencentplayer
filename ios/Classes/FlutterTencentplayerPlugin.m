@@ -8,7 +8,7 @@
 
 @property(readonly, nonatomic) NSObject<FlutterTextureRegistry>* registry;
 @property(readonly, nonatomic) NSObject<FlutterBinaryMessenger>* messenger;
-//@property(readonly, nonatomic) NSMutableDictionary* players;
+@property(readonly, nonatomic) NSMutableDictionary* players;
 @property(readonly, nonatomic) NSMutableDictionary* downLoads;
 @property(readonly, nonatomic) NSObject<FlutterPluginRegistrar>* registrar;
 
@@ -21,7 +21,7 @@
 @implementation FlutterTencentplayerPlugin
 
 NSObject<FlutterPluginRegistrar>* mRegistrar;
-TencentVideoPlayer* player ;
+//TencentVideoPlayer* player ;
 
 - (instancetype)initWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
     self = [super init];
@@ -29,7 +29,7 @@ TencentVideoPlayer* player ;
     _registry = [registrar textures];
     _messenger = [registrar messenger];
     _registrar = registrar;
-   // _players = [NSMutableDictionary dictionaryWithCapacity:1];
+    _players = [NSMutableDictionary dictionaryWithCapacity:1];
     _downLoads = [NSMutableDictionary dictionaryWithCapacity:1];
      NSLog(@"FLTVideo  initWithRegistrar");
     return self;
@@ -47,6 +47,10 @@ TencentVideoPlayer* player ;
    
 }
 
+- (void)detachFromEngineForRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
+  [self disposeAllPlayers];
+}
+
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
      //NSLog(@"FLTVideo  call name   %@",call.method);
     if ([@"init" isEqualToString:call.method]) {
@@ -56,7 +60,7 @@ TencentVideoPlayer* player ;
         NSLog(@"FLTVideo  create");
         [self disposeAllPlayers];
         TencentFrameUpdater* frameUpdater = [[TencentFrameUpdater alloc] initWithRegistry:_registry];
-//        TencentVideoPlayer*
+        TencentVideoPlayer*
         player= [[TencentVideoPlayer alloc] initWithCall:call frameUpdater:frameUpdater registry:_registry messenger:_messenger];
         if (player) {
             [self onPlayerSetup:player frameUpdater:frameUpdater result:result];
@@ -110,7 +114,7 @@ TencentVideoPlayer* player ;
         return;
     }
     int64_t textureId = ((NSNumber*)argsMap[@"textureId"]).unsignedIntegerValue;
-//    TencentVideoPlayer* player = _players[@(textureId)];
+    TencentVideoPlayer* player = _players[@(textureId)];
 
     if([@"play" isEqualToString:call.method]){
         [player resume];
@@ -139,10 +143,9 @@ TencentVideoPlayer* player ;
         result(nil);
     }else if([@"dispose" isEqualToString:call.method]){
          NSLog(@"FLTVideo  dispose   ----   ");
+        [player dispose];
         [_registry unregisterTexture:textureId];
-       // [_players removeObjectForKey:@(textureId)];
-        //_players= nil;
-        [self disposeAllPlayers];
+        [_players removeObjectForKey:@(textureId)];
         result(nil);
     }else{
         result(FlutterMethodNotImplemented);
@@ -153,7 +156,7 @@ TencentVideoPlayer* player ;
 - (void)onPlayerSetup:(TencentVideoPlayer*)player
          frameUpdater:(TencentFrameUpdater*)frameUpdater
                result:(FlutterResult)result {
-//    _players[@(player.textureId)] = player;
+    _players[@(player.textureId)] = player;
     result(@{@"textureId" : @(player.textureId)});
     
 }
@@ -162,9 +165,10 @@ TencentVideoPlayer* player ;
      NSLog(@"FLTVideo 初始化播放器状态----------");
     // Allow audio playback when the Ring/Silent switch is set to silent
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
-    if(player){
-        [player dispose];
-        player = nil;
+    for (NSNumber* textureId in _players) {
+        [_registry unregisterTexture:[textureId unsignedIntegerValue]];
+        [[_players objectForKey:textureId] dispose];
     }
+    [_players removeAllObjects];
 }
 @end

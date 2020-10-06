@@ -4,8 +4,9 @@ import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
 class HomeTabItem extends StatefulWidget {
   final int index;
   final String url;
+  final bool isFocus;
 
-  HomeTabItem(this.index, this.url);
+  HomeTabItem(this.index, this.url, {this.isFocus});
 
   @override
   _HomeTabItemState createState() => _HomeTabItemState();
@@ -29,22 +30,42 @@ class _HomeTabItemState extends State<HomeTabItem> with AutomaticKeepAliveClient
   void initState() {
     super.initState();
     print('initState:${widget.index}:${widget.url}');
-    controller = TencentPlayerController.network('$fileBase${widget.url}', playerConfig: PlayerConfig(loop: true))
-      ..initialize()
-      ..addListener(listener);
+    if (widget.index == 0) {
+      controller = TencentPlayerController.network('$fileBase${widget.url}', playerConfig: PlayerConfig(loop: true))
+        ..initialize()
+        ..addListener(listener);
+    }
+  }
+
+  @override
+  void didUpdateWidget(HomeTabItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isFocus == false && widget.isFocus == true) {
+      print('获得焦点didUpdateWidget:${widget.index}:${widget.url}');
+      controller = TencentPlayerController.network('$fileBase${widget.url}', playerConfig: PlayerConfig(loop: true))
+        ..initialize()
+        ..addListener(listener);
+    } else {
+      print('失去焦点didUpdateWidget:${widget.index}:${widget.url}');
+      controller?.removeListener(listener);
+      controller?.pause();
+    }
   }
 
   @override
   void dispose() {
     print('dispose:${widget.index}:${widget.url}');
-    controller.removeListener(listener);
-    controller.dispose();
+    controller?.removeListener(listener);
+    controller?.dispose();
     super.dispose();
 
   }
 
   @override
   Widget build(BuildContext context) {
+    if (controller == null) {
+      return Image.asset('static/place_nodata.png');
+    }
     return controller.value.initialized
         ? GestureDetector(
             onTap: () {
