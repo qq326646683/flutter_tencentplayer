@@ -71,6 +71,7 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
           initializingCompleter.complete(null);
           break;
         case 'progress':
+          if (!value.isPlaying) return;
           Duration newProgress = Duration(milliseconds: map['progress']);
           Duration newPlayable = Duration(milliseconds: map['playable']);
           if (value.position == newProgress && value.playable == newPlayable) return;
