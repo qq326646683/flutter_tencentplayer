@@ -1,5 +1,7 @@
 ##### 作者其他文章推荐：
 
+###### [九、Flutter上线项目实战——图片视频预览](https://github.com/qq326646683/tech-article/blob/master/flutter/Flutter上线项目实战——图片视频预览.md)
+
 ###### [八、Flutter上线项目实战——环信客服插件](https://github.com/qq326646683/tech-article/blob/master/flutter/Flutter%E4%B8%8A%E7%BA%BF%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E7%8E%AF%E4%BF%A1%E5%AE%A2%E6%9C%8D%E6%8F%92%E4%BB%B6.md)
 
 ###### [七、Flutter上线项目实战——队列任务](https://github.com/qq326646683/tech-article/blob/master/flutter/Flutter%E4%B8%8A%E7%BA%BF%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E9%98%9F%E5%88%97%E4%BB%BB%E5%8A%A1.md)
