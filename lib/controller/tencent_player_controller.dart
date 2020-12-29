@@ -67,6 +67,7 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
             duration: Duration(milliseconds: map['duration']),
             size: Size(map['width']?.toDouble() ?? 0.0, map['height']?.toDouble() ?? 0.0),
             degree: map['degree'] ?? 0,
+            playerStatus: map['event']
           );
           initializingCompleter.complete(null);
           break;
@@ -79,26 +80,27 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
             position: newProgress,
             duration: Duration(milliseconds: map['duration']),
             playable: newPlayable,
+            playerStatus: map['event']
           );
           break;
         case 'loading':
-          value = value.copyWith(isLoading: true);
+          value = value.copyWith(isLoading: true, playerStatus: map['event']);
           break;
         case 'loadingend':
-          value = value.copyWith(isLoading: false);
+          value = value.copyWith(isLoading: false, playerStatus: map['event']);
           break;
         case 'playend':
-          value = value.copyWith(isPlaying: false, position: value.duration);
+          value = value.copyWith(isPlaying: false, position: value.duration, playerStatus: map['event']);
           break;
         case 'netStatus':
           if (value.netSpeed == map['netSpeed']) return;
-          value = value.copyWith(netSpeed: map['netSpeed']);
+          value = value.copyWith(netSpeed: map['netSpeed'], playerStatus: map['event']);
           break;
         case 'error':
-          value = value.copyWith(errorDescription: map['errorInfo']);
+          value = value.copyWith(errorDescription: map['errorInfo'], playerStatus: map['event']);
           break;
         case 'orientation':
-          value = value.copyWith(orientation: map['orientation']);
+          value = value.copyWith(orientation: map['orientation'], playerStatus: map['event']);
           break;
       }
     }

@@ -6,6 +6,7 @@ class TencentPlayerValue {
   final Duration playable;
   final bool isPlaying;
   final String errorDescription;
+  final String playerStatus;
   final Size size;
   final bool isLoading;
   final int netSpeed;
@@ -26,6 +27,7 @@ class TencentPlayerValue {
     this.playable = const Duration(),
     this.isPlaying = false,
     this.errorDescription,
+    this.playerStatus,
     this.size,
     this.isLoading = false,
     this.netSpeed,
@@ -41,6 +43,7 @@ class TencentPlayerValue {
     Duration playable,
     bool isPlaying,
     String errorDescription,
+    String playerStatus,
     Size size,
     bool isLoading,
     int netSpeed,
@@ -55,6 +58,7 @@ class TencentPlayerValue {
       playable: playable ?? this.playable,
       isPlaying: isPlaying ?? this.isPlaying,
       errorDescription: errorDescription ?? this.errorDescription,
+      playerStatus: playerStatus ?? this.playerStatus,
       size: size ?? this.size,
       isLoading: isLoading ?? this.isLoading,
       netSpeed: netSpeed ?? this.netSpeed,
@@ -73,6 +77,7 @@ class TencentPlayerValue {
         'playable: $playable, '
         'isPlaying: $isPlaying, '
         'errorDescription: $errorDescription),'
+        'playerStatus: $playerStatus),'
         'isLoading: $isLoading),'
         'netSpeed: $netSpeed),'
         'rate: $rate),'
