@@ -1,4 +1,9 @@
 #
+## 0.13.0
+1. 更新sdk android: 8.2.9809  ios: 8.2.9808
+2. 修复android progressIntervald单位
+3. 新增播放器事件监听的eventCode,参考[官方文档](https://cloud.tencent.com/document/product/881/20216#.E4.BA.8B.E4.BB.B6.E7.9B.91.E5.90.AC)
+
 ## 0.12.0
 修复android进度回弹问题
 

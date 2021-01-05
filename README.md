@@ -163,6 +163,8 @@ netSpeed | int | 视频播放网速
 rate | double | 播放速度
 bitrateIndex | int | 视频清晰度
 orientation | int | 手机旋转角度(android only)
+degree | int | 本地file视频自带旋转属性
+eventCode | int | 事件监听code
 
 ### 4.<font color=#0000FF >Event</font> (播放器事件)
 

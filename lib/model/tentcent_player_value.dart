@@ -13,12 +13,17 @@ class TencentPlayerValue {
   final int bitrateIndex;
   final int orientation;
   final int degree;
+  final int eventCode;
 
   bool get initialized => size?.width != null;
 
   bool get hasError => errorDescription != null;
 
-  double get aspectRatio => size != null ? size.width / size.height > 0.0 ? size.width / size.height : 1.0 : 1.0;
+  double get aspectRatio => size != null
+      ? size.width / size.height > 0.0
+          ? size.width / size.height
+          : 1.0
+      : 1.0;
 
   TencentPlayerValue({
     this.duration = const Duration(),
@@ -33,6 +38,7 @@ class TencentPlayerValue {
     this.bitrateIndex = 0, //TODO 默认清晰度
     this.orientation = 0,
     this.degree = 0,
+    this.eventCode,
   });
 
   TencentPlayerValue copyWith({
@@ -48,6 +54,7 @@ class TencentPlayerValue {
     int bitrateIndex,
     int orientation,
     int degree,
+    int eventCode,
   }) {
     return TencentPlayerValue(
       duration: duration ?? this.duration,
@@ -62,6 +69,7 @@ class TencentPlayerValue {
       bitrateIndex: bitrateIndex ?? this.bitrateIndex,
       orientation: orientation ?? this.orientation,
       degree: degree ?? this.degree,
+      eventCode: eventCode ?? this.eventCode,
     );
   }
 
@@ -79,7 +87,8 @@ class TencentPlayerValue {
         'bitrateIndex: $bitrateIndex),'
         'orientation: $orientation),'
         'degree: $degree),'
-        'size: $size)';
+        'size: $size),'
+        'eventCode: $eventCode),';
   }
 }
 

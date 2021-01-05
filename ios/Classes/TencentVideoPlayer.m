@@ -158,28 +158,27 @@
 -(void)onPlayEvent:(TXVodPlayer *)player event:(int)EvtID withParam:(NSDictionary *)param{
     
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSMutableDictionary* playEventDic = [NSMutableDictionary dictionary];
+        [playEventDic setValue:@(EvtID) forKey:@"eventCode"];
         
-        if(EvtID==PLAY_EVT_VOD_PLAY_PREPARED){
-            int64_t duration = [player duration];
-            NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
-            NSInteger  durationInt = [durationStr intValue];
-            
-            if(self->_eventSink!=nil){
-                NSMutableDictionary* paramDic = [NSMutableDictionary dictionary];
-                [paramDic setValue:@"initialized" forKey:@"event"];
-                [paramDic setValue:@(durationInt) forKey:@"duration"];
-                [paramDic setValue:@([player width]) forKey:@"width"];
-                [paramDic setValue:@([player height]) forKey:@"height"];
-    
+        switch (EvtID) {
+            case PLAY_EVT_VOD_PLAY_PREPARED: {
+                int64_t duration = [player duration];
+                NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
+                NSInteger  durationInt = [durationStr intValue];
+
+                [playEventDic setValue:@"initialized" forKey:@"event"];
+                [playEventDic setValue:@(durationInt) forKey:@"duration"];
+                [playEventDic setValue:@([player width]) forKey:@"width"];
+                [playEventDic setValue:@([player height]) forKey:@"height"];
+
                 if (self->_degree != nil) {
-                    [paramDic setValue:@([self->_degree integerValue]) forKey:@"degree"];
+                    [playEventDic setValue:@([self->_degree integerValue]) forKey:@"degree"];
                 }
-                
-                self->_eventSink(paramDic);
+                break;
             }
-            
-        }else if(EvtID==PLAY_EVT_PLAY_PROGRESS){
-            if ([player isPlaying]) {
+                
+            case PLAY_EVT_PLAY_PROGRESS: {
                 int64_t progress = [player currentPlaybackTime];
                 int64_t duration = [player duration];
                 int64_t playableDuration  = [player playableDuration];
@@ -189,78 +188,36 @@
                 NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
                 NSString *playableDurationStr = [NSString stringWithFormat: @"%ld", (long)playableDuration];
                 NSInteger  progressInt = [progressStr intValue]*1000;
-                NSInteger  durationint = [durationStr intValue]*1000;
+                NSInteger  durationInt = [durationStr intValue]*1000;
                 NSInteger  playableDurationInt = [playableDurationStr intValue]*1000;
-                //                NSLog(@"单精度浮点数： %d",progressInt);
-                //                NSLog(@"单精度浮点数： %d",durationint);
-                if(self->_eventSink!=nil){
-                    self->_eventSink(@{
-                        @"event":@"progress",
-                        @"progress":@(progressInt),
-                        @"duration":@(durationint),
-                        @"playable":@(playableDurationInt)
-                    });
-                }
-                
-            }
             
-        }else if(EvtID==PLAY_EVT_PLAY_LOADING){
-            if(self->_eventSink!=nil){
-                self->_eventSink(@{
-                    @"event":@"loading",
-                });
+                [playEventDic setValue:@"progress" forKey:@"event"];
+                [playEventDic setValue:@(progressInt) forKey:@"progress"];
+                [playEventDic setValue:@(durationInt) forKey:@"duration"];
+                [playEventDic setValue:@(playableDurationInt) forKey:@"playable"];
+                break;
             }
-            
-        }else if(EvtID==PLAY_EVT_VOD_LOADING_END){
-            if(self->_eventSink!=nil){
-                self->_eventSink(@{
-                    @"event":@"loadingend",
-                });
-            }
-            
-        }else if(EvtID==PLAY_EVT_PLAY_END){
-            if(self->_eventSink!=nil){
-                self->_eventSink(@{
-                    @"event":@"playend",
-                });
-            }
-            
-        }else if(EvtID==PLAY_ERR_NET_DISCONNECT){
-            if(self->_eventSink!=nil){
-                self->_eventSink(@{
-                    @"event":@"error",
-                    @"errorInfo":param[@"EVT_MSG"],
-                });
-                
-                self->_eventSink(@{
-                    @"event":@"disconnect",
-                });
-                
-            }
-            
-        }else if(EvtID==ERR_PLAY_LIVE_STREAM_NET_DISCONNECT){
-            if(self->_eventSink!=nil){
-                self->_eventSink(@{
-                    @"event":@"error",
-                    @"errorInfo":param[@"EVT_MSG"],
-                });
-            }
-        }else if(EvtID==WARNING_LIVE_STREAM_SERVER_RECONNECT){
-            if(self->_eventSink!=nil){
-                self->_eventSink(@{
-                    @"event":@"error",
-                    @"errorInfo":param[@"EVT_MSG"],
-                });
-            }
-        }else {
-            if(EvtID<0){
-                if(self->_eventSink!=nil){
-                    self->_eventSink(@{
-                        @"event":@"error",
-                        @"errorInfo":param[@"EVT_MSG"],
-                    });
-                }
-            }
+            case PLAY_EVT_PLAY_LOADING:
+                [playEventDic setValue:@"loading" forKey:@"event"];
+                break;
+            case PLAY_EVT_VOD_LOADING_END:
+                [playEventDic setValue:@"loadingend" forKey:@"event"];
+                break;
+            case PLAY_EVT_PLAY_END:
+                [playEventDic setValue:@"playend" forKey:@"event"];
+                break;
+
+            default:
+                break;
+        }
+        
+        if (EvtID < 0) {
+            [playEventDic setValue:@"error" forKey:@"event"];
+            [playEventDic setValue:param[@"EVT_MSG"] forKey:@"errorInfo"];
+        }
+        
+        if (self->_eventSink != nil) {
+            self->_eventSink(playEventDic);
         }
         
     });

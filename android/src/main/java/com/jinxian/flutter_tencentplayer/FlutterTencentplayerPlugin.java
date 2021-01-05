@@ -117,7 +117,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
                 mPlayConfig.setHeaders((Map<String, String>) call.argument("headers"));
             }
 
-            mPlayConfig.setProgressInterval(((Number) call.argument("progressInterval")).intValue());
+            mPlayConfig.setProgressInterval(((Number) call.argument("progressInterval")).intValue() * 1000);
             mVodPlayer.setConfig(this.mPlayConfig);
         }
 
@@ -209,57 +209,46 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
 
         // 播放器监听1
         @Override
-        public void onPlayEvent(TXVodPlayer player, int event, Bundle param) {
-            switch (event) {
+        public void onPlayEvent(TXVodPlayer player, int eventCode, Bundle param) {
+            Map<String, Object> playEventMap = new HashMap<>();
+            playEventMap.put("eventCode", eventCode);
+            switch (eventCode) {
                 //准备阶段
                 case TXLiveConstants.PLAY_EVT_VOD_PLAY_PREPARED:
-                    Map<String, Object> preparedMap = new HashMap<>();
-                    preparedMap.put("event", "initialized");
-                    preparedMap.put("duration", (int) player.getDuration());
-                    preparedMap.put("width", player.getWidth());
-                    preparedMap.put("height", player.getHeight());
-                    preparedMap.put("degree", degree);
-                    eventSink.success(preparedMap);
+                    playEventMap.put("event", "initialized");
+                    playEventMap.put("duration", (int) player.getDuration());
+                    playEventMap.put("width", player.getWidth());
+                    playEventMap.put("height", player.getHeight());
+                    playEventMap.put("degree", degree);
                     break;
                 case TXLiveConstants.PLAY_EVT_PLAY_PROGRESS:
-                    Map<String, Object> progressMap = new HashMap<>();
-                    progressMap.put("event", "progress");
-                    progressMap.put("progress", param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS));
-                    progressMap.put("duration", param.getInt(TXLiveConstants.EVT_PLAY_DURATION_MS));
-                    progressMap.put("playable", param.getInt(TXLiveConstants.EVT_PLAYABLE_DURATION_MS));
-                    eventSink.success(progressMap);
+                    playEventMap.put("event", "progress");
+                    playEventMap.put("progress", param.getInt(TXLiveConstants.EVT_PLAY_PROGRESS_MS));
+                    playEventMap.put("duration", param.getInt(TXLiveConstants.EVT_PLAY_DURATION_MS));
+                    playEventMap.put("playable", param.getInt(TXLiveConstants.EVT_PLAYABLE_DURATION_MS));
                     break;
                 case TXLiveConstants.PLAY_EVT_PLAY_LOADING:
-                    Map<String, Object> loadingMap = new HashMap<>();
-                    loadingMap.put("event", "loading");
-                    eventSink.success(loadingMap);
+                    playEventMap.put("event", "loading");
                     break;
                 case TXLiveConstants.PLAY_EVT_VOD_LOADING_END:
-                    Map<String, Object> loadingendMap = new HashMap<>();
-                    loadingendMap.put("event", "loadingend");
-                    eventSink.success(loadingendMap);
+                    playEventMap.put("event", "loadingend");
                     break;
                 case TXLiveConstants.PLAY_EVT_PLAY_END:
-                    Map<String, Object> playendMap = new HashMap<>();
-                    playendMap.put("event", "playend");
-                    eventSink.success(playendMap);
+                    playEventMap.put("event", "playend");
                     break;
                 case TXLiveConstants.PLAY_ERR_NET_DISCONNECT:
-                    Map<String, Object> disconnectMap = new HashMap<>();
-                    disconnectMap.put("event", "disconnect");
+                    playEventMap.put("event", "disconnect");
                     if (mVodPlayer != null) {
                         mVodPlayer.setVodListener(null);
                         mVodPlayer.stopPlay(true);
                     }
-                    eventSink.success(disconnectMap);
                     break;
             }
-            if (event < 0) {
-                Map<String, Object> errorMap = new HashMap<>();
-                errorMap.put("event", "error");
-                errorMap.put("errorInfo", param.getString(TXLiveConstants.EVT_DESCRIPTION));
-                eventSink.success(errorMap);
+            if (eventCode < 0) {
+                playEventMap.put("event", "error");
+                playEventMap.put("errorInfo", param.getString(TXLiveConstants.EVT_DESCRIPTION));
             }
+            eventSink.success(playEventMap);
         }
 
         // 播放器监听2

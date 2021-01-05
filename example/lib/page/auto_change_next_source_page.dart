@@ -5,10 +5,10 @@ import 'package:flutter_tencentplayer_example/util/common_util.dart';
 import 'package:screen/screen.dart';
 import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
 
-
 class AutoChangeNextSourcePage extends StatefulWidget {
   @override
-  _AutoChangeNextSourcePageState createState() => _AutoChangeNextSourcePageState();
+  _AutoChangeNextSourcePageState createState() =>
+      _AutoChangeNextSourcePageState();
 }
 
 class _AutoChangeNextSourcePageState extends State<AutoChangeNextSourcePage> {
@@ -16,13 +16,11 @@ class _AutoChangeNextSourcePageState extends State<AutoChangeNextSourcePage> {
   VoidCallback listener;
   int currentIndex = 0;
 
-
   List<String> urlList = [
     'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f10.mp4',
     'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f20.mp4',
     'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f30.mp4',
   ];
-
 
   _AutoChangeNextSourcePageState() {
     listener = () {
@@ -34,7 +32,6 @@ class _AutoChangeNextSourcePageState extends State<AutoChangeNextSourcePage> {
       }
       setState(() {});
     };
-
   }
 
   @override
@@ -46,7 +43,6 @@ class _AutoChangeNextSourcePageState extends State<AutoChangeNextSourcePage> {
     Screen.keepOn(true);
   }
 
-
   @override
   Future dispose() {
     super.dispose();
@@ -54,7 +50,6 @@ class _AutoChangeNextSourcePageState extends State<AutoChangeNextSourcePage> {
     controller.dispose();
     Screen.keepOn(false);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -64,9 +59,10 @@ class _AutoChangeNextSourcePageState extends State<AutoChangeNextSourcePage> {
           /// 视频
           controller.value.initialized
               ? AspectRatio(
-            aspectRatio: controller.value.aspectRatio,
-            child: TencentPlayer(controller),
-          ) : Image.asset('static/place_nodata.png'),
+                  aspectRatio: controller.value.aspectRatio,
+                  child: TencentPlayer(controller),
+                )
+              : Image.asset('static/place_nodata.png'),
           Text('${currentIndex + 1}集')
         ],
       ),
@@ -74,7 +70,7 @@ class _AutoChangeNextSourcePageState extends State<AutoChangeNextSourcePage> {
   }
 
   _next() {
-    currentIndex ++;
+    currentIndex++;
     controller?.removeListener(listener);
     controller?.pause();
     controller = TencentPlayerController.network(urlList[currentIndex % 3]);
