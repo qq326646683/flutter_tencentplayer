@@ -1,4 +1,7 @@
 ##### 作者其他文章推荐：
+###### [十一、Android实战——系统悬浮窗踩坑记](https://github.com/qq326646683/tech-article/blob/master/android/Android实战——系统悬浮窗踩坑记.md)
+
+###### [十、Flutter上线项目实战——性能优化篇(未完待续)](https://github.com/qq326646683/tech-article/blob/master/flutter/Flutter上线项目实战——性能优化篇(未完待续).md)
 
 ###### [九、Flutter上线项目实战——图片视频预览](https://github.com/qq326646683/tech-article/blob/master/flutter/Flutter上线项目实战——图片视频预览.md)
 
