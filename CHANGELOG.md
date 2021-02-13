@@ -1,4 +1,7 @@
 #
+## 0.9.0
+1. 添加参数sign
+
 ## 0.13.0
 1. 更新sdk android: 8.2.9809  ios: 8.2.9808
 2. 修复android progressIntervald单位

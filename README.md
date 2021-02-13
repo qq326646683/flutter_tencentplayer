@@ -143,7 +143,7 @@ headers | Map<String, String> |  | 请求头
 cachePath | String |  | 缓存路径(边播放边下载)
 progressInterval | int | 1 | 播放进度回调频率(秒)
 startTime | int | 0 | 哪里开始播放(秒)
-auth | Map<String, dynamic> |  | 云点播视频源appId&fileId
+auth | Map<String, dynamic> |  | 云点播视频源appId&fileId&sign
 supportBackground | bool | false | 是否后台播放
 
 

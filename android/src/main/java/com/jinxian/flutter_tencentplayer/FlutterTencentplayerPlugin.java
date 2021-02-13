@@ -164,6 +164,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
                 Map authMap = (Map<String, Object>)call.argument("auth");
                 authBuilder.setAppId(((Number)authMap.get("appId")).intValue());
                 authBuilder.setFileId(authMap.get("fileId").toString());
+                authBuilder.setSign(authMap.get("sign").toString());
                 mVodPlayer.startPlay(authBuilder);
             } else {
                 // asset播放
