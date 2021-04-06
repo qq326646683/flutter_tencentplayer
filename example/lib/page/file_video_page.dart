@@ -12,8 +12,8 @@ class FileVideoPage extends StatefulWidget {
 
 class _FileVideoPageState extends State<FileVideoPage> {
   ImagePicker picker = ImagePicker();
-  TencentPlayerController controller;
-  VoidCallback listener;
+  TencentPlayerController? controller;
+  VoidCallback? listener;
 
   _FileVideoPageState() {
     listener = () {
@@ -33,10 +33,10 @@ class _FileVideoPageState extends State<FileVideoPage> {
       body: controller?.value?.initialized == true
           ? GestureDetector(
               onTap: () {
-                if (controller.value.isPlaying) {
-                  controller.pause();
+                if (controller!.value.isPlaying) {
+                  controller!.pause();
                 } else {
-                  controller.play();
+                  controller!.play();
                 }
               },
               child: Stack(
@@ -44,10 +44,10 @@ class _FileVideoPageState extends State<FileVideoPage> {
                 alignment: Alignment.center,
                 children: [
                   AspectRatio(
-                    aspectRatio: controller.value.aspectRatio,
-                    child: TencentPlayer(controller),
+                    aspectRatio: controller!.value.aspectRatio,
+                    child: TencentPlayer(controller!),
                   ),
-                  !controller.value.isPlaying
+                  !controller!.value.isPlaying
                       ? Icon(
                           Icons.play_arrow,
                           size: 100,
@@ -75,12 +75,12 @@ class _FileVideoPageState extends State<FileVideoPage> {
   void initPlayer(String path) {
     controller = TencentPlayerController.file(path)
       ..initialize()
-      ..addListener(listener);
+      ..addListener(listener!);
   }
 
   @override
   void dispose() {
-    controller?.removeListener(listener);
+    controller?.removeListener(listener!);
     controller?.dispose();
     super.dispose();
   }

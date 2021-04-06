@@ -14,8 +14,8 @@ class DownloadPage extends StatefulWidget {
 }
 
 class _DownloadPageState extends State<DownloadPage> {
-  DownloadController _downloadController;
-  VoidCallback downloadListener;
+  DownloadController? _downloadController;
+  VoidCallback? downloadListener;
 
   List<String> urlList= [
     "http://1253131631.vod2.myqcloud.com/26f327f9vodgzp1253131631/f4bdff799031868222924043041/playlist.m3u8",
@@ -41,7 +41,7 @@ class _DownloadPageState extends State<DownloadPage> {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     String appDocPath = appDocDir.path;
     _downloadController = DownloadController(appDocPath);
-    _downloadController.addListener(downloadListener);
+    _downloadController!.addListener(downloadListener!);
     setState(() {
     });
   }
@@ -49,7 +49,7 @@ class _DownloadPageState extends State<DownloadPage> {
   @override
   void dispose() {
     super.dispose();
-    _downloadController.removeListener(downloadListener);
+    _downloadController!.removeListener(downloadListener!);
   }
 
   @override
@@ -71,7 +71,7 @@ class _DownloadPageState extends State<DownloadPage> {
     if (_downloadController == null) {
       return SizedBox();
     }
-    DownloadValue value = _downloadController.value[urlList[index]];
+    DownloadValue? value = _downloadController!.value[urlList[index]];
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -84,7 +84,7 @@ class _DownloadPageState extends State<DownloadPage> {
                   children: <Widget>[
                     Text(getStatusTxt(value?.downloadStatus ?? '')),
                     SizedBox(width: 10,),
-                    value != null ? Text('${(value.downloadSize/1024/1024).toStringAsFixed(2)}M/${(value.size/1024/1024).toStringAsFixed(2)}M') : SizedBox(),
+                    value != null ? Text('${((value.downloadSize)!/1024/1024).toStringAsFixed(2)}M/${((value.size)!/1024/1024).toStringAsFixed(2)}M') : SizedBox(),
                   ],
                 ),
                 SizedBox(width: 10,),
@@ -107,9 +107,9 @@ class _DownloadPageState extends State<DownloadPage> {
             GestureDetector(
               onTap: () {
                 if (value?.downloadStatus == 'progress') {
-                  _downloadController.pauseDownload(urlList[index]);
+                  _downloadController!.pauseDownload(urlList[index]);
                 } else {
-                  _downloadController.dowload(urlList[index]);
+                  _downloadController!.dowload(urlList[index]);
                 }
               },
               child: Text(getBtnTxt(value?.downloadStatus ?? ''), style: TextStyle(color: Colors.blue),),

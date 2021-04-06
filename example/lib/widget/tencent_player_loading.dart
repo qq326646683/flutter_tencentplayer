@@ -3,22 +3,22 @@ import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
 
 
 class TencentPlayerLoading extends StatelessWidget {
-  TencentPlayerController controller;
-  double iconW;
+  TencentPlayerController? controller;
+  double? iconW;
 
   TencentPlayerLoading({this.controller, this.iconW});
 
   @override
   Widget build(BuildContext context) {
     String tip = '';
-    if (!controller.value.initialized && controller.value.errorDescription == null) {
+    if (!controller!.value.initialized && controller!.value.errorDescription == null) {
       tip = '加载中...';
-    } else if (controller.value.errorDescription != null) {
-      tip = controller.value.errorDescription;
-    } else if(controller.value.isLoading) {
-      tip = '${controller.value.netSpeed}kb/s';
+    } else if (controller!.value.errorDescription != null) {
+      tip = controller!.value.errorDescription!;
+    } else if(controller!.value.isLoading) {
+      tip = '${controller!.value.netSpeed}kb/s';
     }
-    if (!controller.value.initialized || controller.value.errorDescription != null || controller.value.isLoading) {
+    if (!controller!.value.initialized || controller!.value.errorDescription != null || controller!.value.isLoading) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[

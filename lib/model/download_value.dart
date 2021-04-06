@@ -1,15 +1,15 @@
 class DownloadValue {
-  final String downloadStatus;
-  final int quanlity;
-  final int duration;
-  final int size;
-  final int downloadSize;
-  final double progress;
-  final String playPath;
-  final bool isStop;
-  final String url;
-  final String fileId;
-  final String error;
+  final String? downloadStatus;
+  final int? quanlity;
+  final int? duration;
+  final int? size;
+  final int? downloadSize;
+  final double? progress;
+  final String? playPath;
+  final bool? isStop;
+  final String? url;
+  final String? fileId;
+  final String? error;
 
   DownloadValue({
     this.downloadStatus,
@@ -26,17 +26,17 @@ class DownloadValue {
   });
 
   DownloadValue copyWith({
-    String downloadStatus,
-    int quanlity,
-    int duration,
-    int size,
-    int downloadSize,
-    double progress,
-    String playPath,
-    bool isStop,
-    String url,
-    String fileId,
-    String error,
+    String? downloadStatus,
+    int? quanlity,
+    int? duration,
+    int? size,
+    int? downloadSize,
+    double? progress,
+    String? playPath,
+    bool? isStop,
+    String? url,
+    String? fileId,
+    String? error,
   }) {
     return DownloadValue(
       downloadStatus: downloadStatus ?? this.downloadStatus,

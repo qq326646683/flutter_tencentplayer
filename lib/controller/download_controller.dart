@@ -5,14 +5,14 @@ import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
 
 class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
   final String savePath;
-  final int appId;
-  StreamSubscription<dynamic> _eventSubscription;
+  final int? appId;
+  StreamSubscription<dynamic>? _eventSubscription;
   MethodChannel channel = TencentPlayer.channel;
   bool _isDisposed = false;
 
   DownloadController(this.savePath, {this.appId}) : super(Map<String, DownloadValue>());
 
-  void dowload(String urlOrFileId, {int quanlity}) async {
+  void dowload(String urlOrFileId, {int? quanlity}) async {
     Map<dynamic, dynamic> downloadInfoMap = {
       "savePath": savePath,
       "urlOrFileId": urlOrFileId,
@@ -34,9 +34,9 @@ class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
       debugPrint(map.toString());
       DownloadValue downloadValue = DownloadValue.fromJson(map);
       if (downloadValue.fileId != null) {
-        value[downloadValue.fileId] = downloadValue;
+        value[downloadValue.fileId!] = downloadValue;
       } else {
-        value[downloadValue.url] = downloadValue;
+        value[downloadValue.url!] = downloadValue;
       }
       notifyListeners();
     }
@@ -48,7 +48,7 @@ class DownloadController extends ValueNotifier<Map<String, DownloadValue>> {
   Future dispose() async {
     _isDisposed = true;
     super.dispose();
-    _eventSubscription?.cancel();
+    _eventSubscription!.cancel();
   }
 
   Future pauseDownload(String urlOrFileId) async {

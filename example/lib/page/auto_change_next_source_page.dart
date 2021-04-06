@@ -12,8 +12,8 @@ class AutoChangeNextSourcePage extends StatefulWidget {
 }
 
 class _AutoChangeNextSourcePageState extends State<AutoChangeNextSourcePage> {
-  TencentPlayerController controller;
-  VoidCallback listener;
+  TencentPlayerController? controller;
+  VoidCallback? listener;
   int currentIndex = 0;
 
   List<String> urlList = [
@@ -27,7 +27,7 @@ class _AutoChangeNextSourcePageState extends State<AutoChangeNextSourcePage> {
       if (!mounted) {
         return;
       }
-      if (controller.value.position == controller.value.duration) {
+      if (controller!.value.position == controller!.value.duration) {
         CommonUtils.throttle(_next, durationTime: 3000);
       }
       setState(() {});
@@ -38,16 +38,16 @@ class _AutoChangeNextSourcePageState extends State<AutoChangeNextSourcePage> {
   void initState() {
     super.initState();
     controller = TencentPlayerController.network(urlList[0]);
-    controller.initialize();
-    controller.addListener(listener);
+    controller!.initialize();
+    controller!.addListener(listener!);
     Screen.keepOn(true);
   }
 
   @override
-  Future dispose() {
+  void dispose() {
     super.dispose();
-    controller.removeListener(listener);
-    controller.dispose();
+    controller!.removeListener(listener!);
+    controller!.dispose();
     Screen.keepOn(false);
   }
 
@@ -57,10 +57,10 @@ class _AutoChangeNextSourcePageState extends State<AutoChangeNextSourcePage> {
       body: Column(
         children: <Widget>[
           /// 视频
-          controller.value.initialized
+          controller!.value.initialized
               ? AspectRatio(
-                  aspectRatio: controller.value.aspectRatio,
-                  child: TencentPlayer(controller),
+                  aspectRatio: controller!.value.aspectRatio,
+                  child: TencentPlayer(controller!),
                 )
               : Image.asset('static/place_nodata.png'),
           Text('${currentIndex + 1}集')
@@ -71,10 +71,10 @@ class _AutoChangeNextSourcePageState extends State<AutoChangeNextSourcePage> {
 
   _next() {
     currentIndex++;
-    controller?.removeListener(listener);
+    controller?.removeListener(listener!);
     controller?.pause();
     controller = TencentPlayerController.network(urlList[currentIndex % 3]);
-    controller.initialize();
-    controller.addListener(listener);
+    controller?.initialize();
+    controller?.addListener(listener!);
   }
 }

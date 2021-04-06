@@ -8,10 +8,10 @@ import 'package:screen/screen.dart';
 class TencentPlayerGestureCover extends StatefulWidget {
   final TencentPlayerController controller;
   final bool showBottomWidget;
-  final VoidCallback behavingCallBack; //正在交互
+  final VoidCallback? behavingCallBack; //正在交互
 
   TencentPlayerGestureCover({
-    @required this.controller,
+    required this.controller,
     this.showBottomWidget = true,
     this.behavingCallBack,
   });
@@ -26,9 +26,9 @@ class _TencentPlayerGestureCoverState extends State<TencentPlayerGestureCover> {
 
   bool _controllerWasPlaying = false;
   bool showSeekText = false;
-  bool leftVerticalDrag;
+  bool? leftVerticalDrag;
 
-  Duration seekPos;
+  Duration? seekPos;
 
   //UI
   IconData iconData = Icons.volume_up;
@@ -36,7 +36,7 @@ class _TencentPlayerGestureCoverState extends State<TencentPlayerGestureCover> {
 
   @override
   Widget build(BuildContext context) {
-    Duration showDuration = seekPos != null ? seekPos : controller.value.position;
+    Duration? showDuration = seekPos != null ? seekPos : controller.value.position;
 
     return GestureDetector(
       key: currentKey,
@@ -59,7 +59,7 @@ class _TencentPlayerGestureCoverState extends State<TencentPlayerGestureCover> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Text(TimeUtil.formatDuration(showDuration), style: TextStyle(
+                    Text(TimeUtil.formatDuration(showDuration!), style: TextStyle(
                       color: Color(0xfffe373c),
                       fontSize: 18,
                     ),),
@@ -120,7 +120,7 @@ class _TencentPlayerGestureCoverState extends State<TencentPlayerGestureCover> {
         if (!widget.showBottomWidget) {
           return;
         }
-        await controller.seekTo(seekPos);
+        await controller.seekTo(seekPos!);
         seekPos = null;
         if (_controllerWasPlaying) {
           controller.play();
@@ -137,10 +137,10 @@ class _TencentPlayerGestureCoverState extends State<TencentPlayerGestureCover> {
 
   void seekToAbsolutePosition(Offset delta) {
     if (seekPos == null) return;
-    seekPos += Duration(milliseconds: 800) * delta.dx;
-    if (seekPos < Duration()) {
+    seekPos = seekPos! + Duration(milliseconds: 800) * delta.dx;
+    if (seekPos! < Duration()) {
       seekPos = Duration();
-    } else if (seekPos > controller.value.duration) {
+    } else if (seekPos! > controller.value.duration) {
       seekPos = controller.value.duration;
     }
     if (mounted) setState(() {});
@@ -153,8 +153,8 @@ class _TencentPlayerGestureCoverState extends State<TencentPlayerGestureCover> {
 
   double currentVolume = 0.0;
   _onVerticalDragStart(DragStartDetails details) async {
-    double width = WidgetUtil.findGlobalRect(currentKey).width;
-    double xOffSet = WidgetUtil.globalOffsetToLocal(currentKey, details.globalPosition).dx;
+    double width = WidgetUtil.findGlobalRect(currentKey)!.width;
+    double xOffSet = WidgetUtil.globalOffsetToLocal(currentKey, details.globalPosition)!.dx;
     leftVerticalDrag = xOffSet / width <= 0.5;
     if (leftVerticalDrag == false) {
       currentVolume = await FlutterForbidshot.volume;

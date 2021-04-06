@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TrianglePainter extends CustomPainter {
-  Paint mPaint;
+  late Paint mPaint;
   final BuildContext mContext;
   TrianglePainter(this.mContext) {
     mPaint = new Paint();

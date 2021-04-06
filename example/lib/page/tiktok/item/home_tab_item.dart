@@ -4,7 +4,7 @@ import 'package:flutter_tencentplayer/flutter_tencentplayer.dart';
 class HomeTabItem extends StatefulWidget {
   final int index;
   final String url;
-  final bool isFocus;
+  final bool? isFocus;
 
   HomeTabItem(this.index, this.url, {this.isFocus});
 
@@ -14,8 +14,8 @@ class HomeTabItem extends StatefulWidget {
 
 class _HomeTabItemState extends State<HomeTabItem> with AutomaticKeepAliveClientMixin<HomeTabItem>{
   String fileBase = 'http://file.jinxianyun.com/';
-  TencentPlayerController controller;
-  VoidCallback listener;
+  TencentPlayerController? controller;
+  VoidCallback? listener;
 
   _HomeTabItemState() {
     listener = () {
@@ -33,7 +33,7 @@ class _HomeTabItemState extends State<HomeTabItem> with AutomaticKeepAliveClient
     if (widget.index == 0) {
       controller = TencentPlayerController.network('$fileBase${widget.url}', playerConfig: PlayerConfig(loop: true))
         ..initialize()
-        ..addListener(listener);
+        ..addListener(listener!);
     }
   }
 
@@ -44,10 +44,10 @@ class _HomeTabItemState extends State<HomeTabItem> with AutomaticKeepAliveClient
       print('获得焦点didUpdateWidget:${widget.index}:${widget.url}');
       controller = TencentPlayerController.network('$fileBase${widget.url}', playerConfig: PlayerConfig(loop: true))
         ..initialize()
-        ..addListener(listener);
+        ..addListener(listener!);
     } else {
       print('失去焦点didUpdateWidget:${widget.index}:${widget.url}');
-      controller?.removeListener(listener);
+      controller?.removeListener(listener!);
       controller?.pause();
     }
   }
@@ -55,7 +55,7 @@ class _HomeTabItemState extends State<HomeTabItem> with AutomaticKeepAliveClient
   @override
   void dispose() {
     print('dispose:${widget.index}:${widget.url}');
-    controller?.removeListener(listener);
+    controller?.removeListener(listener!);
     controller?.dispose();
     super.dispose();
 
@@ -66,13 +66,13 @@ class _HomeTabItemState extends State<HomeTabItem> with AutomaticKeepAliveClient
     if (controller == null) {
       return Image.asset('static/place_nodata.png');
     }
-    return controller.value.initialized
+    return controller!.value.initialized
         ? GestureDetector(
             onTap: () {
-              if (controller.value.isPlaying) {
-                controller.pause();
+              if (controller!.value.isPlaying) {
+                controller!.pause();
               } else {
-                controller.play();
+                controller!.play();
               }
             },
             child: Stack(
@@ -80,10 +80,10 @@ class _HomeTabItemState extends State<HomeTabItem> with AutomaticKeepAliveClient
               alignment: Alignment.center,
               children: [
                 AspectRatio(
-                  aspectRatio: controller.value.aspectRatio,
-                  child: TencentPlayer(controller),
+                  aspectRatio: controller!.value.aspectRatio,
+                  child: TencentPlayer(controller!),
                 ),
-                !controller.value.isPlaying ? Icon(Icons.play_arrow, size: 100, color: Colors.white70,): SizedBox(),
+                !controller!.value.isPlaying ? Icon(Icons.play_arrow, size: 100, color: Colors.white70,): SizedBox(),
               ],
             ),
           )

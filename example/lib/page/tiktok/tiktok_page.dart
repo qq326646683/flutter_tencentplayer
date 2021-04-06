@@ -8,7 +8,7 @@ class TiktokPage extends StatefulWidget {
 }
 
 class _TiktokPageState extends State<TiktokPage> with TickerProviderStateMixin{
-  TabController tabController;
+  TabController? tabController;
   @override
   void initState() {
     super.initState();
