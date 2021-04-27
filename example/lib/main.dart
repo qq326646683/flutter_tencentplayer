@@ -42,7 +42,7 @@ enum PlayType {
 }
 
 String networkMp4 = 'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252463788/e1ab85305285890781763144364/v.f10.mp4';
-String liveUrl1 = 'http://5815.liveplay.myqcloud.com/live/5815_89aad37e06ff11e892905cb9018cf0d4.flv';
+String liveUrl1 = 'http://liteavapp.qcloud.com/live/liteavdemoplayerstreamid_demo1080p.flv';
 String liveUrl2 = 'rtmp://58.200.131.2:1935/livetv/hunantv';
 String assetPath = 'static/tencent1.mp4';
 

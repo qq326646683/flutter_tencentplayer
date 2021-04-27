@@ -1,4 +1,6 @@
 ##### 作者其他文章推荐：
+###### [十三、Android JNI实战——记录实现视频播放器](https://github.com/qq326646683/tech-article/blob/master/android/AndroidJNI实战——记录实现视频播放器.md)
+
 ###### [十二、Android&RN&Flutter实战——防抖节流函数](https://github.com/qq326646683/tech-article/blob/master/common/Android&RN&Flutter实战——防抖节流函数.md)
 
 ###### [十一、Android实战——系统悬浮窗踩坑记](https://github.com/qq326646683/tech-article/blob/master/android/Android实战——系统悬浮窗踩坑记.md)
