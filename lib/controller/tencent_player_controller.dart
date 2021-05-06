@@ -67,6 +67,9 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
       final Map<dynamic, dynamic> map = event;
       int curCode = map['eventCode'];
 
+      debugPrint("native to flutter");
+      debugPrint(map.toString());
+
       switch (map['event']) {
         case 'initialized':
           value = value.copyWith(

@@ -195,17 +195,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
                     // file、 network播放
                     String urlOrPath = call.argument("uri").toString();
 
-                    if (!urlOrPath.startsWith("http")) {
-                        // file
-                        MediaMetadataRetriever retr = new MediaMetadataRetriever();
-                        try {
-                            retr.setDataSource(urlOrPath);
-                            String rotation = retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
-                            degree = Integer.parseInt(rotation);
-                        } catch (Exception e){
-                            //rotation为null
-                        }
-                    }
+                    degree = Util.getNetworkVideoRotate(urlOrPath);
 
                     mVodPlayer.startPlay(urlOrPath);
                 }
@@ -220,10 +210,14 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
             switch (eventCode) {
                 //准备阶段
                 case TXLiveConstants.PLAY_EVT_VOD_PLAY_PREPARED:
+                    boolean isRotateAttri = degree == 90 || degree == 270;
+                    int width = isRotateAttri ? player.getHeight() : player.getWidth();
+                    int height = isRotateAttri ? player.getWidth() : player.getHeight();
+
                     playEventMap.put("event", "initialized");
                     playEventMap.put("duration", (int) player.getDuration());
-                    playEventMap.put("width", player.getWidth());
-                    playEventMap.put("height", player.getHeight());
+                    playEventMap.put("width", width);
+                    playEventMap.put("height", height);
                     playEventMap.put("degree", degree);
                     break;
                 case TXLiveConstants.PLAY_EVT_PLAY_PROGRESS:

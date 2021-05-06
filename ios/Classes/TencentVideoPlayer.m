@@ -168,11 +168,17 @@
                 int64_t duration = [player duration];
                 NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
                 NSInteger  durationInt = [durationStr intValue];
+                
+                BOOL isRotateAttri = [self ->_degree intValue] == 90 || [self ->_degree intValue] == 270;
+                
+                int width = isRotateAttri ? [player height] : [player width];
+                int height = isRotateAttri ? [player width] : [player height];
+                
 
                 [playEventDic setValue:@"initialized" forKey:@"event"];
                 [playEventDic setValue:@(durationInt) forKey:@"duration"];
-                [playEventDic setValue:@([player width]) forKey:@"width"];
-                [playEventDic setValue:@([player height]) forKey:@"height"];
+                [playEventDic setValue:@(width) forKey:@"width"];
+                [playEventDic setValue:@(height) forKey:@"height"];
 
                 if (self->_degree != nil) {
                     [playEventDic setValue:@([self->_degree integerValue]) forKey:@"degree"];
@@ -356,10 +362,15 @@
 - (NSUInteger)degressFromVideoFileWithURL:(NSString *)path
 {
     NSUInteger degress = 0;
-   
-    //AVAsset *asset = [AVAsset assetWithURL:url];
-    AVURLAsset* videoAsset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath: path] options:nil];
-    NSArray *tracks = [videoAsset tracksWithMediaType:AVMediaTypeVideo];
+    
+    NSArray *tracks;
+    if ([path hasPrefix: @"http"]) {
+        AVAsset *asset = [AVAsset assetWithURL:[NSURL URLWithString: path]];
+        tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+    } else {
+        AVURLAsset* videoAsset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath: path] options:nil];
+        tracks = [videoAsset tracksWithMediaType:AVMediaTypeVideo];
+    }
     if([tracks count] > 0) {
         AVAssetTrack *videoTrack = [tracks objectAtIndex:0];
         CGAffineTransform t = videoTrack.preferredTransform;

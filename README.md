@@ -171,7 +171,7 @@ rate | double | 播放速度
 bitrateIndex | int | 视频清晰度
 orientation | int | 手机旋转角度(android only)
 degree | int | 本地file视频自带旋转属性
-eventCode | int | 事件监听code
+eventCode | int | 事件监听[code](https://cloud.tencent.com/document/product/881/20216#.E4.BA.8B.E4.BB.B6.E7.9B.91.E5.90.AC)
 
 ### 4.<font color=#0000FF >Event</font> (播放器事件)
 
