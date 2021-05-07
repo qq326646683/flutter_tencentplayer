@@ -100,7 +100,9 @@
             TXPlayerAuthParams *p = [TXPlayerAuthParams new];
             p.appId = appId;
             p.fileId = fileId;
-            p.sign = sign;
+            if (sign != nil) {
+                p.sign = sign;
+            }
             [_txPlayer startPlayWithParams:p];
         }
     }
