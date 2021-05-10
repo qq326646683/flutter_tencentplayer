@@ -1,4 +1,7 @@
 ##### 作者其他文章推荐：
+
+###### [十四、Flutter上线项目实战——Vap视频动画](https://github.com/qq326646683/tech-article/blob/master/flutter/Flutter上线项目实战——Vap视频动画.md)
+
 ###### [十三、Android JNI实战——记录实现视频播放器](https://github.com/qq326646683/tech-article/blob/master/android/AndroidJNI实战——记录实现视频播放器.md)
 
 ###### [十二、Android&RN&Flutter实战——防抖节流函数](https://github.com/qq326646683/tech-article/blob/master/common/Android&RN&Flutter实战——防抖节流函数.md)
