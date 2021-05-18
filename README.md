@@ -39,6 +39,7 @@ http://file.jinxianyun.com/flutter_tencentplayer_0_11_0.apk
 # 0.Tip
 1. 必须真机
 2. android打release包必须加--no-shrink： flutter build apk --release --no-shrink
+3. 打包混淆配置参考[issue99](https://github.com/qq326646683/flutter_tencentplayer/issues/99#issuecomment-839378426)
 
 # 1.Setup
 ```
