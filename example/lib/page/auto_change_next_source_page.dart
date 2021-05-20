@@ -27,7 +27,7 @@ class _AutoChangeNextSourcePageState extends State<AutoChangeNextSourcePage> {
       if (!mounted) {
         return;
       }
-      if (controller!.value.position == controller!.value.duration) {
+      if (controller!.value.duration != Duration() && controller!.value.position == controller!.value.duration) {
         CommonUtils.throttle(_next, durationTime: 3000);
       }
       setState(() {});
