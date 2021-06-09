@@ -238,7 +238,7 @@
         self->_eventSink(@{
             @"event":@"netStatus",
             @"netSpeed": param[NET_STATUS_NET_SPEED],
-            @"cacheSize": param[NET_STATUS_V_SUM_CACHE_SIZE],
+            @"fps": param[NET_STATUS_VIDEO_FPS],
         });
     }
 }

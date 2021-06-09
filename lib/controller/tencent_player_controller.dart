@@ -112,9 +112,12 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
           );
           break;
         case 'netStatus':
-          if (value.netSpeed == map['netSpeed']) return;
+          int fps = map['fps'].toInt();
+          // 忽略小于3的帧率浮动
+          if (value.netSpeed == map['netSpeed'] && (value.fps! - fps).abs() < 3) return;
           value = value.copyWith(
             netSpeed: map['netSpeed'],
+            fps: fps,
             eventCode: curCode,
           );
           break;

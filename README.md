@@ -143,6 +143,7 @@ isPlaying | bool | 是否在播放
 size | Size | 视频宽高
 isLoading | bool | 是否在加载
 netSpeed | int | 视频播放网速
+fps | int | 视频帧率
 rate | double | 播放速度
 bitrateIndex | int | 视频清晰度
 orientation | int | 手机旋转角度(android only)

@@ -9,6 +9,7 @@ class TencentPlayerValue {
   final Size? size;
   final bool isLoading;
   final int? netSpeed;
+  final int? fps;
   final double rate;
   final int bitrateIndex;
   final int orientation;
@@ -34,6 +35,7 @@ class TencentPlayerValue {
     this.size,
     this.isLoading = false,
     this.netSpeed,
+    this.fps = 0,
     this.rate = 1.0,
     this.bitrateIndex = 0, //TODO 默认清晰度
     this.orientation = 0,
@@ -50,6 +52,7 @@ class TencentPlayerValue {
     Size? size,
     bool? isLoading,
     int? netSpeed,
+    int? fps,
     double? rate,
     int? bitrateIndex,
     int? orientation,
@@ -70,6 +73,7 @@ class TencentPlayerValue {
       orientation: orientation ?? this.orientation,
       degree: degree ?? this.degree,
       eventCode: eventCode ?? this.eventCode,
+      fps: fps ?? this.fps,
     );
   }
 
@@ -83,6 +87,7 @@ class TencentPlayerValue {
         'errorDescription: $errorDescription),'
         'isLoading: $isLoading),'
         'netSpeed: $netSpeed),'
+        'fps: $fps),'
         'rate: $rate),'
         'bitrateIndex: $bitrateIndex),'
         'orientation: $orientation),'

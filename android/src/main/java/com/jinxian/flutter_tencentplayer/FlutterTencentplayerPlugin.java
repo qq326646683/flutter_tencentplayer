@@ -258,7 +258,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
             Map<String, Object> netStatusMap = new HashMap<>();
             netStatusMap.put("event", "netStatus");
             netStatusMap.put("netSpeed", param.getInt(TXLiveConstants.NET_STATUS_NET_SPEED));
-            netStatusMap.put("cacheSize", param.getInt(TXLiveConstants.NET_STATUS_V_SUM_CACHE_SIZE));
+            netStatusMap.put("fps", param.getInt(TXLiveConstants.NET_STATUS_VIDEO_FPS));
             eventSink.success(netStatusMap);
         }
 
