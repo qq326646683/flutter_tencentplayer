@@ -45,6 +45,9 @@ String networkMp4 = 'http://1252463788.vod2.myqcloud.com/95576ef5vodtransgzp1252
 String liveUrl1 = 'http://liteavapp.qcloud.com/live/liteavdemoplayerstreamid_demo1080p.flv';
 String liveUrl2 = 'rtmp://58.200.131.2:1935/livetv/hunantv';
 String assetPath = 'static/tencent1.mp4';
+String rotateNetworkMp4 = 'http://file.jinxianyun.com/tencentplayer_rotate.mp4';
+String invalidMp4 = 'https://123456';
+
 
 class ListPage extends StatelessWidget {
   @override
@@ -105,6 +108,18 @@ class ListPage extends StatelessWidget {
             title: Text('仿抖音'),
             onTap: () {
               Navigator.of(context).push(CupertinoPageRoute(builder: (_) => TiktokPage()));
+            },
+          ),
+          ListTile(
+            title: Text('带旋转属性的视频'),
+            onTap: () {
+              Navigator.of(context).push(CupertinoPageRoute(builder: (_) => FullVideoPage(playType: PlayType.network, dataSource: rotateNetworkMp4,)));
+            },
+          ),
+          ListTile(
+            title: Text('播放无效链接'),
+            onTap: () {
+              Navigator.of(context).push(CupertinoPageRoute(builder: (_) => FullVideoPage(playType: PlayType.network, dataSource: invalidMp4,)));
             },
           ),
         ],

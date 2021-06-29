@@ -6,12 +6,15 @@
 http://file.jinxianyun.com/tencentplayer.MP4
 
 demo apk：
-http://file.jinxianyun.com/flutter_tencentplayer_0_11_0.apk
+http://file.jinxianyun.com/flutter_tencentplayer_1_2_0.apk
+
+demo功能：
+
+![图片](http://file.jinxianyun.com/tencentplayer_1_2_0preview.png)
 
 # 0.Tip
 1. 必须真机
-2. android打release包必须加--no-shrink： flutter build apk --release --no-shrink
-3. 打包混淆配置参考[issue99](https://github.com/qq326646683/flutter_tencentplayer/issues/99#issuecomment-839378426)
+2. 打包事项: 见文章底部
 
 # 1.Setup
 ```
@@ -66,13 +69,13 @@ allprojects {
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 ```
 
-> For Ios  
+> For Ios
 
 
 
-``` 
+```
 
-//项目的info.plist文件上添加如下权限 
+//项目的info.plist文件上添加如下权限
 <key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -228,7 +231,7 @@ quanlity | int | 1: "FLU"、2: "SD"、3: "HD"、4: "FHD"、5: "2K"、6: "4K"
 duration | int |
 size | int | 文件大小
 downloadSize | int | 已下载大小
-progress | int | 已下载大小
+progress | int | 已下载进度
 playPath | String | 下载文件的绝对路径
 isStop | bool | 是否暂停下载
 url | String | 下载的视频链接
@@ -239,10 +242,29 @@ error | String | 下载的错误信息
 
 # 4.[Example](https://github.com/qq326646683/flutter_tencentplayer/blob/master/example/lib/main.dart)
 
-# 5.Note
-> 1. flutter1.10+ android打包命令:
+# 5.打包注意事项
+> 1. flutter打包命令: flutter build apk --release
+
+> 2. 混淆配置:
 ```
-flutter build apk --release --no-shrink
+1. android/app/build.gradle
+
+    buildTypes {
+        release {
+            ...
+            // add
+            ndk {
+                abiFilters 'armeabi-v7a'
+            }
+            shrinkResources true
+            minifyEnabled true
+            useProguard true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+2.android/app/proguard-rules.pro没有该文件则新建
+    -keep class com.tencent.** { *; }
 ```
 
 

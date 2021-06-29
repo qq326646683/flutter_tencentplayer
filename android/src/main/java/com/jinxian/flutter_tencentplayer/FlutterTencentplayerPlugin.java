@@ -121,12 +121,12 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
             mVodPlayer.setConfig(this.mPlayConfig);
         }
 
-        private  void setTencentPlayer(MethodCall call) {
+        private void setTencentPlayer(MethodCall call) {
             mVodPlayer.setVodListener(this);
 //            mVodPlayer.enableHardwareDecode(true);
             mVodPlayer.setLoop((boolean) call.argument("loop"));
             if (call.argument("startTime") != null) {
-                mVodPlayer.setStartTime(((Number)call.argument("startTime")).floatValue());
+                mVodPlayer.setStartTime(((Number) call.argument("startTime")).floatValue());
             }
             mVodPlayer.setAutoPlay((boolean) call.argument("autoPlay"));
 
@@ -161,8 +161,8 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
             // network FileId播放
             if (call.argument("auth") != null) {
                 authBuilder = new TXPlayerAuthBuilder();
-                Map authMap = (Map<String, Object>)call.argument("auth");
-                authBuilder.setAppId(((Number)authMap.get("appId")).intValue());
+                Map authMap = (Map<String, Object>) call.argument("auth");
+                authBuilder.setAppId(((Number) authMap.get("appId")).intValue());
                 authBuilder.setFileId(authMap.get("fileId").toString());
                 if (authMap.get("sign") != null) {
                     authBuilder.setSign(authMap.get("sign").toString());
@@ -179,11 +179,11 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
                         String fileName = Base64.encodeToString(assetLookupKey.getBytes(), Base64.DEFAULT);
                         File file = new File(cacheDir, fileName + ".mp4");
                         FileOutputStream fileOutputStream = new FileOutputStream(file);
-                        if(!file.exists()){
+                        if (!file.exists()) {
                             file.createNewFile();
                         }
                         int ch = 0;
-                        while((ch=inputStream.read()) != -1) {
+                        while ((ch = inputStream.read()) != -1) {
                             fileOutputStream.write(ch);
                         }
                         inputStream.close();
@@ -195,11 +195,16 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
                     }
                 } else {
                     // file、 network播放
-                    String urlOrPath = call.argument("uri").toString();
+                    final String urlOrPath = call.argument("uri").toString();
 
-                    degree = Util.getNetworkVideoRotate(urlOrPath);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            degree = Util.getNetworkVideoRotate(urlOrPath);
+                            mVodPlayer.startPlay(urlOrPath);
+                        }
+                    }).start();
 
-                    mVodPlayer.startPlay(urlOrPath);
                 }
             }
         }
@@ -339,9 +344,9 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
                 txVodDownloadMediaInfo = downloader.startDownloadUrl(urlOrFileId);
             } else {
                 TXPlayerAuthBuilder auth = new TXPlayerAuthBuilder();
-                auth.setAppId(((Number)call.argument("appId")).intValue());
+                auth.setAppId(((Number) call.argument("appId")).intValue());
                 auth.setFileId(urlOrFileId);
-                int quanlity = ((Number)call.argument("quanlity")).intValue();
+                int quanlity = ((Number) call.argument("quanlity")).intValue();
                 String templateName = "HLS-标清-SD";
                 if (quanlity == 2) {
                     templateName = "HLS-标清-SD";
@@ -396,7 +401,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
         public void onDownloadError(TXVodDownloadMediaInfo txVodDownloadMediaInfo, int i, String s) {
             HashMap<String, Object> targetMap = Util.convertToMap(txVodDownloadMediaInfo);
             targetMap.put("downloadStatus", "error");
-            targetMap.put("error", "code:" + i + "  msg:" +  s);
+            targetMap.put("error", "code:" + i + "  msg:" + s);
             if (txVodDownloadMediaInfo.getDataSource() != null) {
                 targetMap.put("quanlity", txVodDownloadMediaInfo.getDataSource().getQuality());
                 targetMap.putAll(Util.convertToMap(txVodDownloadMediaInfo.getDataSource().getAuthBuilder()));
@@ -421,6 +426,7 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
 
 
     }
+
     ////////////////////  TencentDownload 结束/////////////////
     private final Registrar registrar;
     private final LongSparseArray<TencentPlayer> videoPlayers;
@@ -430,7 +436,6 @@ public class FlutterTencentplayerPlugin implements MethodCallHandler {
         this.registrar = registrar;
         this.videoPlayers = new LongSparseArray<>();
         this.downloadManagerMap = new HashMap<>();
-
 
 
     }

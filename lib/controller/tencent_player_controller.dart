@@ -65,7 +65,7 @@ class TencentPlayerController extends ValueNotifier<TencentPlayerValue> {
         return;
       }
       final Map<dynamic, dynamic> map = event;
-      int curCode = map['eventCode'];
+      int? curCode = map['eventCode'];
 
       switch (map['event']) {
         case 'initialized':
