@@ -362,7 +362,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.jinxian.flutter.tencentplayer6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jinxian.flutter.tencentplayer7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -491,7 +491,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.jinxian.flutter.tencentplayer6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jinxian.flutter.tencentplayer7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -516,7 +516,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.jinxian.flutter.tencentplayer6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jinxian.flutter.tencentplayer7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
