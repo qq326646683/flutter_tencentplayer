@@ -38,8 +38,15 @@ dependencies {
     //    implementation(name: 'LiteAVSDK_Player_7.6.9376', ext: 'aar')
 //    implementation(name: 'libsuperplayer', ext: 'aar')
 // 超级播放器弹幕集成的第三方库
-    implementation 'com.github.ctiao:DanmakuFlameMaster:0.5.3'
-    implementation files('libs\\LiteAVSDK_Player_7.6.9376.aar')
-    implementation files('libs\\libsuperplayer.aar')
+//    implementation 'com.github.ctiao:DanmakuFlameMaster:0.5.3'
+//    implementation files('libs\\LiteAVSDK_Player_7.6.9376.aar')
+//    implementation files('libs\\libsuperplayer.aar')
 
+//    compileOnly fileTree(include: ['*.jar','*.aar'], dir: 'libs') //打aar用
+    implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs') //运行用
+    // implementation(name: 'libs\\LiteAVSDK_Player_8.2.9809', ext: 'aar')
+    // implementation(name: 'libs\\libsuperplayer', ext: 'aar')
+    // 超级播放器弹幕集成的第三方库
+//    compileOnly files('libs/LiteAVSDK_Player_8.2.9809.aar')
+//    compileOnly files('libs/libsuperplayer.aar')
 }
